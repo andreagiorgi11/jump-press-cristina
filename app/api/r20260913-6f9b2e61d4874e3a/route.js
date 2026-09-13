@@ -1,4 +1,4 @@
-import pdfParse from 'pdf-parse';
+import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
