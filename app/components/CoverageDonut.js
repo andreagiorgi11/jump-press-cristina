@@ -2,14 +2,27 @@
 
 import {useEffect} from 'react';
 
-const palette=['#d7ff00','#111111','#6f6f6f','#ff8a00','#00a6a6','#7c3aed','#e11d48'];
+const colorByLabel={
+  'Prima squadra':'#d7ff00',
+  'Mercato':'#111111',
+  'Editoriali':'#737373',
+  'Youth / Next Gen':'#ff8a00',
+  'Politica sportiva':'#00a6a6',
+  'Intervista':'#7c3aed',
+  'Juventus Women':'#e11d48',
+  'Prossimo avversario':'#2563eb',
+  'Europa League':'#a16207',
+  'Altri temi':'#0f766e',
+  'Altro':'#64748b'
+};
+const fallback=['#be123c','#0369a1','#15803d','#c2410c','#4338ca','#b45309','#0f766e','#9f1239'];
 const groupLabel=(raw)=>{
   const v=String(raw||'').trim();
   if(v==='Juventus') return 'Prima squadra';
   if(v==='Mercato') return 'Mercato';
   if(v==='Editoriali') return 'Editoriali';
   if(v==='Juventus Youth'||v==='Next Gen') return 'Youth / Next Gen';
-  if(v==='Women') return 'Women';
+  if(v==='Women'||v==='Juventus Women') return 'Juventus Women';
   if(v==='Politica sportiva') return 'Politica sportiva';
   if(v==='Altre squadre'||v==='Altri sport') return 'Altri temi';
   return v||'Altro';
@@ -28,22 +41,23 @@ function build(){
     counts.set(label,(counts.get(label)||0)+1);
   });
   if(!counts.size) return;
-  const order=['Prima squadra','Mercato','Editoriali','Youth / Next Gen','Women','Politica sportiva','Altri temi'];
+  const order=['Prima squadra','Mercato','Editoriali','Youth / Next Gen','Politica sportiva','Intervista','Juventus Women','Prossimo avversario','Europa League','Altri temi','Altro'];
   const entries=[...counts.entries()].sort((a,b)=>{
     const ia=order.indexOf(a[0]),ib=order.indexOf(b[0]);
     return (ia<0?99:ia)-(ib<0?99:ib);
   });
   const total=entries.reduce((s,[,n])=>s+n,0);
+  const colors=entries.map(([label],i)=>colorByLabel[label]||fallback[i%fallback.length]);
   let cursor=0;
   const stops=entries.map(([,n],i)=>{
     const start=cursor;
     cursor+=n/total*100;
-    return `${palette[i%palette.length]} ${start.toFixed(2)}% ${cursor.toFixed(2)}%`;
+    return `${colors[i]} ${start.toFixed(2)}% ${cursor.toFixed(2)}%`;
   }).join(',');
 
   const section=document.createElement('section');
   section.id='jump-coverage-donut';
-  section.innerHTML=`<div class="jcd-head"><small>DISTRIBUZIONE DELLA RASSEGNA</small><h2>Il peso dei temi di oggi</h2><p>Quota degli articoli selezionati per area editoriale.</p></div><div class="jcd-wrap"><div class="jcd-donut" style="background:conic-gradient(${stops})"><div class="jcd-hole"><b>${total}</b><span>articoli</span></div></div><div class="jcd-legend">${entries.map(([label,n],i)=>`<div class="jcd-row"><i style="background:${palette[i%palette.length]}"></i><span>${label}</span><strong>${n} · ${Math.round(n/total*100)}%</strong></div>`).join('')}</div></div>`;
+  section.innerHTML=`<div class="jcd-head"><small>DISTRIBUZIONE DELLA RASSEGNA</small><h2>Il peso dei temi di oggi</h2><p>Quota degli articoli selezionati per area editoriale. Ogni area ha un colore univoco.</p></div><div class="jcd-wrap"><div class="jcd-donut" style="background:conic-gradient(${stops})"><div class="jcd-hole"><b>${total}</b><span>articoli</span></div></div><div class="jcd-legend">${entries.map(([label,n],i)=>`<div class="jcd-row"><i style="background:${colors[i]}"></i><span>${label}</span><strong>${n} · ${Math.round(n/total*100)}%</strong></div>`).join('')}</div></div>`;
   brief.parentNode.insertBefore(section,brief);
 }
 
