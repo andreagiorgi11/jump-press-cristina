@@ -3,7 +3,7 @@ import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-const SOURCE = 'https://rassegna.dominiocliente.it/Areas/Rassegna/Elab/CheckedDownload.aspx?nome_file=PP_RAS_1626482_20260913_16361909.pdf';
+const SOURCE = 'https://rassegna.dominiocliente.it/Areas/Rassegna/Elab/CheckedDownload.aspx?nome_file=PP_RAS_1626482_20260913_16361324.pdf';
 const KEY = 'd3e7c10b1a5f4e8796c24e3a8bd7f051';
 
 async function fetchPdf() {
