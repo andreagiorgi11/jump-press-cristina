@@ -1,1 +1,1 @@
-{"scripts":{"build":"next build","dev":"next dev"},"dependencies":{"next":"15.5.9","pdf-lib":"^1.17.1","pdf-parse":"1.1.1","react":"19.1.0","react-dom":"19.1.0"},"devDependencies":{}}
+{"scripts":{"build":"node scripts/generate-static-clips-20260913.mjs && next build","dev":"next dev"},"dependencies":{"next":"15.5.9","pdf-lib":"^1.17.1","pdf-parse":"1.1.1","react":"19.1.0","react-dom":"19.1.0"},"devDependencies":{}}
