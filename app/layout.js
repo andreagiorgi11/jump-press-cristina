@@ -4,6 +4,7 @@ import PdfLinkHandler from './PdfLinkHandler';
 import AppControls from './components/AppControls';
 import BrandHomeHandler from './components/BrandHomeHandler';
 import CoverageDonut from './components/CoverageDonut';
+import DailyMetrics from './components/DailyMetrics';
 import LiveAppRefresh from './components/LiveAppRefresh';
 
 export const dynamic='force-dynamic';
@@ -12,4 +13,4 @@ export const fetchCache='force-no-store';
 
 export const metadata={title:'JUMP PRESS Juventus',description:'Rassegna stampa Juventus — ultima edizione e archivio',manifest:'/manifest.webmanifest',applicationName:'JUMP PRESS Juventus',appleWebApp:{capable:true,title:'JUMP PRESS',statusBarStyle:'black'},formatDetection:{telephone:false},themeColor:'#0b0d0f'};
 export const viewport={width:'device-width',initialScale:1,viewportFit:'cover',themeColor:'#0b0d0f'};
-export default function RootLayout({children}){return <html lang="it"><body><LiveAppRefresh/><PdfLinkHandler/><BrandHomeHandler/><AppControls/><CoverageDonut/>{children}</body></html>}
+export default function RootLayout({children}){return <html lang="it"><body><LiveAppRefresh/><PdfLinkHandler/><BrandHomeHandler/><AppControls/><CoverageDonut/><DailyMetrics/>{children}</body></html>}
