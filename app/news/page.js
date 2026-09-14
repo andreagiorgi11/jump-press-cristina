@@ -10,7 +10,14 @@ const NEWS_QUERIES=[
  'Juventus Spalletti','Juventus Comolli','Juventus Chiellini','Juventus Yildiz','Juventus Kessie','Juventus Sorloth','Juventus Zirkzee','Juventus Mateta','Juventus David','Juventus Miretti','Juventus Bremer','Juventus Koopmeiners','Juventus Cambiaso',
  ...MONITORED_SOURCES.map(name=>`Juventus ${name}`)
 ];
-const FEEDS=NEWS_QUERIES.map(q=>`https://news.google.com/rss/search?q=${encodeURIComponent(q)}&hl=it&gl=IT&ceid=IT:it`);
+const CALCIO_E_FINANZA_QUERIES=[
+ 'site:calcioefinanza.it Juventus',
+ 'site:calcioefinanza.it Juve'
+];
+const FEEDS=[
+ ...NEWS_QUERIES.map(q=>`https://news.google.com/rss/search?q=${encodeURIComponent(q)}&hl=it&gl=IT&ceid=IT:it`),
+ ...CALCIO_E_FINANZA_QUERIES.map(q=>`https://news.google.com/rss/search?q=${encodeURIComponent(q)}&hl=it&gl=IT&ceid=IT:it`)
+];
 function decodeXml(s=''){return s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,'$1').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n)));}
 function xmlText(block,tag){const m=block.match(new RegExp(`<${tag}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${tag}>`,'i'));return m?decodeXml(m[1].trim()):'';}
 function parseNewsFeed(xml){return [...xml.matchAll(/<item>([\s\S]*?)<\/item>/gi)].map(m=>{const b=m[1],date=xmlText(b,'pubDate');return {title:xmlText(b,'title'),link:xmlText(b,'link'),date,source:xmlText(b,'source'),ts:Date.parse(date)||0};}).filter(x=>x.title&&x.link);}
