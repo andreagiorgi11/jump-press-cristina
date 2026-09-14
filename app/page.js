@@ -37,11 +37,7 @@ return <main>
 <section className="articles">{articles.map((a,i)=><article key={i}>
 <div className="meta"><label><span>{a[0]}</span><b>{a[1]}</b></label></div>
 <h2>{a[2]}</h2>{a[3]&&<aside>di {a[3]}</aside>}<p>{a[4]}</p>
-<div style={{marginTop:'22px',border:'1px solid #d9d9d9',borderRadius:'12px',overflow:'hidden',background:'#f6f6f6'}}>
-<div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'12px',padding:'12px 14px',background:'#111',color:'#fff'}}><b style={{fontSize:'13px',letterSpacing:'.06em'}}>RITAGLIO ORIGINALE</b><a href={clipUrl(i)} target="_blank" rel="noreferrer" style={{color:'#fff',fontWeight:700,textDecoration:'underline'}}>Apri a pagina intera ↗</a></div>
-<iframe src={clipUrl(i)} title={`Ritaglio completo — ${a[2]}`} style={{display:'block',width:'100%',height:'520px',border:0,background:'#fff'}} />
-<div style={{padding:'12px 14px',background:'#fff'}}><a href={clipUrl(i)} target="_blank" rel="noreferrer" style={{display:'inline-block',fontWeight:800,textDecoration:'none'}}>APRI RITAGLIO COMPLETO ↗</a></div>
-</div>
+<div style={{marginTop:'18px'}}><a href={clipUrl(i)} target="_blank" rel="noreferrer" style={{display:'inline-block',padding:'11px 15px',border:'1px solid #111',borderRadius:'9px',fontWeight:800,textDecoration:'none'}}>Ritaglio completo ↗</a></div>
 </article>)}</section>
 <footer><b>JUMP PRESS</b> · Rassegna Juventus · 14 settembre 2026<br/><span>23 pezzi selezionati · 316 pagine analizzate · 212 voci d’indice</span></footer>
 </main>
