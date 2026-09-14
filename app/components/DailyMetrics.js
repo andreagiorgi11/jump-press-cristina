@@ -10,19 +10,88 @@ const ratingCopy={
   1:['Marginale','Contesto o notizia di servizio: entra solo quando aggiunge un elemento concreto.']
 };
 
-function build(){
-  const main=document.querySelector('main');
-  const header=main?.querySelector(':scope > header');
-  const sources=main?.querySelector(':scope > .sources');
-  const sectionTitle=main?.querySelector(':scope > .sectiontitle');
-  if(!main||!header||!sources||!sectionTitle) return;
-  if(!header.textContent?.includes('13 SETTEMBRE 2026')) return;
+const ratings14=[5,4,4,5,4,5,5,4,5,4,3,4,3,3,2,3,2,2,3,2,2,2,2];
 
+const stopwords=new Set('alla allo agli alle anche avere aveva abbiamo hanno essere era sono come con che chi cui dal dalla dalle dagli dei del della delle degli dello di e ed è gli ha hanno il in io la le lo ma mi ne nel nella nelle nello non o per più può questa questo questi quelle quello se sia si sono su sul sulla tra un una uno suoi sue suo loro già dopo prima oggi ieri mentre senza contro molto ancora dove quando quanto poi'.split(' '));
+
+function recurringWords(articles){
+  const counts=new Map();
+  const text=[...articles].map(a=>a.textContent||'').join(' ').toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9à-ÿ\s'-]/g,' ');
+  for(const raw of text.split(/\s+/)){
+    const w=raw.replace(/^['-]+|['-]+$/g,'');
+    if(w.length<5||stopwords.has(w)||['juventus','juve','ritaglio','completo','editoriali','gazzetta','tuttosport','corriere'].includes(w)) continue;
+    counts.set(w,(counts.get(w)||0)+1);
+  }
+  return [...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,12);
+}
+
+function addRatings14(articleEls){
+  articleEls.forEach((article,i)=>{
+    if(article.querySelector('.stars')) return;
+    const n=ratings14[i]||2;
+    const meta=article.querySelector('.meta');
+    const stars=document.createElement('div');
+    stars.className='stars';
+    stars.setAttribute('aria-label',`Rating editoriale ${n} su 5`);
+    stars.innerHTML=`<strong>${'★'.repeat(n)}${'☆'.repeat(5-n)}</strong><span>${ratingCopy[n][0]}</span>`;
+    meta?.insertAdjacentElement('afterend',stars);
+  });
+}
+
+function addInsights14(main,sectionTitle,articleEls){
+  if(document.getElementById('jump-insights-14')) return;
+  const words=recurringWords(articleEls);
+  const max=Math.max(...words.map(([,n])=>n),1);
+  const section=document.createElement('section');
+  section.id='jump-insights-14';
+  section.className='ranking';
+  section.innerHTML=`
+    <small>LETTURA DELLA RASSEGNA</small>
+    <h2>Temi, parole e tono di oggi</h2>
+    <div class="jump-insight-grid">
+      <div class="jump-insight-card">
+        <b>3 punti chiave</b>
+        <ul>
+          <li><strong>Equilibrio e leadership:</strong> la sconfitta col Sassuolo riapre il tema della struttura della squadra e della gestione dei momenti della partita.</li>
+          <li><strong>Attacco sotto pressione:</strong> Kolo Muani resta al centro delle critiche, mentre Zhegrova emerge come risposta offensiva più concreta.</li>
+          <li><strong>Reazione immediata:</strong> il debutto europeo contro il NEC diventa il primo banco di prova, con Cambiaso e McKennie verso il recupero.</li>
+        </ul>
+      </div>
+      <div class="jump-insight-card">
+        <b>Toni prevalenti</b>
+        <div class="tonechips"><span>Critico</span><span>Preoccupato</span><span>Reattivo</span></div>
+        <p>La lettura complessiva è soprattutto critica verso equilibrio, leadership e rendimento offensivo; resta però un tono di attesa per la risposta europea.</p>
+      </div>
+    </div>
+    <div class="jump-wordcloud-wrap">
+      <b>Nuvola di parole ricorrenti</b>
+      <div class="jump-wordcloud">${words.map(([w,n])=>`<span style="font-size:${14+Math.round((n/max)*18)}px" title="${n} ricorrenze">${w}</span>`).join('')}</div>
+    </div>`;
+  main.insertBefore(section,sectionTitle);
+}
+
+function addRatingGuide(main,sectionTitle,articleEls){
+  if(document.getElementById('jump-rating-guide')) return;
+  const counts={1:0,2:0,3:0,4:0,5:0};
+  articleEls.forEach(article=>{
+    const el=article.querySelector('.stars strong');
+    const n=(el?.textContent.match(/★/g)||[]).length;
+    if(counts[n]!==undefined) counts[n]++;
+  });
+  const guide=document.createElement('section');
+  guide.id='jump-rating-guide';
+  guide.className='ranking';
+  guide.innerHTML='<small>COME LEGGERE IL RATING</small><h2>Quanto pesa ogni notizia</h2><p>Le stelle misurano il <b>peso editoriale della notizia nella rassegna Juventus di oggi</b>. Non sono un voto alla qualità o all’affidabilità della testata e non indicano se la notizia è positiva o negativa.</p>'+[5,4,3,2,1].map(n=>`<div class="rankrow"><strong>${'★'.repeat(n)}${'☆'.repeat(5-n)}</strong><span><b>${ratingCopy[n][0]} · ${counts[n]} ${counts[n]===1?'pezzo':'pezzi'}</b><small>${ratingCopy[n][1]}</small></span></div>`).join('');
+  main.insertBefore(guide,sectionTitle);
+}
+
+function build13(main,header,sources,sectionTitle){
   const stats=header.querySelector('.stats');
   if(stats){
     stats.innerHTML='<div><b>18</b><span>pezzi selezionati</span></div><div><b>409</b><span>pagine analizzate</span></div><div><b>15</b><span>prime pagine verificate</span></div><div><b>3</b><span>prime pagine con Juventus</span></div>';
   }
-
   if(!document.getElementById('jump-daily-metrics')){
     const metrics=document.createElement('div');
     metrics.id='jump-daily-metrics';
@@ -30,19 +99,26 @@ function build(){
     const intro=sources.querySelector('.intro');
     intro?.insertAdjacentElement('afterend',metrics);
   }
+  addRatingGuide(main,sectionTitle,[...document.querySelectorAll('.articles article')]);
+}
 
-  if(!document.getElementById('jump-rating-guide')){
-    const counts={1:0,2:0,3:0,4:0,5:0};
-    document.querySelectorAll('.articles article .stars').forEach(el=>{
-      const n=(el.textContent.match(/★/g)||[]).length;
-      if(counts[n]!==undefined) counts[n]++;
-    });
-    const guide=document.createElement('section');
-    guide.id='jump-rating-guide';
-    guide.className='ranking';
-    guide.innerHTML='<small>COME LEGGERE IL RATING</small><h2>Quanto pesa ogni notizia</h2><p>Le stelle misurano il <b>peso editoriale della notizia nella rassegna Juventus di oggi</b>. Non sono un voto alla qualità o all’affidabilità della testata e non indicano se la notizia è positiva o negativa.</p>'+[5,4,3,2,1].map(n=>`<div class="rankrow"><strong>${'★'.repeat(n)}${'☆'.repeat(5-n)}</strong><span><b>${ratingCopy[n][0]} · ${counts[n]} ${counts[n]===1?'pezzo':'pezzi'}</b><small>${ratingCopy[n][1]}</small></span></div>`).join('');
-    sectionTitle.parentNode.insertBefore(guide,sectionTitle);
+function build(){
+  const main=document.querySelector('main');
+  const header=main?.querySelector(':scope > header');
+  const sources=main?.querySelector(':scope > .sources');
+  const sectionTitle=main?.querySelector(':scope > .sectiontitle');
+  if(!main||!header||!sources||!sectionTitle) return;
+  const articleEls=[...main.querySelectorAll('.articles article')];
+  const headerText=header.textContent||'';
+
+  if(headerText.includes('14 SETTEMBRE 2026')){
+    addRatings14(articleEls);
+    addInsights14(main,sectionTitle,articleEls);
+    addRatingGuide(main,sectionTitle,articleEls);
+    return;
   }
+
+  if(headerText.includes('13 SETTEMBRE 2026')) build13(main,header,sources,sectionTitle);
 }
 
 export default function DailyMetrics(){
@@ -59,6 +135,21 @@ export default function DailyMetrics(){
     #jump-daily-metrics span{font-size:13px;font-weight:900;color:#222}
     #jump-daily-metrics small{font-size:11px;line-height:1.35;color:#707070}
     #jump-rating-guide>p{font-size:17px;line-height:1.6;color:#444}
-    @media(max-width:700px){#jump-daily-metrics{grid-template-columns:1fr 1fr!important}#jump-daily-metrics b{font-size:22px}}
+    .articles article .stars{display:flex;align-items:center;gap:10px;margin:10px 0 14px}
+    .articles article .stars strong{font-size:18px;letter-spacing:1px;color:#111}
+    .articles article .stars span{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#666}
+    #jump-insights-14{margin-top:28px}
+    .jump-insight-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:14px;margin-top:18px}
+    .jump-insight-card,.jump-wordcloud-wrap{background:#f6f5f2;border:1px solid #dfddd7;border-radius:18px;padding:20px}
+    .jump-insight-card>b,.jump-wordcloud-wrap>b{font-size:14px;text-transform:uppercase;letter-spacing:.08em}
+    .jump-insight-card ul{margin:15px 0 0;padding-left:20px}
+    .jump-insight-card li{margin:9px 0;line-height:1.5}
+    .jump-insight-card p{margin:14px 0 0;line-height:1.55;color:#4d4d4d}
+    .tonechips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+    .tonechips span{display:inline-block;padding:8px 11px;border-radius:999px;background:#111;color:#fff;font-size:12px;font-weight:800}
+    .jump-wordcloud-wrap{margin-top:14px}
+    .jump-wordcloud{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px 16px;margin-top:18px;min-height:130px}
+    .jump-wordcloud span{font-weight:850;line-height:1;color:#111}
+    @media(max-width:700px){#jump-daily-metrics{grid-template-columns:1fr 1fr!important}#jump-daily-metrics b{font-size:22px}.jump-insight-grid{grid-template-columns:1fr}.jump-wordcloud{min-height:110px}.articles article .stars{align-items:flex-start;flex-direction:column;gap:5px}}
   `}</style>;
 }
