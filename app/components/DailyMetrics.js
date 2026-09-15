@@ -55,9 +55,10 @@ function addScaleMetrics15(main,header){
       <div><b>24</b><span>pezzi selezionati</span><small>12,6% del totale esaminato</small></div>
       <div><b>22</b><span>prime pagine verificate</span><small>Italiane e internazionali presenti nella rassegna</small></div>
       <div><b>3 / 22</b><span>prime pagine con richiamo Juventus</span><small>13,6% delle copertine verificate</small></div>
-      <div><b>3 / 3</b><span>quotidiani sportivi nazionali</span><small>Gazzetta, Corriere dello Sport e Tuttosport: Juventus presente su tutte</small></div>
+      <div><b>3 / 3</b><span>quotidiani sportivi nazionali</span><small>Juventus presente su tutte le tre copertine sportive italiane</small></div>
       <div><b>19</b><span>prime pagine senza Juventus</span><small>Il richiamo bianconero è concentrato soprattutto sulla stampa sportiva</small></div>
     </div>
+    <div class="jump-frontpages-list"><b>Dove la Juventus è in prima pagina</b><div><span>La Gazzetta dello Sport</span><span>Corriere dello Sport-Stadio</span><span>Tuttosport</span></div></div>
     <div class="jump-frontpages-note"><b>Prime pagine: lettura generale</b><p>La Juventus ha forte visibilità sulle copertine sportive italiane, ma non domina l'agenda complessiva delle 22 prime pagine: sulle testate generaliste e internazionali prevalgono temi politici, economici e internazionali.</p></div>`;
   header.insertAdjacentElement('afterend',block);
 }
@@ -76,7 +77,7 @@ function addInsights(main,sectionTitle,articleEls,{id,bullets,tones,toneText}){
       <div class="jump-insight-card"><b>3 punti chiave</b><ul>${bullets.map(x=>`<li><strong>${x[0]}:</strong> ${x[1]}</li>`).join('')}</ul></div>
       <div class="jump-insight-card"><b>Toni prevalenti</b><div class="tonechips">${tones.map(t=>`<span>${t}</span>`).join('')}</div><p>${toneText}</p></div>
     </div>
-    <div class="jump-wordcloud-wrap"><b>Nuvola di parole ricorrenti</b><div class="jump-wordcloud">${words.map(([w,n])=>`<span style="font-size:${15+Math.round((n/max)*22)}px" title="${n} ricorrenze">${w}</span>`).join('')}</div></div>`;
+    <div class="jump-wordcloud-wrap"><b>Nuvola di parole</b><div class="jump-wordcloud">${words.map(([w,n])=>`<span style="font-size:${15+Math.round((n/max)*22)}px" title="${n} ricorrenze">${w}</span>`).join('')}</div></div>`;
   main.insertBefore(section,sectionTitle);
 }
 
@@ -161,6 +162,9 @@ export default function DailyMetrics(){
     #jump-daily-metrics b{font-size:25px;color:#111}
     #jump-daily-metrics span{font-size:13px;font-weight:900;color:#222}
     #jump-daily-metrics small{font-size:11px;line-height:1.35;color:#707070}
+    .jump-frontpages-list{margin-top:14px;padding:18px 20px;background:#f6f5f2;border:1px solid #dfddd7;border-radius:15px}
+    .jump-frontpages-list>div{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .jump-frontpages-list span{display:inline-block;padding:8px 11px;border-radius:999px;background:#111;color:#fff;font-size:12px;font-weight:800}
     .jump-frontpages-note{margin-top:14px;padding:18px 20px;border-left:4px solid #111;background:#faf9f7;border-radius:10px}
     .jump-frontpages-note p{margin:7px 0 0;line-height:1.5;color:#4d4d4d}
     #jump-rating-guide>p{font-size:17px;line-height:1.6;color:#444}
