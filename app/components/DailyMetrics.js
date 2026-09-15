@@ -59,8 +59,7 @@ function addScaleMetrics15(main,header){
       <div><b>19</b><span>prime pagine senza Juventus</span><small>Il richiamo bianconero è concentrato soprattutto sulla stampa sportiva</small></div>
     </div>
     <div class="jump-frontpages-note"><b>Prime pagine: lettura generale</b><p>La Juventus ha forte visibilità sulle copertine sportive italiane, ma non domina l'agenda complessiva delle 22 prime pagine: sulle testate generaliste e internazionali prevalgono temi politici, economici e internazionali.</p></div>`;
-  const brief=main.querySelector(':scope > .brief');
-  brief?.insertAdjacentElement('afterend',block);
+  header.insertAdjacentElement('afterend',block);
 }
 
 function addInsights(main,sectionTitle,articleEls,{id,bullets,tones,toneText}){
@@ -112,6 +111,7 @@ function build(){
   const headerText=header.textContent||'';
 
   if(headerText.includes('15 SETTEMBRE 2026')){
+    main.querySelector(':scope > .brief')?.remove();
     sources?.remove();
     addScaleMetrics15(main,header);
     addRatings(articleEls,ratings15);
