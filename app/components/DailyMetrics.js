@@ -113,6 +113,7 @@ function build(){
   const headerText=header.textContent||'';
 
   if(headerText.includes('15 SETTEMBRE 2026')){
+    sources.remove();
     addRatings(articleEls,ratings15);
     addInsights(main,sectionTitle,articleEls,{
       id:'jump-insights-15',
