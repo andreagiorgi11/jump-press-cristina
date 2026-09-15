@@ -13,17 +13,11 @@ const ratingCopy={
 const ratings14=[5,4,4,5,4,5,5,4,5,4,3,4,3,3,2,3,2,2,3,2,2,2,2];
 const ratings15=[5,5,5,5,5,4,5,4,5,5,4,4,4,3,4,2,3,3,2,3,2,2,3,2];
 
-const stopwords=new Set('alla allo agli alle anche avere aveva abbiamo hanno essere era sono come con che chi cui dal dalla dalle dagli dei del della delle degli dello di e ed è gli ha hanno il in io la le lo ma mi ne nel nella nelle nello non o per più può questa questo questi quelle quello se sia si sono su sul sulla tra un una uno suoi sue suo loro già dopo prima oggi ieri mentre senza contro molto ancora dove quando quanto poi delle nella della dello degli dalle dagli dagli'.split(' '));
+const stopwords=new Set('alla allo agli alle anche avere aveva abbiamo hanno essere era sono come con che chi cui dal dalla dalle dagli dei del della delle degli dello di e ed è gli ha hanno il in io la le lo ma mi ne nel nella nelle nello non o per più può questa questo questi quelle quello se sia si sono su sul sulla tra un una uno suoi sue suo loro già dopo prima oggi ieri mentre senza contro molto ancora dove quando quanto poi delle nella della dello degli dalle dagli'.split(' '));
 
 function recurringWords(articles){
   const counts=new Map();
-  const text=[...articles].map(a=>{
-    const title=a.querySelector('h2')?.textContent||'';
-    const body=a.querySelector('p')?.textContent||'';
-    return `${title} ${body}`;
-  }).join(' ').toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/[^a-z0-9à-ÿ\s'-]/g,' ');
+  const text=[...articles].map(a=>`${a.querySelector('h2')?.textContent||''} ${a.querySelector('p')?.textContent||''}`).join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9à-ÿ\s'-]/g,' ');
   for(const raw of text.split(/\s+/)){
     const w=raw.replace(/^['-]+|['-]+$/g,'');
     if(w.length<5||stopwords.has(w)||['juventus','juve','gazzetta','tuttosport','corriere','sport','stampa','pezzo','notizia'].includes(w)) continue;
@@ -36,13 +30,37 @@ function addRatings(articleEls,ratings){
   articleEls.forEach((article,i)=>{
     if(article.querySelector('.stars')) return;
     const n=ratings[i]||2;
-    const meta=article.querySelector('.meta');
     const stars=document.createElement('div');
     stars.className='stars';
     stars.setAttribute('aria-label',`Rating editoriale ${n} su 5`);
     stars.innerHTML=`<strong>${'★'.repeat(n)}${'☆'.repeat(5-n)}</strong><span>${ratingCopy[n][0]}</span>`;
-    meta?.insertAdjacentElement('afterend',stars);
+    article.querySelector('.meta')?.insertAdjacentElement('afterend',stars);
   });
+}
+
+function addScaleMetrics15(main,header){
+  const stats=header.querySelector('.stats');
+  if(stats){
+    stats.innerHTML='<div><b>190</b><span>voci esaminate</span></div><div><b>24</b><span>articoli selezionati</span></div><div><b>22</b><span>prime pagine verificate</span></div><div><b>3</b><span>prime pagine con Juventus</span></div>';
+  }
+  if(document.getElementById('jump-scale-metrics-15')) return;
+  const block=document.createElement('section');
+  block.id='jump-scale-metrics-15';
+  block.className='ranking';
+  block.innerHTML=`
+    <small>QUADRO GENERALE DELLA RASSEGNA</small>
+    <h2>I numeri dell'intera copertura</h2>
+    <div id="jump-daily-metrics">
+      <div><b>190</b><span>voci complessive esaminate</span><small>Base di lavoro prima della selezione editoriale</small></div>
+      <div><b>24</b><span>pezzi selezionati</span><small>12,6% del totale esaminato</small></div>
+      <div><b>22</b><span>prime pagine verificate</span><small>Italiane e internazionali presenti nella rassegna</small></div>
+      <div><b>3 / 22</b><span>prime pagine con richiamo Juventus</span><small>13,6% delle copertine verificate</small></div>
+      <div><b>3 / 3</b><span>quotidiani sportivi nazionali</span><small>Gazzetta, Corriere dello Sport e Tuttosport: Juventus presente su tutte</small></div>
+      <div><b>19</b><span>prime pagine senza Juventus</span><small>Il richiamo bianconero è concentrato soprattutto sulla stampa sportiva</small></div>
+    </div>
+    <div class="jump-frontpages-note"><b>Prime pagine: lettura generale</b><p>La Juventus ha forte visibilità sulle copertine sportive italiane, ma non domina l'agenda complessiva delle 22 prime pagine: sulle testate generaliste e internazionali prevalgono temi politici, economici e internazionali.</p></div>`;
+  const brief=main.querySelector(':scope > .brief');
+  brief?.insertAdjacentElement('afterend',block);
 }
 
 function addInsights(main,sectionTitle,articleEls,{id,bullets,tones,toneText}){
@@ -56,20 +74,10 @@ function addInsights(main,sectionTitle,articleEls,{id,bullets,tones,toneText}){
     <small>LETTURA DELLA RASSEGNA</small>
     <h2>Temi, parole e tono di oggi</h2>
     <div class="jump-insight-grid">
-      <div class="jump-insight-card">
-        <b>3 punti chiave</b>
-        <ul>${bullets.map(x=>`<li><strong>${x[0]}:</strong> ${x[1]}</li>`).join('')}</ul>
-      </div>
-      <div class="jump-insight-card">
-        <b>Toni prevalenti</b>
-        <div class="tonechips">${tones.map(t=>`<span>${t}</span>`).join('')}</div>
-        <p>${toneText}</p>
-      </div>
+      <div class="jump-insight-card"><b>3 punti chiave</b><ul>${bullets.map(x=>`<li><strong>${x[0]}:</strong> ${x[1]}</li>`).join('')}</ul></div>
+      <div class="jump-insight-card"><b>Toni prevalenti</b><div class="tonechips">${tones.map(t=>`<span>${t}</span>`).join('')}</div><p>${toneText}</p></div>
     </div>
-    <div class="jump-wordcloud-wrap">
-      <b>Nuvola di parole ricorrenti</b>
-      <div class="jump-wordcloud">${words.map(([w,n])=>`<span style="font-size:${15+Math.round((n/max)*22)}px" title="${n} ricorrenze">${w}</span>`).join('')}</div>
-    </div>`;
+    <div class="jump-wordcloud-wrap"><b>Nuvola di parole ricorrenti</b><div class="jump-wordcloud">${words.map(([w,n])=>`<span style="font-size:${15+Math.round((n/max)*22)}px" title="${n} ricorrenze">${w}</span>`).join('')}</div></div>`;
   main.insertBefore(section,sectionTitle);
 }
 
@@ -77,8 +85,7 @@ function addRatingGuide(main,sectionTitle,articleEls){
   if(document.getElementById('jump-rating-guide')) return;
   const counts={1:0,2:0,3:0,4:0,5:0};
   articleEls.forEach(article=>{
-    const el=article.querySelector('.stars strong');
-    const n=(el?.textContent.match(/★/g)||[]).length;
+    const n=(article.querySelector('.stars strong')?.textContent.match(/★/g)||[]).length;
     if(counts[n]!==undefined) counts[n]++;
   });
   const guide=document.createElement('section');
@@ -89,17 +96,9 @@ function addRatingGuide(main,sectionTitle,articleEls){
 }
 
 function build13(main,header,sources,sectionTitle){
+  if(!sources) return;
   const stats=header.querySelector('.stats');
-  if(stats){
-    stats.innerHTML='<div><b>18</b><span>pezzi selezionati</span></div><div><b>409</b><span>pagine analizzate</span></div><div><b>15</b><span>prime pagine verificate</span></div><div><b>3</b><span>prime pagine con Juventus</span></div>';
-  }
-  if(!document.getElementById('jump-daily-metrics')){
-    const metrics=document.createElement('div');
-    metrics.id='jump-daily-metrics';
-    metrics.innerHTML='<div><b>3 / 15</b><span>prime pagine con richiamo Juventus</span><small>20% delle prime pagine presenti nel PDF</small></div><div><b>3 / 3</b><span>quotidiani sportivi nazionali</span><small>Gazzetta, Corriere dello Sport e Tuttosport: 100%</small></div><div><b>6</b><span>testate nella selezione</span><small>Le fonti dei 18 pezzi scelti</small></div><div><b>2</b><span>editoriali in apertura</span><small>Savelli e Vernazza</small></div><div><b>9</b><span>aree editoriali</span><small>Dalla prima squadra alla politica sportiva</small></div><div><b>12</b><span>prime pagine senza richiamo Juve</span><small>Sul totale delle 15 verificate</small></div>';
-    const intro=sources.querySelector('.intro');
-    intro?.insertAdjacentElement('afterend',metrics);
-  }
+  if(stats) stats.innerHTML='<div><b>18</b><span>pezzi selezionati</span></div><div><b>409</b><span>pagine analizzate</span></div><div><b>15</b><span>prime pagine verificate</span></div><div><b>3</b><span>prime pagine con Juventus</span></div>';
   addRatingGuide(main,sectionTitle,[...document.querySelectorAll('.articles article')]);
 }
 
@@ -108,12 +107,13 @@ function build(){
   const header=main?.querySelector(':scope > header');
   const sources=main?.querySelector(':scope > .sources');
   const sectionTitle=main?.querySelector(':scope > .sectiontitle');
-  if(!main||!header||!sources||!sectionTitle) return;
+  if(!main||!header||!sectionTitle) return;
   const articleEls=[...main.querySelectorAll('.articles article')];
   const headerText=header.textContent||'';
 
   if(headerText.includes('15 SETTEMBRE 2026')){
-    sources.remove();
+    sources?.remove();
+    addScaleMetrics15(main,header);
     addRatings(articleEls,ratings15);
     addInsights(main,sectionTitle,articleEls,{
       id:'jump-insights-15',
@@ -161,6 +161,8 @@ export default function DailyMetrics(){
     #jump-daily-metrics b{font-size:25px;color:#111}
     #jump-daily-metrics span{font-size:13px;font-weight:900;color:#222}
     #jump-daily-metrics small{font-size:11px;line-height:1.35;color:#707070}
+    .jump-frontpages-note{margin-top:14px;padding:18px 20px;border-left:4px solid #111;background:#faf9f7;border-radius:10px}
+    .jump-frontpages-note p{margin:7px 0 0;line-height:1.5;color:#4d4d4d}
     #jump-rating-guide>p{font-size:17px;line-height:1.6;color:#444}
     .articles article .stars{display:flex;align-items:center;gap:10px;margin:10px 0 14px}
     .articles article .stars strong{font-size:18px;letter-spacing:1px;color:#111}
