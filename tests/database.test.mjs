@@ -1,0 +1,56 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {PGlite} from '@electric-sql/pglite';
+import {readFile} from 'node:fs/promises';
+const owner='11111111-1111-4111-8111-111111111111';
+const editor='22222222-2222-4222-8222-222222222222';
+const outsider='33333333-3333-4333-8333-333333333333';
+const id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+const source='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
+const clip='cccccccc-cccc-4ccc-8ccc-cccccccccccc';
+const body={date:'2026-09-17',title:'Rassegna di prova isolata',intro:'Introduzione verificata',metrics:[],keyPoints:[],tones:[],articles:[{id:'dddddddd-dddd-4ddd-8ddd-dddddddddddd',title:'Titolo originale',outlet:'Fonte test',summary:'Sintesi',category:'Juventus',author:'',rating:3,sourceId:source,clipId:clip,pages:[1]}]};
+test('Postgres permissions, revision conflicts, publication snapshots and private sources',async()=>{
+ const db=new PGlite();
+ try{
+ await db.exec(`create role anon;create role authenticated;create schema auth;create schema storage;
+ create table auth.users(id uuid primary key);
+ create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
+ grant usage on schema auth,public,storage to anon,authenticated;grant execute on function auth.uid() to anon,authenticated;
+ create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
+ create table storage.objects(id uuid default gen_random_uuid(),bucket_id text,name text,primary key(bucket_id,name));
+ alter table storage.objects enable row level security;grant select,insert,update,delete on storage.objects to anon,authenticated;
+ insert into auth.users values('${owner}'),('${editor}'),('${outsider}');`);
+ await db.exec(await readFile(new URL('../supabase/migrations/202609170001_editor.sql',import.meta.url),'utf8'));
+ await db.exec(`insert into jump_members values('${owner}','publisher'),('${editor}','editor')`);
+ const as=async who=>{await db.exec(`reset role;set role authenticated;select set_config('request.jwt.claim.sub','${who}',false)`);};
+ await as(owner);
+ const save=async(v,b)=>db.query('select (public.jump_save($1,$2,$3::jsonb)).version as version',[id,v,JSON.stringify(b)]);
+ assert.equal((await save(0,body)).rows[0].version,1);
+ await as(outsider);
+ assert.equal((await db.query('select * from jump_drafts')).rows.length,0);
+ await assert.rejects(save(1,body),/Accesso editor/);
+ await as(editor);
+ await assert.rejects(db.query('select jump_publish($1,1,$2)',[id,'PUBBLICA']),/Permesso/);
+ await assert.rejects(db.query('update jump_drafts set version=500'),/permission denied/);
+ await as(owner);
+ await assert.rejects(db.query('select jump_publish($1,1,$2)',[id,'PUBBLICA']),/ritaglio/);
+ await db.query('select jump_register_asset($1,$2,$3,$4)',[source,id,'source','originale.pdf']);
+ await db.query('select jump_register_asset($1,$2,$3,$4,$5,$6)',[clip,id,'clip','ritaglio.pdf',source,[1]]);
+ await db.query("insert into storage.objects(bucket_id,name) values('jump-files',$1),('jump-files',$2)",[`${id}/${source}.pdf`,`${id}/${clip}.pdf`]);
+ await assert.rejects(db.query('select jump_publish($1,1,$2)',[id,'procedi']),/Conferma/);
+ await db.query('select jump_publish($1,1,$2)',[id,'PUBBLICA']);
+ await save(1,{...body,intro:'Modifica ancora privata'});
+ await assert.rejects(save(1,{...body,intro:'Sovrascrittura'}),/Versione/);
+ // A retry of publication v1 after v2 was saved must not alter the public snapshot.
+ assert.equal((await db.query('select jump_publish($1,1,$2) as result',[id,'PUBBLICA'])).rows[0].result.alreadyPublished,true);
+ await db.exec("reset role;set role anon;select set_config('request.jwt.claim.sub','',false)");
+ const published=(await db.query('select body from jump_published')).rows[0].body;
+ assert.equal(published.intro,body.intro);assert.equal(published.articles[0].sourceId,undefined);
+ assert.equal((await db.query('select name from storage.objects')).rows.length,1);
+ assert.equal((await db.query('select jump_public_clip($1) as path',[source])).rows[0].path,null);
+ await assert.rejects(db.query('select * from jump_drafts'),/permission denied/);
+ await db.exec(`reset role;set role authenticated;select set_config('request.jwt.claim.sub','${editor}',false)`);
+ assert.equal((await db.query("update storage.objects set name='overwrite' returning *")).rows.length,0);
+ assert.equal((await db.query('select version from jump_revisions order by version')).rows.length,2);
+ }finally{await db.close();}
+});

@@ -65,8 +65,6 @@ function addScaleMetrics15(main,header){
 
 function addInsights(main,sectionTitle,articleEls,{id,bullets,tones,toneText}){
   if(document.getElementById(id)) return;
-  const words=recurringWords(articleEls);
-  const max=Math.max(...words.map(([,n])=>n),1);
   const section=document.createElement('section');
   section.id=id;
   section.className='ranking jump-insights';
@@ -76,8 +74,7 @@ function addInsights(main,sectionTitle,articleEls,{id,bullets,tones,toneText}){
     <div class="jump-insight-grid">
       <div class="jump-insight-card"><b>3 punti chiave</b><ul>${bullets.map(x=>`<li><strong>${x[0]}:</strong> ${x[1]}</li>`).join('')}</ul></div>
       <div class="jump-insight-card"><b>Toni prevalenti</b><div class="tonechips">${tones.map(t=>`<span>${t}</span>`).join('')}</div><p>${toneText}</p></div>
-    </div>
-    <div class="jump-wordcloud-wrap"><b>Nuvola di parole</b><div class="jump-wordcloud">${words.map(([w,n])=>`<span style="font-size:${15+Math.round((n/max)*22)}px" title="${n} ricorrenze">${w}</span>`).join('')}</div></div>`;
+    </div>`;
   main.insertBefore(section,sectionTitle);
 }
 
