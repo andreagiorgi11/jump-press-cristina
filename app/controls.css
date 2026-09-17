@@ -20,3 +20,22 @@
 .appcontrols .publish-dialog .publish-approve{background:var(--lime);color:var(--black);border:1px solid var(--lime)}
 .publish-dialog button:focus-visible{outline:3px solid #51741a;outline-offset:3px}.publish-dialog button:disabled{opacity:.5;cursor:wait}
 @media(max-width:500px){.publish-dialog{padding:25px}.publish-dialog-actions button{flex:1}}
+
+/* Article controls preserve the existing edition typography and dimensions. */
+.sectiontitle.has-article-filter{position:relative;padding-right:220px}
+.article-filter{position:absolute;right:0;bottom:0;display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:800;color:#555}
+.article-filter select{max-width:210px;border:1px solid #deddd9;border-radius:999px;background:#fff;color:#111;padding:10px 32px 10px 14px;font:inherit;font-size:12px;cursor:pointer}
+.article-filter select:focus-visible{outline:2px solid #111;outline-offset:3px}
+.articles>article[hidden]{display:none!important}
+.jump-clip-dialog{width:calc(100vw - 48px);max-width:1200px;height:calc(100dvh - 48px);max-height:none;padding:0;border:1px solid #42454a;border-radius:16px;background:#fff;overflow:hidden;color:#fff}
+.jump-clip-dialog[open]{display:flex;flex-direction:column}
+.jump-clip-dialog::backdrop{background:rgba(11,13,15,.78)}
+.jump-clip-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 18px;background:#0b0d0f;font-size:12px;letter-spacing:1px}
+.jump-clip-bar button{border:0;border-radius:999px;background:var(--lime,#dfff2f);color:#111;font:inherit;font-weight:900;padding:10px 16px;cursor:pointer}
+.jump-clip-dialog iframe{width:100%;flex:1;min-height:0;border:0;background:#eee}
+@media(max-width:600px){.sectiontitle.has-article-filter{padding-right:0}.article-filter{position:static;margin-top:12px;align-items:flex-start}.jump-clip-dialog{width:100vw;height:100dvh;max-width:none;margin:0;border:0;border-radius:0}}
+.jump-clip-navigation{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px;background:#f4f3ef;color:#111;font-size:12px;font-weight:800}
+.jump-clip-navigation button{font:inherit;border:1px solid #deddd9;border-radius:999px;background:#fff;color:#111;min-width:36px;min-height:32px;cursor:pointer}
+.jump-clip-navigation button:disabled{opacity:.35;cursor:default}
+.jump-clip-pages{flex:1;min-height:0;overflow:auto;background:#555;color:#fff;text-align:center;padding:16px}
+.jump-clip-pages canvas{display:block;margin:0 auto;background:#fff;max-width:none}
