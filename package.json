@@ -9,11 +9,13 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
+    "@napi-rs/canvas": "1.0.9",
     "@vercel/blob": "^2.8.0",
     "jose": "^6.2.12",
     "next": "15.5.25",
     "pdf-lib": "^1.17.1",
     "pdf-parse": "1.1.1",
+    "pdfjs-dist": "6.3.289",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "zod": "^4.6.5"
