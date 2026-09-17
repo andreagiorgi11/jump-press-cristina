@@ -1,14 +1,15 @@
 'use client';
 import Link from 'next/link';
+import PublishConfirmation from './PublishConfirmation';
 import {usePathname} from 'next/navigation';
 
-export default function AppControls(){
+export default function AppControls({onConfirm,confirmBusy=false,confirmDate,confirmVersion}){
  const pathname=usePathname();
  const inArchive=pathname.startsWith('/archivio')||pathname.startsWith('/edizioni/');
  const onArchiveIndex=pathname==='/archivio';
  const inNews=pathname.startsWith('/news');
  const inSocial=pathname.startsWith('/social');
- const refreshHome=()=>{window.location.replace('/?v='+Date.now())};
+ const refreshHome=()=>{if(pathname==='/editor'||pathname==='/anteprima-locale'){window.location.reload();return;}window.location.replace('/?v='+Date.now())};
  const refreshNews=()=>{
   const url=new URL(window.location.href);
   url.searchParams.set('fresh',Date.now().toString());
@@ -34,5 +35,5 @@ export default function AppControls(){
   return <div className="appcontrols"><button type="button" onClick={refreshNews} aria-label="Aggiorna news">↻ <span>Aggiorna</span></button><Link className="backbutton" href="/">← <span>Indietro</span></Link></div>;
  }
 
- return <div className="appcontrols homecontrols"><div className="navstack"><Link className="archivebutton" href="/archivio">Archivio</Link></div><button type="button" onClick={refreshHome} aria-label="Aggiorna rassegna">↻ <span>Aggiorna</span></button></div>;
+ return <div className="appcontrols homecontrols"><div className="navstack"><Link className="archivebutton" href="/archivio">Archivio</Link></div><button type="button" onClick={refreshHome} aria-label="Aggiorna rassegna">↻ <span>Aggiorna</span></button>{(onConfirm||(process.env.NODE_ENV==='development'&&pathname==='/anteprima-locale'))&&<PublishConfirmation onConfirm={onConfirm} disabled={confirmBusy} date={confirmDate} version={confirmVersion}/>}</div>;
 }

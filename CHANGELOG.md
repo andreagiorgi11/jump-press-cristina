@@ -17,3 +17,9 @@ Sostituito il login GitHub con credenziali dedicate e hash scrypt in Vercel. Pro
 Separate rassegna/archivio/editor e News in due deployment; rimossa la nuvola di parole; conservate edizioni storiche e recuperati 18 ritagli del 13 settembre. Aggiornate dipendenze vulnerabili.
 
 Nessun deploy o push online eseguito nelle consegne locali.
+
+
+### In lavorazione locale — pagina completa e istruzioni di consegna
+- Nuove edizioni ed editor condividono quadro generale, prime pagine, grafico dei temi, punti chiave/tono e guida ai rating; nuvola esclusa.
+- Schema compatibile con bozze vecchie, inventario prime pagine e provenienza dei conteggi; dati non verificati distinti da zero.
+- Istruzioni dettagliate preparate, da integrare online solo dopo il rilascio del relativo schema MCP.
