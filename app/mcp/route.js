@@ -10,10 +10,10 @@ export async function POST(request){try{
  const canonical=siteUrl();
  if(request.headers.get('origin') && request.headers.get('origin')!==canonical)return new Response('Origin non autorizzata',{status:403});
  if(!request.headers.get('authorization')?.startsWith('Bearer '))return challenge(canonical);
- const {db,role}=await requireEditor(request);
+ const {db}=await requireEditor(request);
  const payload=await request.clone().text();
  if(payload.length>650000)return new Response('Richiesta troppo grande',{status:413});
- const server=createEditorialMcp(db,role);
+ const server=createEditorialMcp(db);
  const transport=new WebStandardStreamableHTTPServerTransport({sessionIdGenerator:undefined,enableJsonResponse:true});
  await server.connect(transport);
  try{return await transport.handleRequest(request);}finally{await server.close();}

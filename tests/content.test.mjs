@@ -13,7 +13,8 @@ test('GitHub snapshots: permissions, PDF extraction, atomic publication, stale w
  const body={...draft.body,intro:'Sintesi verificata',articles:[{id:randomUUID(),category:'Juventus',title:'Titolo verificato',summary:'Testo della sintesi',outlet:'Fonte del test',author:'',rating:3,sourceId:uploaded.asset.id,clipId:clip.id,pages:[2]}]};
  await saveDraft(ctx,id,1,body);
  assert.equal(await publicClip(clip.id,store,blobs),null);
- await assert.rejects(publishDraft({...ctx,role:'producer'},id,2,'PUBBLICA'),/Permesso/);
+ for(const role of ['producer','editor'])await assert.rejects(publishDraft({...ctx,role},id,2,'PUBBLICA'),e=>e.status===403);
+ assert.equal(store.files['published/2026-09-17.json'],undefined);
  await assert.rejects(publishDraft(ctx,id,2,'procedi'),/Conferma/);
  await publishDraft(ctx,id,2,'PUBBLICA');
  assert((await publicClip(clip.id,store,blobs)).startsWith('https://read.invalid/'));
