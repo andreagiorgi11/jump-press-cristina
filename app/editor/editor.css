@@ -18,3 +18,4 @@
 .editor-page .editor-card{color:#192020}
 .editor-page summary{cursor:pointer;font-weight:800}
 @media(max-width:700px){.editor-shell .editor-main.editor-page{padding:18px 14px 25px}.editor-page .editor-toolbar{align-items:flex-start}.editor-page .editor-header{align-items:flex-start}}
+.editor-page .editor-header .editor-nav-link{color:#243c2a}
