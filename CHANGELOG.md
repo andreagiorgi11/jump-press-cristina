@@ -1,3 +1,7 @@
+## 2026-09-17 — accesso con nome utente e password
+
+Sostituito il login GitHub con credenziali dedicate e hash scrypt in Vercel. Protezione dai tentativi concorrenti tramite contatori atomici condivisi; cambio password e rimozione account revocano sessioni web e MCP. Nuovo modulo locale per la scelta riservata delle password. Il passaggio Production richiede prima la configurazione di JUMP_EDITOR_USERS.
+
 # 17 settembre 2026 — semplificazione
 
 - Rimossi Supabase, migrazione SQL e relative dipendenze.

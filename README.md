@@ -10,7 +10,7 @@ Leggere AGENTS.md prima delle modifiche. Le istruzioni correnti di Andrea preval
 
 - **Codice:** repository esistente, due progetti Vercel.
 - **Rassegna pubblica:** home, archivio e /edizioni/data; nessun link News.
-- **Redazione:** /editor, login con account GitHub autorizzato, bozze e revisioni.
+- **Redazione:** /editor, login con nome utente e password, bozze e revisioni.
 - **MCP:** /mcp, OAuth con consenso e modalità solo bozze o anche pubblicazione.
 - **News:** secondo progetto Vercel, senza password e con noindex. Non contiene la redazione.
 - **Dati:** repository GitHub PRIVATO dedicato, non collegato a deploy o Actions.
@@ -32,22 +32,23 @@ Creare nell'account di Cristina un repository **privato**, ad esempio jump-press
 
 Creare un fine-grained Personal Access Token GitHub limitato a questo repository con Contents read/write e Metadata read. Inserirlo solo su Vercel come JUMP_GITHUB_TOKEN. JUMP_CONTENT_REPO contiene proprietario/nome e JUMP_CONTENT_BRANCH il branch. Le operazioni rifiutano un repository pubblico o un indice mancante/corrotto. Alla scadenza del token bisogna sostituirlo e ridistribuire il sito.
 
-### Login GitHub
+### Nome utente e password
 
-Nelle impostazioni GitHub di Cristina: Developer settings → OAuth Apps → New OAuth App. Questa app serve solo per riconoscere l'utente; richiede read:user, non l'accesso ai repository.
+Il login usa credenziali dedicate. GitHub serve solo al server per leggere e salvare i contenuti. Gli endpoint GitHub di login/callback non vengono più utilizzati.
 
-- Homepage URL: dominio canonico del sito rassegna.
-- Authorization callback URL: stesso dominio seguito da /api/auth/callback.
-- Client ID e Client secret: variabili JUMP_GITHUB_CLIENT_ID e JUMP_GITHUB_CLIENT_SECRET.
-- JUMP_GITHUB_MEMBERS: oggetto JSON con ID numerici GitHub e ruoli, ad esempio {"123456":"publisher"}. Sostituire il numero con l'ID reale ottenuto da https://api.github.com/users/NOMEUTENTE, campo id. L'ID numerico impedisce il riutilizzo accidentale di uno username.
-- Ruoli: publisher può pubblicare; editor e producer gestiscono solo bozze.
-- JUMP_SESSION_SECRET: segreto casuale di almeno 32 caratteri, generato e inserito nelle variabili server. Per generarlo: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))". Non inviarlo in chat.
+JUMP_EDITOR_USERS contiene un array JSON con id stabile, username minuscolo, role (publisher/editor/producer) e passwordHash. Le password non vengono salvate: scrypt N=131072, r=8, p=1, sale casuale di 16 byte, confronto costante. Lunghezza consentita per la creazione: 14–256 caratteri.
 
-La sessione web dura 8 ore. L'account viene ricontrollato contro l'elenco autorizzato a ogni richiesta. Per revocarlo rimuovere l'ID da JUMP_GITHUB_MEMBERS e ridistribuire. Ruotare JUMP_SESSION_SECRET invalida tutte le sessioni web e MCP. Per revocare un solo collegamento impostare revoked:true nel relativo file oauth/grants nel repository privato; usare il file associato all'utente, senza divulgare token.
+Per inizializzare i due utenti, eseguire node scripts/setup-passwords.mjs PERCORSO_ASSOLUTO_FUORI_DAL_REPOSITORY/editor-users.json e aprire http://127.0.0.1:3017. Andrea deve inserire e confermare personalmente le password; l'agente non deve farlo al suo posto. Il modulo salva soltanto le impronte in un file riservato fuori dal codice. Trasferire il JSON in JUMP_EDITOR_USERS come Secret Production su Vercel, poi ridistribuire il codice. Non copiare password o impronte in chat, PR, output o repository. Terminare il modulo locale dopo il trasferimento.
+
+Il vecchio deployment resta attivo fino al completamento della configurazione. Il nuovo codice richiede JUMP_EDITOR_USERS e invalida le sessioni precedenti. Non pubblicare il cambio di autenticazione prima di aver configurato le nuove credenziali. Le variabili JUMP_GITHUB_CLIENT_ID, JUMP_GITHUB_CLIENT_SECRET e JUMP_GITHUB_MEMBERS non vengono più lette dal nuovo codice.
+
+Le sessioni web durano 8 ore. Cambiare passwordHash invalida sessioni web e collegamenti MCP dopo il redeploy; rimuovere l'utente revoca l'accesso. Il ruolo è controllato a ogni richiesta. Ogni login, anche con utente inesistente, riserva atomicamente un tentativo nel repository privato: massimo 8 per nome e 60 complessivi in 15 minuti. In caso di conflitto o guasto il login non prosegue. Il file auth/login-limits.json contiene soltanto contatori e identificatori HMAC, nessun nome, IP o password. Un attacco può esaurire il limite globale: controllare i log e configurare il firewall del progetto se necessario.
+
+Il consenso MCP reindirizza al medesimo modulo nome utente/password e poi torna alla richiesta del client. Restano attivi PKCE, permessi solo bozze e pubblicazione esplicita.
 
 ### Vercel
 
-**Progetto esistente rassegna:** Next.js, Node 22, install npm ci, build npm run build, Output Directory gestita da Next. Configurare JUMP_SITE=press, JUMP_PUBLIC_URL con il dominio HTTPS, le variabili GitHub sopra e il segreto di sessione.
+**Progetto esistente rassegna:** Next.js, Node 22, install npm ci, build npm run build, Output Directory gestita da Next. Configurare JUMP_SITE=press, JUMP_PUBLIC_URL con il dominio HTTPS, JUMP_EDITOR_USERS e le variabili dell’archivio e il segreto di sessione.
 
 In Storage creare un Blob store **Private** e collegarlo a questo progetto. Usare BLOB_STORE_ID con le credenziali OIDC gestite da Vercel oppure BLOB_READ_WRITE_TOKEN fornito dalla connessione. Mai collegare uno store pubblico per gli originali. Per lo sviluppo locale scaricare le variabili tramite gli strumenti Vercel autorizzati, senza copiarle in chat o nel repository.
 
@@ -62,7 +63,7 @@ Quando il sito è online, aggiungere una connessione MCP personalizzata nel Chat
 - Autenticazione: OAuth.
 - Registrazione client: dinamica, senza client secret da copiare in ChatGPT.
 
-Il server pubblica la discovery, registra il client, richiede PKCE S256 e mostra il consenso dopo il login GitHub. Scegliere **Autorizza solo bozze** per l'automatismo. Scegliere **Autorizza anche pubblicazione** soltanto per il ChatGPT usato per revisionare e pubblicare su richiesta esplicita. Il consenso alla pubblicazione non è una richiesta di pubblicare una rassegna.
+Il server pubblica la discovery, registra il client, richiede PKCE S256 e mostra il consenso dopo il login con nome utente e password. Scegliere **Autorizza solo bozze** per l'automatismo. Scegliere **Autorizza anche pubblicazione** soltanto per il ChatGPT usato per revisionare e pubblicare su richiesta esplicita. Il consenso alla pubblicazione non è una richiesta di pubblicare una rassegna.
 
 Gli access token durano un'ora; i refresh token ruotano a ogni uso, entro 30 giorni dal collegamento. I codici sono monouso, legati a client, callback e PKCE. Il server applica i permessi del collegamento oltre al ruolo dell'utente: un collegamento solo bozze resta tale anche per Cristina.
 
@@ -96,7 +97,7 @@ Il repository dati contiene index.json, drafts, revisions, published, assets e o
 
 Eseguire npm test, npm run build, npm run build:news e npm audit. Le prove isolate verificano conflitti di commit, errori GitHub, privacy degli originali, estrazione PDF, pubblicazione, OAuth/PKCE e refresh token.
 
-Da collaudare con i servizi reali: login GitHub, scrittura nel repository privato, upload e download Blob privato, OAuth dal ChatGPT effettivo, modifica simultanea, pubblicazione e verifica anonima. Nessuna credenziale reale è stata configurata in questa consegna.
+Da collaudare con i servizi reali: login con password, scrittura nel repository privato, upload e download Blob privato, OAuth dal ChatGPT effettivo, modifica simultanea, pubblicazione e verifica anonima. Nessuna credenziale reale è stata configurata in questa consegna.
 
 Questa soluzione è pensata per una piccola redazione. GitHub impone limiti API: in caso di indisponibilità o limite raggiunto mostriamo l'errore senza trasformarlo in zero dati. Ogni documento JSON è limitato a 900 KB; il file indice cresce nel tempo. Le ultime 50 revisioni sono elencate nel pannello, tutte le revisioni restano nel repository. Non usare GitHub come archivio PDF o database ad alta frequenza.
 
