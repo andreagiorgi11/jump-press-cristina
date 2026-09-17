@@ -121,7 +121,7 @@ La pagina riservata `/editor/istruzioni` contiene le istruzioni complete e il co
 Il tool MCP `read_editorial_instructions` restituisce sempre la versione corrente; producer può leggerla ma non modificarla. Nessuno strumento MCP modifica le istruzioni. Le attività programmate devono usare un consenso senza pubblicazione. La pagina non crea o attiva attività sul ChatGPT di Cristina: usare la Gmail già collegata e collegare il nuovo MCP, provare manualmente e aggiornare l’attività esistente.
 
 
-## Pagina completa delle nuove edizioni (modifica locale, non rilasciata)
+## Pagina completa delle nuove edizioni
 
 `EditionView` è condiviso fra pubblico ed editor. `EditionAnalysis` riproduce quadro generale, prime pagine, distribuzione tematica, punti chiave/tono e guida alle stelle del 15 settembre, senza nuvola. I vecchi documenti restano leggibili: `coverage` assente vale null e non genera conteggi inventati. `coverage.examinedItems` è il conteggio prima della selezione; `sourceNote` documenta origine e metodo; `frontPages` è l'inventario verificato (testata, pagina originale, richiamo Juventus, sportiva nazionale), null se non verificato e [] solo se nessuna copertina è presente dopo verifica. `frontPageSummary` e `toneSummary` contengono le letture editoriali. Distribuzione tematica e stelle sono ricavate dagli articoli salvati.
 

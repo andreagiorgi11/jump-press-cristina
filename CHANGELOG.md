@@ -19,7 +19,7 @@ Separate rassegna/archivio/editor e News in due deployment; rimossa la nuvola di
 Nessun deploy o push online eseguito nelle consegne locali.
 
 
-### In lavorazione locale — pagina completa e istruzioni di consegna
+### 17 settembre 2026 — pagina completa e istruzioni di consegna
 - Nuove edizioni ed editor condividono quadro generale, prime pagine, grafico dei temi, punti chiave/tono e guida ai rating; nuvola esclusa.
 - Schema compatibile con bozze vecchie, inventario prime pagine e provenienza dei conteggi; dati non verificati distinti da zero.
 - Istruzioni dettagliate preparate, da integrare online solo dopo il rilascio del relativo schema MCP.
