@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {PDFDocument} from 'pdf-lib';import {randomUUID} from 'node:crypto';
 import {MemoryStore} from './helpers.mjs';
-import {saveDraft,getDraft,listDrafts,registerSource,makeClip,publishDraft,restoreDraft,publicClip} from '../lib/editor-service.js';
+import {registerClipUpload,readSource,saveDraft,getDraft,listDrafts,registerSource,makeClip,publishDraft,restoreDraft,publicClip} from '../lib/editor-service.js';
 import {GithubStore,readIndex} from '../lib/github-store.js';
 import {newEdition} from '../lib/schema.js';
 test('GitHub snapshots: permissions, PDF extraction, atomic publication, stale writes and revisions',async()=>{
@@ -46,4 +46,31 @@ test('Git tree write includes all files and uses non-forced compare-and-swap',as
  const calls=[];const r=new GithubStore({repo:'owner/private',token:'isolated',fetcher:async(url,options)=>{calls.push({url,body:JSON.parse(options.body)});return calls.length<3?Response.json({sha:'new-'+calls.length}):new Response('',{status:422});}});
  await assert.rejects(r.commit({'drafts/a.json':{version:2},'published/2026-09-17.json':{version:2}},{sha:'old',tree:'base'},'test'),e=>e.status===409);
  assert.equal(calls[0].body.tree.length,2);assert.deepEqual(calls[1].body.parents,['old']);assert.equal(calls[2].body.force,false);
+});
+
+test('direct clips preserve private provenance and require uploaded matching pages before publication',async()=>{
+ const store=new MemoryStore(),files=new Map(),blobs={uploadLink:async()=> 'https://upload.invalid',link:async p=>'https://read.invalid/'+p,read:async p=>{if(!files.has(p))throw Error('missing');return files.get(p);},exists:async p=>{if(!files.has(p))throw Error('missing');}};
+ const ctx={store,blobs,role:'editor',user:{id:'editor'}},id=randomUUID();
+ await saveDraft(ctx,id,0,newEdition('2026-09-17'));
+ const input={name:'ritaglio.pdf',sourceName:'Ecostampa.pdf',sourceDate:'2026-09-17',sourceSha256:'a'.repeat(64),sourcePageCount:335,pages:[20,22]};
+ await assert.rejects(registerClipUpload({...ctx,role:'guest'},id,input));
+ await assert.rejects(registerClipUpload(ctx,id,{...input,pages:[20,20]}));
+ await assert.rejects(registerClipUpload(ctx,id,{...input,pages:[336]}));
+ await assert.rejects(registerClipUpload(ctx,id,{...input,sourceDate:'2026-09-16'}));
+ const result=await registerClipUpload(ctx,id,input),clip=result.asset;
+ const body={...newEdition('2026-09-17'),intro:'Sintesi',articles:[{id:randomUUID(),title:'Titolo',outlet:'Fonte',category:'Juventus',summary:'Testo',sourceId:result.sourceId,clipId:clip.id,pages:[20,22]}]};
+ await saveDraft(ctx,id,1,body);
+ const publisher={...ctx,role:'publisher'};
+ await assert.rejects(publishDraft(publisher,id,2,'PUBBLICA'),/missing/);
+ const pdf=await PDFDocument.create();pdf.addPage();files.set(clip.storage_path,await pdf.save());
+ await assert.rejects(readSource(ctx,clip.id),e=>e.status===400);
+ await assert.rejects(publishDraft(publisher,id,2,'PUBBLICA'),e=>e.status===400);
+ pdf.addPage();files.set(clip.storage_path,await pdf.save());
+ assert.equal((await readSource(ctx,clip.id)).pageCount,2);
+ assert.equal(await publicClip(clip.id,store,blobs),null);
+ await assert.rejects(publishDraft(ctx,id,2,'PUBBLICA'),e=>e.status===403);
+ await publishDraft(publisher,id,2,'PUBBLICA');
+ assert(await publicClip(clip.id,store,blobs));
+ const published=JSON.stringify(store.files['published/2026-09-17.json']);
+ assert(!published.includes('sourceName'));assert(!published.includes(input.sourceSha256));assert(!published.includes(result.sourceId));
 });
