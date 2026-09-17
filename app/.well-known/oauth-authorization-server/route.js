@@ -1,0 +1,2 @@
+import {siteUrl} from '../../../lib/config.js';
+export async function GET(){const root=siteUrl();return Response.json({issuer:root,authorization_endpoint:root+'/oauth/authorize',token_endpoint:root+'/oauth/token',registration_endpoint:root+'/oauth/register',response_types_supported:['code'],grant_types_supported:['authorization_code','refresh_token'],token_endpoint_auth_methods_supported:['none'],code_challenge_methods_supported:['S256'],scopes_supported:['editor','publish']},{headers:{'Access-Control-Allow-Origin':'*','Cache-Control':'no-store'}});}

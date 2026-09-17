@@ -4,7 +4,7 @@ import {usePathname} from 'next/navigation';
 
 export default function AppControls(){
  const pathname=usePathname();
- const inArchive=pathname.startsWith('/archivio');
+ const inArchive=pathname.startsWith('/archivio')||pathname.startsWith('/edizioni/');
  const onArchiveIndex=pathname==='/archivio';
  const inNews=pathname.startsWith('/news');
  const inSocial=pathname.startsWith('/social');
@@ -34,5 +34,5 @@ export default function AppControls(){
   return <div className="appcontrols"><button type="button" onClick={refreshNews} aria-label="Aggiorna news">↻ <span>Aggiorna</span></button><Link className="backbutton" href="/">← <span>Indietro</span></Link></div>;
  }
 
- return <div className="appcontrols homecontrols"><div className="navstack"><Link className="archivebutton" href="/archivio">Archivio</Link><Link className="newsbutton" href="/news">News</Link></div><button type="button" onClick={refreshHome} aria-label="Aggiorna rassegna">↻ <span>Aggiorna</span></button></div>;
+ return <div className="appcontrols homecontrols"><div className="navstack"><Link className="archivebutton" href="/archivio">Archivio</Link></div><button type="button" onClick={refreshHome} aria-label="Aggiorna rassegna">↻ <span>Aggiorna</span></button></div>;
 }

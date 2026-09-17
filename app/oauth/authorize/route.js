@@ -1,0 +1,2 @@
+import {NextResponse} from 'next/server';import {authorizationRequest,sign} from '../../../lib/auth.js';import {siteUrl} from '../../../lib/config.js';import {failure} from '../../../lib/errors.js';
+export async function GET(request){try{const flow=await authorizationRequest(new URL(request.url).searchParams);return NextResponse.redirect(siteUrl()+'/editor/consent?request='+encodeURIComponent(await sign(flow,'oauth-request',600)));}catch(e){return failure(e);}}

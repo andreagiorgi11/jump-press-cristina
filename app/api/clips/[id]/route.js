@@ -1,0 +1,2 @@
+import {publicClip} from '../../../../lib/editor-service.js';import {failure} from '../../../../lib/errors.js';import {z} from 'zod';
+export async function GET(request,{params}){try{const {id}=await params;z.string().uuid().parse(id);const url=await publicClip(id);if(!url)return new Response('Ritaglio non pubblicato',{status:404});return new Response(null,{status:302,headers:{Location:url,'Cache-Control':'no-store'}});}catch(e){return failure(e);}}
