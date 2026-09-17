@@ -1,6 +1,5 @@
 'use client';
 import {useEffect,useState} from 'react';
-import {browserClient} from '../../lib/browser-client';
 import {newEdition} from '../../lib/schema';
 import EditionView from '../components/EditionView';
 
@@ -11,15 +10,12 @@ async function api(data,id){
 export default function EditorApp({ready}){
  const [user,setUser]=useState(false),[role,setRole]=useState(''),[drafts,setDrafts]=useState([]),[current,setCurrent]=useState(null);
  const [dirty,setDirty]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[loading,setLoading]=useState(ready);
- const [email,setEmail]=useState(''),[password,setPassword]=useState(''),[preview,setPreview]=useState(false);
+ const [preview,setPreview]=useState(false);
  async function refreshList(){const data=await api();setDrafts(data.drafts);setRole(data.role);setUser(true);}
  useEffect(()=>{if(!ready)return;refreshList().catch(e=>{if(e.status!==401)setError(e.message);}).finally(()=>setLoading(false));},[ready]);
  useEffect(()=>{const prevent=e=>{if(dirty){e.preventDefault();e.returnValue='';}};window.addEventListener('beforeunload',prevent);return()=>window.removeEventListener('beforeunload',prevent);},[dirty]);
  async function run(fn){setError('');setNotice('');setBusy(true);try{await fn();}catch(e){setError(e.message);}finally{setBusy(false);}}
- async function login(e){e.preventDefault();await run(async()=>{
-  const {error}=await browserClient().auth.signInWithPassword({email,password});if(error)throw new Error('Accesso non riuscito. Controlla email e password o riprova più tardi.');setPassword('');await refreshList();
-  const back=new URLSearchParams(location.search).get('returnTo');if(back?.startsWith('/editor/consent?'))location.assign(back);
- });}
+ function login(e){e.preventDefault();location.assign('/api/auth/login');}
  const edit=(key,value)=>{setCurrent(c=>({...c,body:{...c.body,[key]:value}}));setDirty(true);};
  const editArticle=(id,patch)=>edit('articles',current.body.articles.map(a=>a.id===id?{...a,...patch}:a));
  async function open(id){if(dirty&&!confirm('Ci sono modifiche non salvate. Vuoi abbandonarle?'))return;await run(async()=>{setCurrent(await api(null,id));setDirty(false);setPreview(false);});}
@@ -29,16 +25,16 @@ export default function EditorApp({ready}){
   if(file.size>52428800||!file.name.toLowerCase().endsWith('.pdf'))throw new Error('Scegli un PDF fino a 50 MB.');
   const bytes=new Uint8Array(await file.slice(0,5).arrayBuffer());if(new TextDecoder().decode(bytes)!=='%PDF-')throw new Error('Il file non è un PDF valido.');
   const prepared=await api({action:'upload',id:current.id,name:file.name});
-  const {error}=await browserClient().storage.from('jump-files').uploadToSignedUrl(prepared.path,prepared.token,file,{contentType:'application/pdf'});if(error)throw new Error('Caricamento PDF non riuscito. Riprova con un nuovo caricamento.');
+  const response=await fetch(prepared.uploadUrl,{method:'PUT',headers:{'Content-Type':'application/pdf'},body:file});if(!response.ok)throw new Error('Caricamento PDF non riuscito. Riprova con un nuovo caricamento.');
   setCurrent(c=>({...c,assets:[...c.assets,prepared.asset]}));setNotice('PDF originale salvato nell’archivio privato.');
  });}
  async function showAsset(assetId){await run(async()=>{const result=await api({action:'asset',assetId});window.open(result.url,'_blank','noopener,noreferrer');});}
  async function clip(article){await run(async()=>{if(!article.sourceId||!article.pages.length)throw new Error('Seleziona il PDF e indica le pagine.');const asset=await api({action:'clip',sourceId:article.sourceId,pages:article.pages});setCurrent(c=>({...c,assets:[...c.assets,asset],body:{...c.body,articles:c.body.articles.map(a=>a.id===article.id?{...a,clipId:asset.id}:a)}}));setDirty(true);setNotice('Ritaglio creato. Salva la bozza per confermare l’associazione.');});}
  if(!user)return <main className="editor-main narrow"><a className="editor-brand" href="/">JUMP <b>PRESS</b></a><p className="eyebrow">AREA RISERVATA</p><h1>La redazione,<br/>in un unico posto.</h1><p className="editor-intro">Rivedi le bozze, controlla i ritagli e pubblica la rassegna quando è pronta.</p>
- <form className="editor-card" onSubmit={login}><h2>Accedi come editor</h2>{!ready&&<p className="editor-notice" role="status">Area editor in preparazione. L’accesso sarà disponibile dopo la configurazione del database e degli account.</p>}
- <label>Email<input type="email" autoComplete="username" required value={email} onChange={e=>setEmail(e.target.value)} disabled={!ready||busy}/></label><label>Password<input type="password" autoComplete="current-password" required value={password} onChange={e=>setPassword(e.target.value)} disabled={!ready||busy}/></label>
- {error&&<p className="editor-error" role="alert">{error}</p>}<button disabled={!ready||busy||loading}>{loading?'Verifica accesso…':busy?'Accesso…':'Entra nella redazione'}</button><p className="editor-hint">Gli account sono abilitati dalla redazione. Per il recupero dell’accesso contatta l’amministratore.</p></form><a className="editor-return" href="/">← Torna alla rassegna pubblica</a></main>;
- return <main className="editor-main"><header className="editor-header"><div><a className="editor-brand" href="/">JUMP <b>PRESS</b></a><p className="eyebrow">REDAZIONE · {role==='publisher'?'EDITOR CON PUBBLICAZIONE':'EDITOR'}</p><h1>Le tue rassegne</h1></div><div className="editor-actions"><button disabled={busy} onClick={create}>Nuova bozza</button><button className="secondary" disabled={busy} onClick={()=>run(refreshList)}>Aggiorna elenco</button><button className="secondary" onClick={()=>run(async()=>{if(dirty&&!confirm('Uscire senza salvare?'))return;await browserClient().auth.signOut();setUser(false);setCurrent(null);setDrafts([]);setDirty(false);})}>Esci</button></div></header>
+ <form className="editor-card" onSubmit={login}><h2>Accedi con GitHub</h2>{!ready&&<p className="editor-notice" role="status">Area editor in preparazione. Occorre collegare GitHub e l’archivio PDF su Vercel.</p>}
+ <p>Usa il tuo account GitHub già abilitato dalla redazione. Non serve una nuova password.</p>
+ {error&&<p className="editor-error" role="alert">{error}</p>}<button disabled={!ready||busy||loading}>{loading?'Verifica accesso…':'Continua con GitHub'}</button><p className="editor-hint">Solo gli account autorizzati possono entrare.</p></form><a className="editor-return" href="/">← Torna alla rassegna pubblica</a></main>;
+ return <main className="editor-main"><header className="editor-header"><div><a className="editor-brand" href="/">JUMP <b>PRESS</b></a><p className="eyebrow">REDAZIONE · {role==='publisher'?'EDITOR CON PUBBLICAZIONE':'EDITOR'}</p><h1>Le tue rassegne</h1></div><div className="editor-actions"><button disabled={busy} onClick={create}>Nuova bozza</button><button className="secondary" disabled={busy} onClick={()=>run(refreshList)}>Aggiorna elenco</button><button className="secondary" onClick={()=>run(async()=>{if(dirty&&!confirm('Uscire senza salvare?'))return;const response=await fetch('/api/auth/logout',{method:'POST'});if(!response.ok)throw new Error('Uscita non riuscita. Riprova.');setUser(false);setCurrent(null);setDrafts([]);setDirty(false);})}>Esci</button></div></header>
  {error&&<p className="editor-error" role="alert">{error} Le modifiche presenti nel modulo non sono state cancellate.</p>}{notice&&<p className="editor-notice" role="status">{notice}</p>}
  <div className="editor-workspace"><aside className="draft-list"><h2>Bozze online</h2>{!drafts.length&&<p>Non ci sono ancora bozze.</p>}{drafts.map(d=><button className={d.id===current?.id?'selected':''} key={d.id} onClick={()=>open(d.id)} disabled={busy}><b>{d.body.date}</b><span>{d.body.title}</span><small>Versione {d.version}</small></button>)}</aside>
  {!current?<section className="editor-card"><h2>Seleziona una bozza</h2><p>Puoi modificarla qui o dal tuo ChatGPT collegato a Jump Press.</p></section>:<fieldset disabled={busy} style={{border:0,padding:0,margin:0,minWidth:0}}>
