@@ -114,7 +114,7 @@ test('batch images return labelled images and reject invalid ranges',async()=>{
  const result=await readImportPages(ctx,r.importId,[2,1]);assert.deepEqual(result.images.map(x=>x.page),[2,1]);assert.deepEqual(result.remainingPages,[]);
  await assert.rejects(readImportPages(ctx,r.importId,[1,1]),/distinte/);
  await assert.rejects(readImportPages({...ctx,role:'guest'},r.importId,[1]),/Accesso/);
-});
+});
 
 test('batch rejects unknown articles and invalid page lists before any clip write',async()=>{
  const {createImportClips}=await import('../lib/source-service.js');const {ctx,r,id,items}=await batchFixture();
@@ -129,4 +129,4 @@ test('final association refuses an editor change after the last clip',async()=>{
  ctx.store.commit=async(...args)=>{const result=await commit(...args);if(args[2]==='Ritaglio server da fonte Ecostampa verificata'&&++clips===2)await saveDraft(ctx,id,1,{...body,intro:'Revisione concorrente finale'});return result;};
  await assert.rejects(createImportClips(ctx,{importId:r.importId,draftId:id,version:1,items}),/modificata/);
  const d=ctx.store.files['drafts/'+id+'.json'];assert.equal(d.body.intro,'Revisione concorrente finale');assert.equal(d.assets.filter(a=>a.kind==='clip').length,2);
-});
+});
