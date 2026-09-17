@@ -20,7 +20,10 @@ for(const role of ['producer','editor','publisher'])test(`MCP handshake and tool
   const {connectionPermissions:p,scheduledPublicationAllowed}=JSON.parse(response.content[0].text);
   assert.equal(p.effectiveRole,role);assert.equal(p.serverEnforced,true);
   assert.equal(p.canPublish,tools.some(t=>t.name==='publish_edition'));
-  assert.equal(p.suitableForScheduledAutomation,role!=='publisher');
+  assert.equal(p.suitableForScheduledAutomation,true);
+  assert.equal(p.scheduledPublicationAllowed,false);
+  assert.equal(p.scheduledPublicationRestriction,'instruction_policy');
+  assert.equal(p.publicationRequiresExplicitUserRequest,true);
   assert.equal(p.canWriteDrafts,true);assert.equal(p.canReadPrivateSources,true);
   assert.equal(scheduledPublicationAllowed,false);
   const invalid=await client.callTool({name:'save_draft',arguments:{id:'bad',version:0,body:{}}});
