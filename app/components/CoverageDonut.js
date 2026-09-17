@@ -1,6 +1,7 @@
 'use client';
 
 import {useEffect} from 'react';
+import {usePathname} from 'next/navigation';
 
 const colorByLabel={
   'Prima squadra':'#d7ff00',
@@ -31,8 +32,8 @@ const groupLabel=(raw)=>{
 function build(){
   const main=document.querySelector('main');
   const header=main?.querySelector(':scope > header');
-  const brief=main?.querySelector(':scope > .brief');
-  if(!main||!header||!brief) return;
+  const brief=main?.querySelector(':scope > .brief')||(header?.textContent.includes('15 SETTEMBRE 2026')&&(main?.querySelector(':scope > .jump-insights')||main?.querySelector(':scope > .sectiontitle')));
+  if(!main||!header||!brief||header.textContent.includes('13 SETTEMBRE 2026')) return;
   document.getElementById('jump-coverage-donut')?.remove();
 
   const counts=new Map();
@@ -62,14 +63,16 @@ function build(){
 }
 
 export default function CoverageDonut(){
+  const pathname=usePathname();
   useEffect(()=>{
-    const run=()=>requestAnimationFrame(build);
+    let frame;
+    const run=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(build);};
     run();
     const obs=new MutationObserver(()=>{if(!document.getElementById('jump-coverage-donut')) run();});
     obs.observe(document.body,{childList:true,subtree:true});
     window.addEventListener('pageshow',run);
-    return()=>{obs.disconnect();window.removeEventListener('pageshow',run);};
-  },[]);
+    return()=>{cancelAnimationFrame(frame);obs.disconnect();window.removeEventListener('pageshow',run);};
+  },[pathname]);
   return <style>{`
     #jump-coverage-donut{max-width:1120px;margin:30px auto;padding:30px;border:1px solid #deded8;border-radius:30px;background:#fff;box-sizing:border-box}
     #jump-coverage-donut .jcd-head small{font-size:12px;font-weight:900;letter-spacing:.18em;color:#777}

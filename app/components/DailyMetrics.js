@@ -1,6 +1,7 @@
 'use client';
 
 import {useEffect} from 'react';
+import {usePathname} from 'next/navigation';
 
 const ratingCopy={
   5:['Notizia dominante','Tema guida della giornata: ha il peso editoriale più alto e orienta la lettura complessiva.'],
@@ -93,7 +94,6 @@ function addRatingGuide(main,sectionTitle,articleEls){
 }
 
 function build13(main,header,sources,sectionTitle){
-  if(!sources) return;
   const stats=header.querySelector('.stats');
   if(stats) stats.innerHTML='<div><b>18</b><span>pezzi selezionati</span></div><div><b>409</b><span>pagine analizzate</span></div><div><b>15</b><span>prime pagine verificate</span></div><div><b>3</b><span>prime pagine con Juventus</span></div>';
   addRatingGuide(main,sectionTitle,[...document.querySelectorAll('.articles article')]);
@@ -147,12 +147,21 @@ function build(){
 }
 
 export default function DailyMetrics(){
+  const pathname=usePathname();
   useEffect(()=>{
-    const run=()=>requestAnimationFrame(build);
+    let frame;
+    const run=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(build);};
     run();
+    const observer=new MutationObserver(()=>{
+      const main=document.querySelector('main'),text=main?.querySelector(':scope > header')?.textContent||'';
+      const day=text.includes('15 SETTEMBRE 2026')?'15':text.includes('14 SETTEMBRE 2026')?'14':null;
+      if(day&&(!document.getElementById('jump-insights-'+day)||!document.getElementById('jump-rating-guide')||(day==='15'&&!document.getElementById('jump-scale-metrics-15'))||[...main.querySelectorAll('.articles article')].some(a=>!a.querySelector('.stars'))))run();
+      else if(text.includes('13 SETTEMBRE 2026')&&!document.getElementById('jump-rating-guide'))run();
+    });
+    observer.observe(document.body,{childList:true,subtree:true});
     window.addEventListener('pageshow',run);
-    return()=>window.removeEventListener('pageshow',run);
-  },[]);
+    return()=>{cancelAnimationFrame(frame);observer.disconnect();window.removeEventListener('pageshow',run);};
+  },[pathname]);
   return <style>{`
     #jump-daily-metrics{display:grid!important;grid-template-columns:repeat(3,1fr);gap:12px!important;margin:22px 0 12px!important}
     #jump-daily-metrics>div{display:flex!important;flex-direction:column;gap:5px;background:#f6f5f2;border:1px solid #dfddd7;border-radius:15px;padding:17px 16px}
