@@ -7,9 +7,10 @@ import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {createHash} from 'node:crypto';
 import {PDFDocument} from 'pdf-lib';
+import {extractSourceText,renderSourcePage} from '../../../../lib/source-pdf.js';
 export const runtime='nodejs';
 export const dynamic='force-dynamic';
-export const maxDuration=60;
+export const maxDuration=300;
 const run=promisify(execFile);
 const url='https://rassegna.dominiocliente.it/Areas/Rassegna/Elab/CheckedDownload.aspx?nome_file=PP_RAS_1626482_20260917_16377886.pdf';
 const limit=150*1024*1024;
@@ -45,6 +46,8 @@ export async function POST(request){
   result.bytes=bytes.length;result.pdfSignature=bytes.subarray(0,5).toString()==='%PDF-';
   if(!result.pdfSignature)return Response.json({...result,ok:false,error:'La risposta non è un PDF'},{headers:{'Cache-Control':'no-store'}});
   result.sha256=createHash('sha256').update(bytes).digest('hex');result.pages=(await PDFDocument.load(bytes)).getPageCount();
+  const text=await extractSourceText(bytes);result.textPages=text.pages.length;result.extractedCharacters=text.totalCharacters;result.pagesWithLittleText=text.pagesWithLittleText;
+  const preview=await renderSourcePage(bytes,10);result.preview='data:'+preview.mimeType+';base64,'+preview.data;
   return Response.json({...result,ok:true,elapsedMs:Date.now()-started},{headers:{'Cache-Control':'no-store'}});
  }catch(e){return failure(e);}finally{if(dir)await rm(dir,{recursive:true,force:true});}
 }

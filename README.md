@@ -71,6 +71,20 @@ Il client deve supportare registrazione dinamica di client pubblici con PKCE. Se
 
 ## Flusso editoriale
 
+### Recupero server tramite MCP (17 settembre 2026)
+
+Il percorso ordinario ora usa `import_source_url(url,date)` dopo il controllo dei duplicati. Il server accetta esclusivamente gli endpoint HTTPS Ecostampa conosciuti e verifica anche ogni redirect. Scarica al massimo 200 MB in un file temporaneo eliminato sempre, controlla firma PDF, estrae il testo di ogni pagina con PDF.js e archivia originale e testo nel Blob privato. Nessun PDF passa nel repository GitHub. Nessuna bozza viene creata durante importazione o in caso di errore.
+
+La chiamata MCP riserva un lavoro e risponde subito con `importId`; `after` prosegue sul server entro 300 secondi. `read_import_status` restituisce processing/ready/failed. Una chiamata ripetuta sul medesimo nome/data restituisce il lavoro esistente. Dopo un arresto della funzione può restare processing: trascorsi dieci minuti è possibile un retry esplicito, senza aggiornamenti forzati. Gli errori producono eventi incident, mai conteggi vuoti. L'estrazione è limitata a 1000 pagine, 8 milioni di caratteri e 180 secondi; nessun OCR implicito, le pagine con poco testo sono segnalate.
+
+`read_source_text` restituisce fino a dieci pagine per chiamata. `read_source_page` restituisce una vera immagine MCP JPEG, senza download dal terminale del client. Dopo la creazione della bozza, `create_import_clip` estrae fino a venti pagine e registra sourceId/clipId/pages nel medesimo formato dei ritagli esistenti; `read_clip_page` permette il confronto visivo. Il testo automatico e i numeri di pagina non certificano un controllo editoriale. I conteggi delle voci e delle copertine devono essere verificati sul sommario/documento, non desunti dal numero di pagine.
+
+Alla prima pubblicazione viene registrata una scadenza a sette giorni per l'originale. La prima successiva lettura autenticata di `read_editorial_instructions` avvia la pulizia dei soli originali scaduti (massimo cinque a chiamata); con l'automatismo quotidiano la pulizia è giornaliera. Senza attività MCP la cancellazione viene differita. Testi e ritagli restano, così come gli originali delle bozze non pubblicate. Non servono nuove credenziali o un nuovo scheduler. Dopo la cancellazione non sono possibili nuovi ritagli da quella fonte. Gli import falliti e mai pubblicati vanno esaminati in caso di incidente; non vengono cancellati indiscriminatamente.
+
+Il test temporaneo autenticato `/editor/diagnostica` verifica download, estrazione e immagine sul documento del 17 settembre senza salvare fonti, bozze o pubblicazioni; scade il 19 settembre. `tests/source-import.test.mjs` collauda il flusso completo su archivio e Blob simulati, inclusi concorrenza, SSRF, errori e conservazione.
+
+Le istruzioni v7 vanno attivate nel repository contenuti **solo dopo il deploy e la verifica del nuovo MCP**. La sezione `lib/editorial-source-workflow.js` sostituisce il precedente percorso curl nel client. I metodi di upload seguenti rimangono disponibili per compatibilità, non sono richiesti dal percorso ordinario.
+
 1. L'automatismo legge email e PDF come già previsto; usa MCP per creare una bozza.
 2. prepare_pdf_upload restituisce un URL firmato per il caricamento diretto HTTP PUT del PDF. Il client deve poter inviare i byte: in alternativa si usa il caricamento da /editor. Un MCP da solo non garantisce questa capacità del client.
 3. read_source verifica il PDF; create_clip estrae pagine intere numerate da 1. Verificare che le pagine non contengano altro materiale prima della pubblicazione.
