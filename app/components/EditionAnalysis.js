@@ -21,7 +21,6 @@ export default function EditionAnalysis({body}){
    </div>
    <div className="jump-frontpages-list"><b>Dove la Juventus è in prima pagina</b><div>{a.outlets===null?<p>Prime pagine da verificare.</p>:a.outlets.length?a.outlets.map(n=><span key={n}>{n}</span>):<p>Nessun richiamo Juventus nelle prime pagine verificate.</p>}</div></div>
    <div className="jump-frontpages-note"><b>Prime pagine: lettura generale</b><p>{coverage?.frontPageSummary||'Lettura delle prime pagine non ancora disponibile.'}</p></div>
-   {coverage?.sourceNote&&<p className="coverage-source">Fonte e metodo: {coverage.sourceNote}</p>}
   </section>
   <section id="jump-coverage-donut"><div className="jcd-head"><small>DISTRIBUZIONE DELLA RASSEGNA</small><h2>Il peso dei temi di oggi</h2><p>Quota degli articoli selezionati per area editoriale. Ogni articolo appartiene a una sola area.</p></div>
    {a.selected>0?<div className="jcd-wrap"><div className="jcd-donut" aria-hidden="true" style={{background:`conic-gradient(${a.themes.map(t=>`${t.color} ${t.start}% ${t.end}%`).join(',')})`}}><div className="jcd-hole"><b>{a.selected}</b><span>articoli</span></div></div><div className="jcd-legend">{a.themes.map(t=><div className="jcd-row" key={t.label}><i style={{background:t.color}}/><span>{t.label}</span><strong>{t.count} · {Math.round(t.percent)}%</strong></div>)}</div></div>:<p>Nessun articolo ancora selezionato.</p>}
