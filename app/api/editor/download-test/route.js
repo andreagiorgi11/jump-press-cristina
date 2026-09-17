@@ -15,11 +15,12 @@ const run=promisify(execFile);
 const url='https://rassegna.dominiocliente.it/Areas/Rassegna/Elab/CheckedDownload.aspx?nome_file=PP_RAS_1626482_20260917_16377886.pdf';
 const limit=150*1024*1024;
 export async function POST(request){
- let dir;const started=Date.now();
+ let dir,stage='auth';const started=Date.now();
  try{
   sameOrigin(request);const {role}=await requireEditor(request);
   if(role!=='publisher')throw Object.assign(Error('Accesso publisher richiesto.'),{status:403});
   if(Date.now()>Date.parse('2026-09-19T00:00:00Z'))throw Object.assign(Error('Prova diagnostica scaduta.'),{status:410});
+  stage='download';
   let result={runtime:process.env.VERCEL?'vercel':'local',region:process.env.VERCEL_REGION||null,file:'PP_RAS_1626482_20260917_16377886.pdf'};
   dir=await mkdtemp(join(tmpdir(),'jump-download-test-'));const file=join(dir,'source.pdf');let bytes;
   try{
@@ -45,9 +46,10 @@ export async function POST(request){
   }
   result.bytes=bytes.length;result.pdfSignature=bytes.subarray(0,5).toString()==='%PDF-';
   if(!result.pdfSignature)return Response.json({...result,ok:false,error:'La risposta non è un PDF'},{headers:{'Cache-Control':'no-store'}});
-  result.sha256=createHash('sha256').update(bytes).digest('hex');result.pages=(await PDFDocument.load(bytes)).getPageCount();
+  stage='pdf-validation';result.sha256=createHash('sha256').update(bytes).digest('hex');result.pages=(await PDFDocument.load(bytes)).getPageCount();
+  stage='text-extraction';
   const text=await extractSourceText(bytes);result.textPages=text.pages.length;result.extractedCharacters=text.totalCharacters;result.pagesWithLittleText=text.pagesWithLittleText;
-  const preview=await renderSourcePage(bytes,10);result.preview='data:'+preview.mimeType+';base64,'+preview.data;
+  stage='page-render';const preview=await renderSourcePage(bytes,10);result.preview='data:'+preview.mimeType+';base64,'+preview.data;
   return Response.json({...result,ok:true,elapsedMs:Date.now()-started},{headers:{'Cache-Control':'no-store'}});
- }catch(e){return failure(e);}finally{if(dir)await rm(dir,{recursive:true,force:true});}
+ }catch(e){if(stage==='auth')return failure(e);return Response.json({ok:false,stage,errorType:e.name,error:String(e.message).replace(/https?:\/\/\S+/g,'[URL]').slice(0,700)},{status:502,headers:{'Cache-Control':'no-store'}});}finally{if(dir)await rm(dir,{recursive:true,force:true});}
 }
