@@ -112,3 +112,10 @@ Per un errore di contenuto ripristinare una revisione nell'editor e pubblicarla 
 Vedere CHANGELOG.md per le modifiche.
 
 Fonti tecniche: [GitHub OAuth](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps), [GitHub Git data](https://docs.github.com/en/rest/git), [Vercel Blob SDK](https://vercel.com/docs/vercel-blob/using-blob-sdk), [OAuth per ChatGPT](https://developers.openai.com/plugins/build/auth).
+
+
+## Istruzioni editoriali centralizzate
+
+La pagina riservata `/editor/istruzioni` contiene le istruzioni complete e il comando breve per l’attività ChatGPT quotidiana (07:45 Europe/Rome). Il testo iniziale deriva dal documento di Andrea, aggiornato al flusso bozza automatica e pubblicazione esplicita. Gli editor possono aggiornarlo: `settings/editorial-instructions.json` e lo storico sono salvati nel repository privato con controllo di versione e commit atomico. Una lettura non riuscita non usa il testo iniziale come ripiego.
+
+Il tool MCP `read_editorial_instructions` restituisce sempre la versione corrente; producer può leggerla ma non modificarla. Nessuno strumento MCP modifica le istruzioni. Le attività programmate devono usare un consenso senza pubblicazione. La pagina non crea o attiva attività sul ChatGPT di Cristina: collegare Outlook e MCP, provare manualmente e aggiornare l’attività esistente.
