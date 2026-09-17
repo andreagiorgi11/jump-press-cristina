@@ -23,7 +23,7 @@ test('producer is read-only and service failures never become default instructio
  await assert.rejects(readInstructions(ctx),e=>e.status===503);
 });
 test('MCP producer retrieves the latest instructions without a publication tool',async()=>{
- const store=new MemoryStore(),ctx=context(store,'producer'),server=createEditorialMcp(ctx,'producer');
+ const store=new MemoryStore(),ctx=context(store,'producer'),server=createEditorialMcp(ctx);
  const client=new Client({name:'instructions-test',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();
  try{await server.connect(a);await client.connect(b);const {tools}=await client.listTools();
  assert(!tools.some(t=>t.name==='publish_edition'));assert(tools.find(t=>t.name==='read_editorial_instructions').annotations.readOnlyHint);
