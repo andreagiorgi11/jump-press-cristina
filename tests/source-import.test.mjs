@@ -58,3 +58,75 @@ test('concurrent imports reserve one job and deferred calls expose progress',asy
  const id=results.find(x=>x.status==='fulfilled').value.importId;assert.equal((await getImport(ctx,id)).status,'processing');
  await work[0]();assert.equal((await getImport(ctx,id)).status,'ready');
 });
+
+test('batch text preserves whole pages and reports exact continuation',async()=>{
+ const {readImportTextBatch}=await import('../lib/source-service.js');
+ const ctx=await fixture(),r=await importPdf(ctx,{url,date:'2026-09-17'}),row=await getImport(ctx,r.importId);
+ const stored=ctx.files.get(row.textPath);stored.pages[0].text='a'.repeat(80000);stored.pages[1].text='b'.repeat(80000);
+ const first=await readImportTextBatch(ctx,r.importId,1);assert.equal(first.pages.length,1);assert.equal(first.nextPage,2);assert.equal(first.pages[0].text.length,80000);
+ assert.equal((await readImportTextBatch(ctx,r.importId,2)).nextPage,null);
+ await assert.rejects(readImportTextBatch({...ctx,role:'guest'},r.importId,1),/Accesso/);
+ stored.pages.pop();await assert.rejects(readImportTextBatch(ctx,r.importId,2),/incompleta/);
+});
+
+async function batchFixture(){
+ const ctx=await fixture(),r=await importPdf(ctx,{url,date:'2026-09-17'}),id=randomUUID();
+ const body={...newEdition('2026-09-17'),intro:'Prova',articles:[1,2].map(n=>({id:randomUUID(),category:'Editoriali',title:'Articolo '+n,summary:'Sintesi',outlet:'Testata',author:'',rating:3,pages:[]}))};
+ await saveDraft(ctx,id,0,body);
+ return {ctx,r,id,body,items:body.articles.map((a,i)=>({articleId:a.id,pages:[i+1]}))};
+}
+
+test('batch clips associate in one revision, remain private and reuse checkpoints',async()=>{
+ const {createImportClips}=await import('../lib/source-service.js');const {ctx,r,id,items}=await batchFixture();
+ let reads=0;const read=ctx.blobs.readOriginal;ctx.blobs.readOriginal=async p=>{reads++;return read(p);};
+ const result=await createImportClips(ctx,{importId:r.importId,draftId:id,version:1,items});
+ assert.equal(result.status,'complete');assert.equal(result.version,2);assert.equal(reads,1);
+ const d=ctx.store.files['drafts/'+id+'.json'];assert.equal(d.body.articles.filter(a=>a.clipId).length,2);
+ for(const a of d.body.articles)assert.equal(await publicClip(a.clipId,ctx.store,ctx.blobs),null);
+ const repeat=await createImportClips(ctx,{importId:r.importId,draftId:id,version:2,items});
+ assert.deepEqual(repeat.completed.map(x=>x.clipId),result.completed.map(x=>x.clipId));
+ await assert.rejects(createImportClips(ctx,{importId:r.importId,draftId:id,version:1,items}),/modificata/);
+ await assert.rejects(createImportClips({...ctx,role:'guest'},{importId:r.importId,draftId:id,version:3,items}),/Accesso/);
+});
+
+test('batch failure retains successful clips and retry does not duplicate them',async()=>{
+ const {createImportClips}=await import('../lib/source-service.js');const {ctx,r,id,items}=await batchFixture();
+ const write=ctx.blobs.write;let count=0;ctx.blobs.write=async(...args)=>{if(++count===2)throw Error('storage outage');return write(...args);};
+ const result=await createImportClips(ctx,{importId:r.importId,draftId:id,version:1,items});
+ assert.equal(result.status,'partial');assert.equal(result.completed.length,1);assert.equal(result.associated,false);
+ assert.equal(ctx.store.files['drafts/'+id+'.json'].version,1);
+ ctx.blobs.write=write;
+ const resumed=await createImportClips(ctx,{importId:r.importId,draftId:id,version:1,items});
+ assert.equal(resumed.status,'complete');assert.equal(resumed.completed[0].clipId,result.completed[0].clipId);
+ assert.equal(ctx.store.files['drafts/'+id+'.json'].assets.filter(a=>a.kind==='clip').length,2);
+});
+
+test('editor modification during batch is preserved without overwriting',async()=>{
+ const {createImportClips}=await import('../lib/source-service.js');const {ctx,r,id,items,body}=await batchFixture();
+ const commit=ctx.store.commit.bind(ctx.store);let changed=false;
+ ctx.store.commit=async(...args)=>{const result=await commit(...args);if(!changed&&args[2]==='Ritaglio server da fonte Ecostampa verificata'){changed=true;await saveDraft(ctx,id,1,{...body,intro:'Modifica editor da conservare'});}return result;};
+ const result=await createImportClips(ctx,{importId:r.importId,draftId:id,version:1,items});
+ assert.equal(result.status,'partial');assert.equal(result.error.status,409);assert.equal(ctx.store.files['drafts/'+id+'.json'].body.intro,'Modifica editor da conservare');
+});
+
+test('batch images return labelled images and reject invalid ranges',async()=>{
+ const {readImportPages}=await import('../lib/source-service.js');const ctx=await fixture(),r=await importPdf(ctx,{url,date:'2026-09-17'});
+ const result=await readImportPages(ctx,r.importId,[2,1]);assert.deepEqual(result.images.map(x=>x.page),[2,1]);assert.deepEqual(result.remainingPages,[]);
+ await assert.rejects(readImportPages(ctx,r.importId,[1,1]),/distinte/);
+ await assert.rejects(readImportPages({...ctx,role:'guest'},r.importId,[1]),/Accesso/);
+});
+
+test('batch rejects unknown articles and invalid page lists before any clip write',async()=>{
+ const {createImportClips}=await import('../lib/source-service.js');const {ctx,r,id,items}=await batchFixture();
+ const before=ctx.files.size;
+ for(const invalid of [[{articleId:randomUUID(),pages:[1]}],[{...items[0],pages:[3]}],[items[0],items[0]]])await assert.rejects(createImportClips(ctx,{importId:r.importId,draftId:id,version:1,items:invalid}));
+ assert.equal(ctx.files.size,before);assert.equal(ctx.store.files['drafts/'+id+'.json'].assets.length,0);
+});
+
+test('final association refuses an editor change after the last clip',async()=>{
+ const {createImportClips}=await import('../lib/source-service.js');const {ctx,r,id,items,body}=await batchFixture();
+ const commit=ctx.store.commit.bind(ctx.store);let clips=0;
+ ctx.store.commit=async(...args)=>{const result=await commit(...args);if(args[2]==='Ritaglio server da fonte Ecostampa verificata'&&++clips===2)await saveDraft(ctx,id,1,{...body,intro:'Revisione concorrente finale'});return result;};
+ await assert.rejects(createImportClips(ctx,{importId:r.importId,draftId:id,version:1,items}),/modificata/);
+ const d=ctx.store.files['drafts/'+id+'.json'];assert.equal(d.body.intro,'Revisione concorrente finale');assert.equal(d.assets.filter(a=>a.kind==='clip').length,2);
+});
