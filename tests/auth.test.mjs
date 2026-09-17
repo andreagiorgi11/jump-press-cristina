@@ -2,12 +2,14 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {MemoryStore} from './helpers.mjs';
 process.env.JUMP_SESSION_SECRET='isolated-test-key-not-used-anywhere-else-123';
 process.env.JUMP_PUBLIC_URL='https://press.test.invalid';
-process.env.JUMP_GITHUB_MEMBERS='{"123":"publisher"}';
+const testAccount={id:'123',username:'test',role:'publisher',passwordHash:'scrypt-v1$'+'1'.repeat(32)+'$'+'2'.repeat(128)};
+process.env.JUMP_EDITOR_USERS=JSON.stringify([testAccount]);
+const {credentialVersion}=await import('../lib/passwords.js');
 const {sign,verify,nonce,hash,registerClient,authorizationRequest,consumeCode,refreshGrant,readAccess}=await import('../lib/auth.js');
 test('PKCE, client binding, replay protection, refresh rotation and role revocation',async()=>{
  const repo=new MemoryStore(),client=await registerClient({client_name:'Test',redirect_uris:['https://client.test.invalid/callback']}),verifier=nonce();
  const flow=await authorizationRequest(new URLSearchParams({client_id:client.client_id,redirect_uri:client.redirect_uris[0],response_type:'code',code_challenge:hash(verifier),code_challenge_method:'S256',resource:process.env.JUMP_PUBLIC_URL+'/mcp'}));
- const code=await sign({...flow,sid:nonce(),user:{id:'123',login:'test'},role:'editor'},'oauth-code',120);
+ const code=await sign({...flow,sid:nonce(),user:{id:'123',login:'test',credentialVersion:credentialVersion(testAccount)},role:'editor'},'oauth-code',120);
  await assert.rejects(consumeCode(code,client.client_id,flow.redirectUri,nonce(),repo),/invalid_grant/);
  const token=await consumeCode(code,client.client_id,flow.redirectUri,verifier,repo);
  assert.equal((await readAccess(token.access_token,repo)).role,'editor');
@@ -15,7 +17,9 @@ test('PKCE, client binding, replay protection, refresh rotation and role revocat
  await assert.rejects(verify(token.access_token,'web-session'),/non valida/);
  const fresh=await refreshGrant(token.refresh_token,client.client_id,repo);assert(fresh.refresh_token!==token.refresh_token);
  await assert.rejects(refreshGrant(token.refresh_token,client.client_id,repo),/invalid_grant/);
- process.env.JUMP_GITHUB_MEMBERS='{}';await assert.rejects(readAccess(token.access_token,repo),/non abilitato/);process.env.JUMP_GITHUB_MEMBERS='{"123":"publisher"}';
+ process.env.JUMP_EDITOR_USERS=JSON.stringify([{...testAccount,passwordHash:testAccount.passwordHash.slice(0,-1)+'3'}]);
+ await assert.rejects(readAccess(fresh.access_token,repo),/Sessione scaduta/);await assert.rejects(refreshGrant(fresh.refresh_token,client.client_id,repo),/Sessione scaduta/);
+ process.env.JUMP_EDITOR_USERS='[]';await assert.rejects(readAccess(token.access_token,repo),/non abilitato/);process.env.JUMP_EDITOR_USERS=JSON.stringify([testAccount]);
 });
 test('OAuth rejects unregistered redirect, wrong resource and non-PKCE clients',async()=>{
  await assert.rejects(registerClient({redirect_uris:['http://insecure.invalid/cb']}),/redirect/);

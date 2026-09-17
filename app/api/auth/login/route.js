@@ -1,10 +1,13 @@
 import {NextResponse} from 'next/server';
-import {nonce,hash,sign,cookieOptions,secureCookie,validReturn} from '../../../../lib/auth.js';
-import {siteUrl,configured} from '../../../../lib/config.js';
-import {failure} from '../../../../lib/errors.js';
-export async function GET(request){try{
- if(!configured())throw Object.assign(new Error('Accesso GitHub non ancora configurato.'),{status:503});
- const state=nonce(),verifier=nonce(),returnTo=validReturn(new URL(request.url).searchParams.get('returnTo'));
- const url=new URL('https://github.com/login/oauth/authorize');url.search=new URLSearchParams({client_id:process.env.JUMP_GITHUB_CLIENT_ID,redirect_uri:siteUrl()+'/api/auth/callback',scope:'read:user',state,code_challenge:hash(verifier),code_challenge_method:'S256',allow_signup:'false'}).toString();
- const response=NextResponse.redirect(url);response.cookies.set('jump_login',await sign({state,verifier,returnTo},'github-flow',600),{...cookieOptions,secure:secureCookie(),maxAge:600});return response;
-}catch(e){return failure(e);}}
+import {sign,cookieOptions,secureCookie,validReturn} from '../../../../lib/auth.js';
+import {authenticate} from '../../../../lib/passwords.js';
+import {sameOrigin,failure} from '../../../../lib/errors.js';
+export const runtime='nodejs';
+export const maxDuration=60;
+export async function POST(request){try{
+ sameOrigin(request);const raw=await request.text();if(raw.length>4096)return new Response('Richiesta troppo grande',{status:413});
+ const x=JSON.parse(raw),user=await authenticate(x.username,x.password);
+ const response=NextResponse.json({returnTo:validReturn(x.returnTo)},{headers:{'Cache-Control':'no-store'}});
+ response.cookies.set('jump_session',await sign({sub:user.id,login:user.login,credentialVersion:user.credentialVersion},'web-session',8*3600),{...cookieOptions,secure:secureCookie(),maxAge:8*3600});return response;
+}catch(e){if(e instanceof SyntaxError)e.status=400;return failure(e);}}
+export function GET(){return NextResponse.redirect(new URL('/editor',process.env.JUMP_PUBLIC_URL||'http://127.0.0.1:3015'));}
