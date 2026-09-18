@@ -221,3 +221,6 @@ Il comando Esporta PDF ora scarica direttamente /summary/pdf, senza aprire la st
 
 ## Card unica e anteprima PDF
 La versione parallela usa la barra editor originale (menu Editor, Archivio locale, Anteprima lettore) con Esporta PDF. I comandi restano dimostrativi e isolati dalla produzione; nessuna conferma pubblicazione sul campione già pubblicato. Distribuzione dei temi e tre punti chiave sono riuniti in una card compatta con anello, legenda piccola e soli conteggi. Toni preservati nei dati ma non mostrati in questa variante. Il PDF riprende la nuova lettura senza percentuali e toni, con copertina scura, riquadri numerici, anello e gerarchia tipografica. Esporta PDF apre un dialogo PDF.js con pagine, zoom e download; nessun plugin PDF del browser richiesto.
+
+### Summary separato di una pagina
+Il pulsante Summary apre un'anteprima PDF dedicata con sintesi generale e highlights delle quattro aree, scaricabile separatamente. Usa la proposta locale .local/summary-preview.json e mantiene la dicitura da revisionare; non genera una nuova analisi GPT. Esporta PDF continua a mostrare la rassegna completa. Entrambi gli endpoint sono limitati al laboratorio locale. Verificati il Summary su una sola pagina A4, anteprima e download, e le build Press e News.
