@@ -1,3 +1,7 @@
+## 2026-09-18 — rimozione diagnostica Ecostampa
+
+Eliminati `/editor/diagnostica` e `/api/editor/download-test`. Erano una prova temporanea di download/estrazione sul PDF del 17 settembre; il flusso ordinario `import_source_url` resta invariato.
+
 ## 2026-09-18 — revisione grafica e cestino delle bozze
 
 - Barra editor compatta, menu secondario e cestino recuperabile con conferma; permessi server e versione obbligatoria impediscono sovrascritture concorrenti e salvataggi su bozze cestinate.
