@@ -271,3 +271,5 @@ Questa sezione prevale sulle descrizioni storiche del laboratorio sopra. Le prim
 Nessun deploy principale, refresh/disconnessione del connettore o modifica alle automazioni è stato eseguito durante questa preparazione.
 
 Il pacchetto locale ../jump-press-approval Ã¨ stato allineato agli ultimi PDF e alle bande numerate, pronto per un futuro aggiornamento dell'anteprima. Nessun deploy eseguito. Verifica preparatoria: 62 test locali e build Press/News riusciti; home e due endpoint PDF rispondono 200 sul laboratorio.
+
+Aggiornamento anteprima autorizzato e pubblicato: deployment dpl_E7nsenJkw2SuCGV2MQwGtv3xLhCg, alias https://jump-press-approvazione.vercel.app. Include ultimo Summary, bande numerate nel sito e PDF completo e spazio tra bande. Verificati accesso anonimo 200, 22 bande e PDF online identici ai file locali; API editor e MCP restano 404. Sito principale e automatismo invariati.
