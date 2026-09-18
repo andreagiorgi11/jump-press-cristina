@@ -232,3 +232,6 @@ Il campione locale del 18 contiene cinque temi prima squadra e due per ciascuna 
 
 ### Rilevanza e PDF completo nel laboratorio
 La variante locale rimuove la legenda Peso delle notizie e sostituisce le stelle con cinque barrette verdi per articolo, con etichetta accessibile Rilevanza N su 5. Valori editoriali e comportamento della versione originale invariati. Il PDF completo usa titoli serif, testata e autore distinti, indicatori di rilevanza, separatori sottili e apertura di ogni area su pagina nuova. Il campione contiene tutti i 22 articoli in otto pagine; verificati rendering e anteprima. Il Summary di una pagina resta separato.
+
+### Prima pagina PDF allineata al sito
+Il PDF completo usa Arial normale e grassetto incorporati, con gli stessi caratteri del sito; la vecchia scelta serif è superata. Nel laboratorio i file arial.ttf e arialbd.ttf sono copie dei font Windows in .local, esclusi da Git: necessari per generare il PDF, non distribuiti nel repository. Prima di un eventuale deploy definire una distribuzione dei font compatibile con la licenza. Copertina con card Quadro della giornata, metriche compatte, loghi delle copertine e card unica temi/punti chiave. PNG dei loghi derivati dagli SVG già presenti, con La Stampa scura come nel sito. Verificati otto pagine, tutti i 22 titoli, anteprima e build Press/News.

@@ -20,3 +20,13 @@
 .article-relevance{display:flex;align-items:center;gap:9px;margin:14px 0 12px;color:#737b70;font:11px/1.4 Arial}.article-relevance-bars{display:inline-flex;gap:3px;align-items:center}.article-relevance-bars i{display:block;width:16px;height:5px;border-radius:2px;background:#e5e8e1}.article-relevance-bars i.is-filled{background:#687d48}
 
 .article-meta-line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.article-meta-line .outlet-wordmark{display:flex;flex-direction:column;align-items:flex-start;text-align:left;min-width:0;max-width:55%;font-size:12px;gap:3px}.article-meta-line .outlet-wordmark img{object-position:left center;max-width:100%}.article-meta-line .article-relevance{margin:0 0 0 auto;flex-shrink:0}.editable-article .article-meta-line{padding-right:44px}@media(max-width:420px){.article-meta-line .article-relevance{flex-direction:column;align-items:flex-end;gap:4px}.article-meta-line .article-relevance-bars i{width:12px}}
+
+.summary-edition .articles article .article-meta-line + h2{margin-top:25px}
+@media screen{
+ .summary-edition .articles>.article-group-heading{position:relative;display:flex;align-items:center;gap:16px;margin:0;padding:28px;background:#edf0e7;border-bottom:1px solid #dce2d3;color:#25321f;font:700 24px/1.2 Arial,sans-serif;letter-spacing:-.6px}
+ .summary-edition .articles>.article-group-heading::before{content:'';width:5px;height:30px;flex-shrink:0;border-radius:4px;background:#c6df6c}
+ .summary-edition .articles>.article-group-heading>span{flex:1;min-width:0}
+ .summary-edition .articles>.article-group-heading small{padding:6px 10px;border:1px solid #d7dfca;border-radius:20px;background:#f8faf4;color:#647255;font:500 11px/1.3 Arial,sans-serif;letter-spacing:0}
+ .summary-edition .articles>.article-group-heading i{display:none}
+ @media(max-width:600px){.summary-edition .articles>.article-group-heading{padding:23px 19px;gap:11px;font-size:21px}.summary-edition .articles>.article-group-heading small{font-size:10px;padding:5px 8px}}
+}
