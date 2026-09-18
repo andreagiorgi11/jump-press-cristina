@@ -1,0 +1,16 @@
+.summary-export{display:flex;align-items:center;gap:12px}.summary-export>span{font:11px Arial;color:#c0c9b3}.summary-export>button{min-height:40px}
+@page{size:A4;margin:14mm}
+@media print{
+ html,body{background:#fff!important;color:#171a15!important;margin:0!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .summary-export,.reading-navigation,.back-to-top,.article-filter,.edition-jump-nav,.section-edit-button,nextjs-portal{display:none!important}
+ main.summary-edition{max-width:none;width:100%;padding:0!important;margin:0}
+ .summary-edition header{color:#171a15;break-inside:avoid}.summary-edition .top{margin-bottom:20px;padding:0}.summary-edition .brand,.summary-edition .edition-date-line,.summary-edition .edition{color:#171a15!important}
+ .summary-edition h1{font-size:32px;line-height:1.1;margin:18px 0}.summary-edition .lead{font-size:12px;line-height:1.55;color:#333}
+ .summary-edition .ranking,.summary-edition #jump-coverage-donut{box-shadow:none;margin:20px 0;padding:18px;border:1px solid #d7dbd2;break-inside:avoid}
+ .summary-edition .ranking>h2,.summary-edition #jump-coverage-donut h2,.summary-edition .sectiontitle h2{font-size:23px}
+ .summary-edition .articles>article,.summary-edition .articles>article[hidden]{display:block!important;break-inside:avoid;padding:18px 20px}
+ .summary-edition .articles>.article-group-heading,.summary-edition .articles>.article-group-heading[hidden]{display:flex!important;break-after:avoid;margin-top:20px}
+ .summary-edition .articles article h2{font-size:19px;line-height:1.25}.summary-edition .articles article p{font-size:11px;line-height:1.55}.summary-edition .sectiontitle{break-after:avoid;padding:0!important}
+ .summary-edition footer{color:#444}.summary-edition .rating-note{break-inside:avoid}
+}
+.summary-export>a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border:1px solid #dcf55a;border-radius:8px;background:#dcf55a;color:#1d2510;font:700 12px Arial;text-decoration:none}.summary-export>a:hover{background:#e6ff77}

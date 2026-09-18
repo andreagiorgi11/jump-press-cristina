@@ -3,7 +3,11 @@ import {routeAllowed} from './lib/routing';
 export function middleware(request){
  const {pathname,searchParams}=request.nextUrl;
  if(process.env.JUMP_SUMMARY_SANDBOX==='1'){
-  if(process.env.VERCEL||!['/','/summary'].includes(pathname))return new NextResponse('Ambiente Summary isolato: percorso disabilitato',{status:404});
+  if(process.env.VERCEL)return new NextResponse(null,{status:404});
+  if(/^\/api\/clips\/[\w-]+$/.test(pathname)){
+   const url=request.nextUrl.clone();url.pathname=pathname.replace('/api/clips/','/summary/clip/');return NextResponse.rewrite(url);
+  }
+  if(!['/','/summary','/summary/pdf'].includes(pathname)&&!['/pdfjs/','/testate/','/summary/clip/'].some(prefix=>pathname.startsWith(prefix)))return new NextResponse('Ambiente Summary isolato: percorso disabilitato',{status:404});
   return NextResponse.next();
  }
  const site=process.env.NEXT_PUBLIC_JUMP_SITE||'press';
