@@ -7,6 +7,21 @@ export default function PdfLinkHandler(){
  useEffect(()=>{
   let active=null,worker=null,disposed=false;
   const cachedPdfs=new Map();
+  const pendingPdfs=new Map(),controllers=new Set();
+  const publicBytes=url=>{
+   const key=new URL(url,location.href).href,cached=cachedPdfs.get(key);
+   if(cached&&Date.now()-cached.at<60000)return Promise.resolve(cached.bytes);
+   if(pendingPdfs.has(key))return pendingPdfs.get(key);
+   if(pendingPdfs.size>=2)return Promise.resolve(null);
+   const controller=new AbortController();controllers.add(controller);
+   const request=fetch(key,{signal:controller.signal}).then(async response=>{
+    if(!response.ok||!response.headers.get('content-type')?.includes('application/pdf'))return null;
+    if(Number(response.headers.get('content-length'))>8*1024*1024)return null;
+    const bytes=new Uint8Array(await response.arrayBuffer());if(disposed||bytes.byteLength>8*1024*1024)return null;
+    cachedPdfs.delete(key);cachedPdfs.set(key,{bytes,at:Date.now()});while(cachedPdfs.size>3)cachedPdfs.delete(cachedPdfs.keys().next().value);return bytes;
+   }).catch(()=>null).finally(()=>{pendingPdfs.delete(key);controllers.delete(controller);});
+   pendingPdfs.set(key,request);return request;
+  };
   const privateUrl=async clipId=>{const response=await fetch('/api/editor',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'asset',assetId:clipId})});const data=await response.json();if(!response.ok)throw Error('Accesso al ritaglio non disponibile');return data.url;};
   const pdfModule=()=>import(/* webpackIgnore: true */ '/pdfjs/pdf.mjs');
   const close=()=>{
@@ -21,7 +36,7 @@ export default function PdfLinkHandler(){
   const open=async(url,title='Ritaglio completo',context=null,privateClipId=null)=>{
    close();const dialog=document.createElement('dialog');dialog.className='jump-clip-dialog';dialog.setAttribute('aria-label',title);
    // Determine the shell before its first paint; fitting the PDF never resizes it.
-   dialog.style.width=Math.min(window.innerWidth-(window.innerWidth<=600?16:48),Math.max(360,(Math.min(window.innerHeight-64,940)-200)*.707+50))+'px';
+   dialog.style.width=Math.min(window.innerWidth-(window.innerWidth<=600?16:48),Math.max(390,(Math.min(window.innerHeight-40,980)-130)*.707+56))+'px';
    const state={dialog,focus:document.activeElement,overflow:document.body.style.overflow,closed:false,page:1,zoom:1};active=state;
    const bar=document.createElement('div');bar.className='jump-clip-bar';
    const label=document.createElement('strong');label.textContent='JUMP PRESS · RITAGLIO';
@@ -51,7 +66,7 @@ export default function PdfLinkHandler(){
     prevArticle.onclick=()=>move(context.index-1);nextArticle.onclick=()=>move(context.index+1);
     articleNav.append(prevArticle,info,nextArticle,error);
    }else{articleNav.classList.add('single-clip');const heading=document.createElement('strong');heading.textContent=title;articleNav.append(heading);}
-   dialog.append(bar,articleNav,controls,area);document.body.append(dialog);
+   dialog.append(bar,articleNav,area,controls);document.body.append(dialog);
    dialog.addEventListener('cancel',e=>{e.preventDefault();close();});dialog.addEventListener('click',e=>{if(e.target===dialog)close();});dialog.showModal();document.body.style.overflow='hidden';button.focus();
    const render=async()=>{
     previous.disabled=next.disabled=minus.disabled=plus.disabled=fit.disabled=true;
@@ -67,11 +82,11 @@ export default function PdfLinkHandler(){
    };
    previous.onclick=()=>{state.page--;render();};next.onclick=()=>{state.page++;render();};minus.onclick=()=>{state.zoom-=.25;render();};plus.onclick=()=>{state.zoom+=.25;render();};fit.onclick=()=>{state.zoom=1;render();};
    try{
-    const [pdfjs,resolvedUrl]=await Promise.all([pdfModule(),privateClipId?privateUrl(privateClipId):Promise.resolve(url)]);if(state.closed||disposed)return;
+    const [pdfjs,resolvedUrl,prepared]=await Promise.all([pdfModule(),privateClipId?privateUrl(privateClipId):Promise.resolve(url),privateClipId?Promise.resolve(null):publicBytes(url)]);if(state.closed||disposed)return;
     pdfjs.GlobalWorkerOptions.workerSrc='/pdfjs/pdf.worker.mjs';
     if(!worker)worker=new pdfjs.PDFWorker();
-    const cacheKey=privateClipId||url,cached=cachedPdfs.get(cacheKey);
-    const source=cached&&Date.now()-cached.at<60000?{data:cached.bytes.slice()}:{url:resolvedUrl};
+    const cacheKey=privateClipId||new URL(url,location.href).href,cached=cachedPdfs.get(cacheKey);
+    const source=prepared?{data:prepared.slice()}:cached&&Date.now()-cached.at<60000?{data:cached.bytes.slice()}:{url:resolvedUrl};
     state.task=pdfjs.getDocument({...source,worker,isEvalSupported:false,cMapUrl:'/pdfjs/cmaps/',cMapPacked:true,standardFontDataUrl:'/pdfjs/standard_fonts/',wasmUrl:'/pdfjs/wasm/'});
     state.doc=await state.task.promise;if(state.closed)return;await render();
     // Bounded, memory-only reuse; private access is checked again on every open.
@@ -91,8 +106,16 @@ export default function PdfLinkHandler(){
    e.preventDefault();open(url.href,a.closest('article')?.querySelector('h2')?.textContent||'Ritaglio completo',articleContext(a.closest('article')?.dataset.clipId));
   };
   const onPrivate=e=>{if(e.detail?.url||e.detail?.clipId){const context=articleContext(e.detail.clipId);open(e.detail.url,context?.rows[context.index].title||'Prima pagina',context,e.detail.url?null:e.detail.clipId);}};
+  const warm=e=>{
+   const link=e.target.closest?.('a[href]');if(!link)return;
+   const url=new URL(link.href,location.href);
+   if(url.origin!==location.origin||!url.pathname.startsWith('/api/clips/')||link.closest('[data-private-clip="true"]'))return;
+   pdfModule().then(pdfjs=>{if(disposed)return;pdfjs.GlobalWorkerOptions.workerSrc='/pdfjs/pdf.worker.mjs';if(!worker)worker=new pdfjs.PDFWorker();}).catch(()=>{});
+   publicBytes(url.href);
+  };
+  document.addEventListener('pointerover',warm);document.addEventListener('focusin',warm);
   document.addEventListener('click',onClick,true);window.addEventListener('jump-open-clip',onPrivate);
-  return()=>{disposed=true;close();cachedPdfs.clear();worker?.destroy();document.removeEventListener('click',onClick,true);window.removeEventListener('jump-open-clip',onPrivate);};
+  return()=>{disposed=true;close();controllers.forEach(c=>c.abort());cachedPdfs.clear();worker?.destroy();document.removeEventListener('pointerover',warm);document.removeEventListener('focusin',warm);document.removeEventListener('click',onClick,true);window.removeEventListener('jump-open-clip',onPrivate);};
  },[path]);
  return null;
 }

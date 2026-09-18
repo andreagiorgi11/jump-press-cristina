@@ -235,3 +235,6 @@ La variante locale rimuove la legenda Peso delle notizie e sostituisce le stelle
 
 ### Prima pagina PDF allineata al sito
 Il PDF completo usa Arial normale e grassetto incorporati, con gli stessi caratteri del sito; la vecchia scelta serif è superata. Nel laboratorio i file arial.ttf e arialbd.ttf sono copie dei font Windows in .local, esclusi da Git: necessari per generare il PDF, non distribuiti nel repository. Prima di un eventuale deploy definire una distribuzione dei font compatibile con la licenza. Copertina con card Quadro della giornata, metriche compatte, loghi delle copertine e card unica temi/punti chiave. PNG dei loghi derivati dagli SVG già presenti, con La Stampa scura come nel sito. Verificati otto pagine, tutti i 22 titoli, anteprima e build Press/News.
+
+### Apertura ritagli nel laboratorio
+Visualizzatore più ampio e zoom flottante semitrasparente in basso. Precaricamento su passaggio/focus del link pubblico (massimo due richieste contemporanee), cache in memoria limitata a tre PDF da massimo 8 MB per 60 secondi, riuso del worker PDF.js. I ritagli privati non vengono precaricati e mantengono la verifica di accesso ad ogni apertura. Richieste annullate allo smontaggio. Verificati apertura reale, zoom 125%, chiusura e riapertura dalla cache; nessuna modifica al contenuto dei PDF.

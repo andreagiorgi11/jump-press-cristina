@@ -30,3 +30,8 @@
  .summary-edition .articles>.article-group-heading i{display:none}
  @media(max-width:600px){.summary-edition .articles>.article-group-heading{padding:23px 19px;gap:11px;font-size:21px}.summary-edition .articles>.article-group-heading small{font-size:10px;padding:5px 8px}}
 }
+.jump-clip-dialog{height:calc(100dvh - 40px);max-height:980px}
+.jump-clip-dialog .jump-clip-navigation{position:absolute;z-index:2;bottom:14px;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 20px);padding:7px 10px;gap:7px;border:1px solid #ffffff80;border-radius:30px;background:#f7f8f0d9;backdrop-filter:blur(12px);box-shadow:0 4px 22px #17201526;flex-wrap:nowrap}
+.jump-clip-dialog .jump-clip-navigation button{background:#ffffffb3;min-width:34px;min-height:34px}
+.jump-clip-dialog .jump-clip-pages{padding-bottom:76px}
+@media(max-width:600px){.jump-clip-dialog{height:calc(100dvh - 16px)}.jump-clip-dialog .jump-clip-navigation{bottom:max(10px,env(safe-area-inset-bottom));gap:5px;padding:6px 8px}.jump-clip-dialog .jump-clip-navigation button{min-width:36px;min-height:40px}}
