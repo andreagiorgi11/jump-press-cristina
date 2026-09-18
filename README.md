@@ -151,3 +151,12 @@ Gli strumenti singoli restano disponibili. `read_source_text_batch` restituisce 
 
 ### Visualizzatore ritagli
 Il riquadro dei ritagli usa PDF.js 6.3.289, distribuito con licenza in public/pdfjs, caricato soltanto all'apertura di un PDF. Mostra una pagina alla volta con navigazione e zoom; chiudendolo libera il documento e ripristina il focus. Per aggiornare PDF.js riallineare questi asset alla versione di pdfjs-dist installata. Il filtro modifica soltanto la visibilità degli articoli, non i conteggi della rassegna.
+
+## Cestino delle bozze
+La barra editor raccoglie Archivio, Aggiorna, Conferma bozza e il menu con Istruzioni, Cestino, Elimina bozza ed Esci. Il server permette eliminazione e ripristino solo a editor/publisher, controllando versione e commit concorrenti. L'eliminazione conserva contenuto, revisioni e asset privati, rimuove la voce dall'indice attivo e imposta deletedAt. Le scritture MCP su una bozza cestinata vengono rifiutate; il ripristino incrementa la versione e rifiuta date già occupate. Le rassegne già pubblicate non sono eliminabili da questo comando. Il cestino non elimina fisicamente i PDF.
+
+Per la prova grafica isolata aprire /anteprima-locale con npm run dev: i comandi di conferma, eliminazione e ripristino usano esclusivamente lo stato della pagina dimostrativa e non chiamano le API di produzione. La pagina è indisponibile in produzione. L'editor reale continua a usare il normale login e le API autorizzate.
+
+### Metriche e legenda nelle nuove edizioni
+Le quattro tessere iniziali duplicate sono rimosse; le metriche restano nel quadro generale. La guida al peso editoriale è una nota compatta. Gli sportivi italiani sono riconosciuti per testata (Gazzetta, Corriere dello Sport/Stadio, Tuttosport), senza usare il flag nationalSports che può includere testate estere. Le percentuali intere della legenda usano i maggiori resti e sommano 100 per ogni edizione non vuota; il grafico mantiene le proporzioni esatte. Le pagine storiche statiche non vengono riscritte.
+Il popup PDF adatta inizialmente la pagina a larghezza e altezza disponibili; zoom 50–400% e Adatta consentono la lettura dei dettagli.

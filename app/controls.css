@@ -39,3 +39,51 @@
 .jump-clip-navigation button:disabled{opacity:.35;cursor:default}
 .jump-clip-pages{flex:1;min-height:0;overflow:auto;background:#555;color:#fff;text-align:center;padding:16px}
 .jump-clip-pages canvas{display:block;margin:0 auto;background:#fff;max-width:none}
+/* Unified toolbar: shared proportions, one compact surface. */
+.appcontrols{gap:4px;align-items:center;padding:5px;background:#151719;border:1px solid #36383b;border-radius:999px;box-shadow:0 8px 28px #0003}
+.appcontrols.homecontrols{align-items:center;flex-wrap:nowrap}
+.appcontrols .navstack{display:contents}
+.appcontrols>button,.appcontrols .archivebutton,.appcontrols .backbutton,.appcontrols .newsbutton,.appcontrols .navstack>a{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;min-height:36px;padding:0 14px;border:0;box-shadow:none;background:transparent;color:#eee;font:800 12px Arial,Helvetica,sans-serif;text-decoration:none;border-radius:999px;white-space:nowrap;cursor:pointer}
+.appcontrols>button:hover,.appcontrols a:hover{background:#303338}
+.appcontrols button.confirm-draft{background:var(--lime);color:var(--black);padding:0 16px}
+.editor-more{position:relative;color:#fff}
+.editor-more summary{list-style:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;font-size:24px;cursor:pointer;line-height:1}
+.editor-more summary::-webkit-details-marker{display:none}
+.editor-more summary:hover,.editor-more[open] summary{background:#303338}
+.editor-menu{position:absolute;top:48px;right:0;width:200px;padding:6px;background:#fff;border:1px solid #deddd9;border-radius:16px;box-shadow:0 12px 36px #0003;display:grid;gap:3px}
+.appcontrols .editor-menu a,.appcontrols .editor-menu button{display:block;width:100%;min-height:40px;padding:11px 13px;background:transparent;border:0;border-radius:10px;box-shadow:none;color:#222;text-align:left;font:700 13px Arial,Helvetica,sans-serif;text-decoration:none;cursor:pointer}
+.appcontrols .editor-menu a:hover,.appcontrols .editor-menu button:hover{background:#f0efeb}
+.appcontrols .editor-menu .danger-item{color:#a22832;border-top:1px solid #eee;border-radius:0 0 10px 10px}
+.appcontrols .publish-dialog .delete-approve{background:#a22832;border-color:#a22832;color:white}
+.trash-list{padding:0;list-style:none}.trash-list li{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid #ddd}.trash-list li div{flex:1}.trash-list b{font-size:14px}.trash-list small{display:block;color:#666;margin-top:6px}
+.appcontrols .trash-list button{background:var(--black);color:var(--lime);box-shadow:none;cursor:pointer}
+.local-preview-note{font-size:11px;color:#aaa;letter-spacing:.8px;margin:0 0 28px}
+.appcontrols summary:focus-visible,.appcontrols>a:focus-visible,.appcontrols button:focus-visible{outline:2px solid #9caf5b;outline-offset:2px}
+@media(max-width:700px){.appcontrols{right:10px;max-width:calc(100vw - 20px)}.appcontrols>button,.appcontrols .archivebutton,.appcontrols .backbutton{padding:0 10px;font-size:11px}.homecontrols button.confirm-draft{padding:0 10px;font-size:11px}.homecontrols{gap:2px}.homecontrols>button[aria-label='Aggiorna rassegna'] span{display:none}.homecontrols>button[aria-label='Aggiorna rassegna']{width:34px;padding:0;font-size:18px}main{padding-top:76px}.editor-menu{top:47px}}
+
+/* Fit the complete page first; zoom remains available without leaving the edition. */
+.jump-clip-dialog{width:calc(100vw - 48px);max-width:1000px;height:calc(100dvh - 64px);max-height:940px}
+.jump-clip-pages{background:#e8e7e3;scrollbar-gutter:stable}
+.jump-clip-pages canvas{box-shadow:0 3px 18px #0002}
+.jump-clip-navigation{flex-shrink:0;flex-wrap:wrap;gap:8px}
+.jump-clip-navigation button[aria-label="Adatta pagina alla finestra"]{padding:0 12px}
+.jump-clip-zoom{min-width:40px;font-variant-numeric:tabular-nums;color:#555}
+@media(max-width:600px){.jump-clip-dialog{width:calc(100vw - 16px);height:calc(100dvh - 24px);max-height:none;margin:auto;border-radius:14px}.jump-clip-bar{padding:10px 12px}.jump-clip-navigation{gap:6px}}
+
+/* A quiet legend rather than another dashboard section. */
+#jump-rating-guide.rating-note{margin:24px 0 28px;padding:16px 0;border-top:1px solid #d8d6d0;border-bottom:1px solid #d8d6d0;background:transparent;border-radius:0;box-shadow:none;font-style:normal;color:#5b5b55}
+#jump-rating-guide.rating-note p{margin:0;font-size:13px;line-height:1.6}
+#jump-rating-guide.rating-note p>b{color:#30302b}
+#jump-rating-guide.rating-note ul{display:flex;flex-wrap:wrap;gap:8px 20px;list-style:none;padding:0;margin:9px 0 0;font-size:12px;line-height:1.5}
+#jump-rating-guide.rating-note li{white-space:nowrap}
+#jump-rating-guide.rating-note li b{color:#333}
+#jump-rating-guide.rating-note li b span{color:#8b691f}
+@media(max-width:600px){#jump-rating-guide.rating-note ul{gap:7px 16px}}
+
+#jump-rating-guide.rating-note ul{gap:12px 26px;margin-top:14px}
+#jump-rating-guide.rating-note li{display:flex;align-items:center;gap:9px}
+#jump-rating-guide .rating-level{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:750;color:#232521;font-variant-numeric:tabular-nums}
+#jump-rating-guide .rating-segments{display:flex;gap:2px;align-items:center}
+#jump-rating-guide .rating-segments i{display:block;width:5px;height:12px;border-radius:2px;background:#dcded5}
+#jump-rating-guide .rating-segments i.is-filled{background:#535c32}
+#jump-rating-guide.rating-note li>span:last-child{font-size:12px;color:#575b51}

@@ -7,6 +7,7 @@ export const maxDuration=60;
 const id=z.string().uuid();
 export async function GET(request){try{
  const {db,role}=await requireEditor(request);
+ if(new URL(request.url).searchParams.get('view')==='trash')return Response.json({drafts:await service.listTrash(db)},{headers:{'Cache-Control':'private, no-store'}});
  const draftId=new URL(request.url).searchParams.get('id');
  return Response.json(draftId?await service.getDraft(db,id.parse(draftId)):{role,drafts:await service.listDrafts(db)},{headers:{'Cache-Control':'private, no-store'}});
 }catch(error){return failure(error);}}
@@ -17,6 +18,8 @@ export async function POST(request){try{
  const x=JSON.parse(raw);let result;
  const draftId=x.id?id.parse(x.id):null;
  switch(x.action){
+ case 'delete':result=await service.deleteDraft(db,id.parse(x.id),z.number().int().positive().parse(x.version));break;
+ case 'recover':result=await service.recoverDraft(db,id.parse(x.id),z.number().int().positive().parse(x.version));break;
  case 'save':result=await service.saveDraft(db,id.parse(x.id),z.number().int().nonnegative().parse(x.version),x.body);break;
  case 'publish':result=await service.publishDraft(db,id.parse(x.id),z.number().int().positive().parse(x.version),z.literal('PUBBLICA').parse(x.confirmation));break;
  case 'restore':result=await service.restoreDraft(db,id.parse(x.id),z.number().int().positive().parse(x.version),z.number().int().positive().parse(x.revision));break;
