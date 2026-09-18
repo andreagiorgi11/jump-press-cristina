@@ -10,5 +10,5 @@ export const dynamic='force-dynamic';
 export default async function SummaryPage(){
  if(process.env.JUMP_SUMMARY_SANDBOX!=='1'||process.env.VERCEL)notFound();
  const source=JSON.parse(await readFile(process.cwd()+'/.local/summary-edition.json','utf8'));
- return <><ExportPage/><ArticleFilter/><PdfLinkHandler/><main className="summary-edition"><EditionView body={summaryEdition(source)} categoryOrder={summarySections}/></main></>;
+ return <><ExportPage/><ArticleFilter/><PdfLinkHandler/><main className="summary-edition"><EditionView body={summaryEdition(source)} categoryOrder={summarySections} compactAnalysis/></main></>;
 }

@@ -1,0 +1,14 @@
+'use client';
+import {useEffect,useRef,useState} from 'react';
+export default function PdfPreview({onClose}){
+ const dialog=useRef(null),canvas=useRef(null),documentRef=useRef(null);
+ const [pages,setPages]=useState(0),[current,setCurrent]=useState(1),[scale,setScale]=useState(1),[error,setError]=useState('');
+ useEffect(()=>{const focus=document.activeElement;dialog.current.showModal();let dead=false,task,worker;const overflow=document.body.style.overflow;document.body.style.overflow='hidden';
+  (async()=>{try{const pdfjs=await import(/* webpackIgnore: true */ '/pdfjs/pdf.mjs');if(dead)return;pdfjs.GlobalWorkerOptions.workerSrc='/pdfjs/pdf.worker.mjs';worker=new pdfjs.PDFWorker();task=pdfjs.getDocument({url:'/summary/pdf?inline=1',worker,standardFontDataUrl:'/pdfjs/standard_fonts/',isEvalSupported:false});const doc=await task.promise;if(dead)return;documentRef.current=doc;setPages(doc.numPages);}catch{if(!dead)setError('PDF non disponibile. Chiudi e riprova.');}})();
+  return()=>{dead=true;document.body.style.overflow=overflow;task?.destroy().catch(()=>{});worker?.destroy();focus?.focus();};
+ },[]);
+ useEffect(()=>{if(!pages)return;let dead=false,render;
+  (async()=>{try{const p=await documentRef.current.getPage(current);if(dead)return;const viewport=p.getViewport({scale:1.25*scale});canvas.current.width=viewport.width;canvas.current.height=viewport.height;render=p.render({canvasContext:canvas.current.getContext('2d'),viewport});await render.promise;}catch(e){if(!dead&&e.name!=='RenderingCancelledException')setError('Impossibile mostrare questa pagina.');}})();return()=>{dead=true;render?.cancel();};
+ },[pages,current,scale]);
+ return <dialog ref={dialog} className="summary-pdf-preview" aria-label="Anteprima PDF della rassegna" onCancel={onClose}><header><div><strong>Anteprima PDF</strong><small>Rassegna Juventus · 18 settembre 2026</small></div><a href="/summary/pdf" download>Scarica PDF</a><button onClick={onClose} aria-label="Chiudi anteprima PDF">×</button></header><nav aria-label="Navigazione PDF"><button aria-label="Pagina PDF precedente" disabled={current===1} onClick={()=>setCurrent(n=>n-1)}>←</button><span>Pagina {current} di {pages||'…'}</span><button aria-label="Pagina PDF successiva" disabled={!pages||current===pages} onClick={()=>setCurrent(n=>n+1)}>→</button><button disabled={scale<=.75} onClick={()=>setScale(s=>s-.25)} aria-label="Riduci PDF">−</button><button disabled={scale>=2} onClick={()=>setScale(s=>s+.25)} aria-label="Ingrandisci PDF">+</button></nav><div className="summary-pdf-paper">{error?<p role="alert">{error}</p>:<>{!pages&&<p role="status">Preparazione del PDF…</p>}<canvas ref={canvas} role="img" aria-label={`Pagina ${current} della rassegna`} style={{width:`${scale*100}%`,maxWidth:scale>1?'none':'760px'}}/></>}</div></dialog>;
+}

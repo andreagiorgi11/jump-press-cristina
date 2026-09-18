@@ -218,3 +218,6 @@ Il campione completo pubblico è in .local/summary-edition.json. I ritagli si ap
 
 ### Esportazione PDF diretta
 Il comando Esporta PDF ora scarica direttamente /summary/pdf, senza aprire la stampa del browser. Il documento A4 contiene introduzione, numeri, distribuzione dei temi, punti chiave, toni e tutti i 22 articoli nelle quattro sezioni. Il campione produce sei pagine; impaginazione dedicata alla lettura su carta. Endpoint solo locale; nessun invio. Verificati risposta PDF, tutti i titoli presenti ed esame visivo delle sei pagine.
+
+## Card unica e anteprima PDF
+La versione parallela usa la barra editor originale (menu Editor, Archivio locale, Anteprima lettore) con Esporta PDF. I comandi restano dimostrativi e isolati dalla produzione; nessuna conferma pubblicazione sul campione già pubblicato. Distribuzione dei temi e tre punti chiave sono riuniti in una card compatta con anello, legenda piccola e soli conteggi. Toni preservati nei dati ma non mostrati in questa variante. Il PDF riprende la nuova lettura senza percentuali e toni, con copertina scura, riquadri numerici, anello e gerarchia tipografica. Esporta PDF apre un dialogo PDF.js con pagine, zoom e download; nessun plugin PDF del browser richiesto.
