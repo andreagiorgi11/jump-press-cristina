@@ -1,3 +1,12 @@
+## 2026-09-18 — revisione grafica e cestino delle bozze
+
+- Barra editor compatta, menu secondario e cestino recuperabile con conferma; permessi server e versione obbligatoria impediscono sovrascritture concorrenti e salvataggi su bozze cestinate.
+- Popup PDF adattato alle dimensioni della pagina, zoom 50–400% e pulsante Adatta; link storici scaricati come PDF, senza redirect al visualizzatore HTML.
+- Nuove edizioni: eliminate le quattro metriche duplicate in apertura, legenda del peso editoriale compatta, conteggio degli sportivi italiani per testata e percentuali dei temi arrotondate complessivamente a 100 senza alterare le proporzioni reali.
+- Nessuna modifica alle istruzioni editoriali online, ai dati delle bozze o alle pagine storiche statiche. Anteprima locale e relativi dati esclusi dal commit.
+- Verifica: 41 test superati, npm audit senza vulnerabilità; build press/news prima del rilascio.
+- Rollback codice: ripristinare il deployment precedente basato su 3a72420. Se il nuovo cestino è già stato usato, recuperare prima le bozze interessate con la nuova UI: il codice precedente non applica il blocco deletedAt. Non ripristinare il repository dati.
+
 ## 2026-09-17 — accesso con nome utente e password
 
 Sostituito il login GitHub con credenziali dedicate e hash scrypt in Vercel. Protezione dai tentativi concorrenti tramite contatori atomici condivisi; cambio password e rimozione account revocano sessioni web e MCP. Nuovo modulo locale per la scelta riservata delle password. Il passaggio Production richiede prima la configurazione di JUMP_EDITOR_USERS.
