@@ -33,10 +33,19 @@ export default function ArticleFilter(){
    });
   };
   const apply=record=>{
+   record.list.querySelectorAll(':scope > .article-group-heading').forEach(h=>{h.hidden=!!record.select.value&&h.dataset.category!==record.select.value;});
    record.list.querySelectorAll(':scope > article').forEach(a=>{a.hidden=!!record.select.value&&a.querySelector('.meta span')?.textContent?.trim()!==record.select.value;});
   };
+  const jumpToCategory=event=>{
+   const link=event.target.closest?.('a[data-edition-jump]');
+   if(!link)return;
+   const target=document.getElementById(link.hash.slice(1));
+   const record=records.find(r=>r.list.contains(target));
+   if(record&&target.hidden){record.select.value='';apply(record);}
+  };
+  document.addEventListener('click',jumpToCategory);
   prepare();const observer=new MutationObserver(prepare);observer.observe(document.body,{childList:true,subtree:true});
-  return()=>{observer.disconnect();records.forEach(r=>{r.control.remove();r.heading.classList.remove('has-article-filter');r.list.querySelectorAll('article').forEach(a=>{a.hidden=false;});});};
+  return()=>{document.removeEventListener('click',jumpToCategory);observer.disconnect();records.forEach(r=>{r.control.remove();r.heading.classList.remove('has-article-filter');r.list.querySelectorAll('article,.article-group-heading').forEach(a=>{a.hidden=false;});});};
  },[path]);
  return null;
 }

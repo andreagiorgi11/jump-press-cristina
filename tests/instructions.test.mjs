@@ -8,7 +8,7 @@ import {createEditorialMcp} from '../lib/mcp-server.js';
 const context=(store,role='publisher')=>({store,role,user:{id:'editor'}});
 test('instructions preserve the source and support versioned saves without overwriting concurrent edits',async()=>{
  const store=new MemoryStore(),ctx=context(store),initial=await readInstructions(ctx);
- assert.equal(initial.version,1);assert.match(initial.text,/TITOLI – CONTROLLO OBBLIGATORIO/);assert.match(initial.text,/Ogni giorno alle 7:45/);assert.match(initial.text,/SOLO una bozza/);
+ assert.equal(initial.version,1);assert.match(initial.text,/TITOLI – CONTROLLO OBBLIGATORIO/);assert.match(initial.text,/La frequenza e l’orario sono stabiliti dall’attività programmata/);assert.match(initial.text,/Salva esclusivamente una bozza/);
  const saved=await saveInstructions(ctx,1,initial.text+'\nNota aggiunta dalla redazione.');
  assert.equal(saved.version,2);assert.equal((await readInstructions(ctx)).text,saved.text);
  await assert.rejects(saveInstructions(ctx,1,initial.text),e=>e.status===409);
@@ -26,9 +26,22 @@ test('MCP producer retrieves the latest instructions without a publication tool'
  const store=new MemoryStore(),ctx=context(store,'producer'),server=createEditorialMcp(ctx);
  const client=new Client({name:'instructions-test',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();
  try{await server.connect(a);await client.connect(b);const {tools}=await client.listTools();
- assert(!tools.some(t=>t.name==='publish_edition'));assert(tools.find(t=>t.name==='read_editorial_instructions').annotations.readOnlyHint);
+ assert(!tools.some(t=>t.name==='publish_edition'));assert(!tools.some(t=>t.name==='save_editorial_instructions'));assert(tools.find(t=>t.name==='read_editorial_instructions').annotations.readOnlyHint);
  const r=await client.callTool({name:'read_editorial_instructions',arguments:{}});assert(!r.isError);const initial=JSON.parse(r.content[0].text);assert.equal(initial.version,1);
  await saveInstructions(context(store),1,initial.text+'\nNota aggiornata.');
  const next=await client.callTool({name:'read_editorial_instructions',arguments:{}});assert.equal(JSON.parse(next.content[0].text).version,2);
+ }finally{await client.close();await server.close();}
+});
+
+for(const role of ['editor','publisher'])test('MCP '+role+' saves instructions only with confirmation and current version',async()=>{
+ const store=new MemoryStore(),server=createEditorialMcp(context(store,role));
+ const client=new Client({name:'instructions-write-test',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();
+ try{
+  await server.connect(a);await client.connect(b);
+  const initial=await readInstructions(context(store));
+  const args={version:initial.version,text:initial.text+'\nModifica richiesta esplicitamente.'};
+  const denied=await client.callTool({name:'save_editorial_instructions',arguments:args});assert(denied.isError);assert.equal((await readInstructions(context(store))).version,1);
+  const saved=await client.callTool({name:'save_editorial_instructions',arguments:{...args,confirmation:'SALVA_ISTRUZIONI'}});assert(!saved.isError);assert.equal(JSON.parse(saved.content[0].text).version,2);
+  const stale=await client.callTool({name:'save_editorial_instructions',arguments:{...args,confirmation:'SALVA_ISTRUZIONI'}});assert(stale.isError);assert.equal(JSON.parse(stale.content[0].text).status,409);assert.equal((await readInstructions(context(store))).version,2);
  }finally{await client.close();await server.close();}
 });
