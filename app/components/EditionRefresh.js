@@ -1,0 +1,2 @@
+ 'use client';
+export default function EditionRefresh(){return <button className="edition-refresh" type="button" title="Aggiorna rassegna" aria-label="Aggiorna rassegna" onClick={()=>window.location.reload()}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 6.1A8 8 0 0 1 20 12M4 12a8 8 0 0 0 13.9 5.9"/></svg></button>}

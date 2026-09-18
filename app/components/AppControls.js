@@ -4,13 +4,13 @@ import EditorActions from './EditorActions';
 import PublishConfirmation from './PublishConfirmation';
 import {usePathname} from 'next/navigation';
 
-export default function AppControls({onConfirm,confirmBusy=false,confirmDate,confirmVersion,editorActions}){
+export default function AppControls({onConfirm,confirmBusy=false,confirmDate,confirmVersion,isRevision=false,editorActions,onReaderPreview}){
  const pathname=usePathname();
  const inArchive=pathname.startsWith('/archivio')||pathname.startsWith('/edizioni/');
  const onArchiveIndex=pathname==='/archivio';
  const inNews=pathname.startsWith('/news');
  const inSocial=pathname.startsWith('/social');
- const refreshHome=()=>{if(pathname==='/editor'||pathname==='/anteprima-locale'){window.location.reload();return;}window.location.replace('/?v='+Date.now())};
+ const refreshHome=()=>{if(editorActions||pathname==='/editor'||pathname==='/anteprima-locale'){window.location.reload();return;}window.location.replace('/?v='+Date.now())};
  const refreshNews=()=>{
   const url=new URL(window.location.href);
   url.searchParams.set('fresh',Date.now().toString());
@@ -20,11 +20,11 @@ export default function AppControls({onConfirm,confirmBusy=false,confirmDate,con
   window.dispatchEvent(new CustomEvent('jump-social-refresh'));
  };
 
- if(onArchiveIndex){
+ if(onArchiveIndex&&!editorActions){
   return <div className="appcontrols"><Link className="backbutton" href="/">← <span>Indietro</span></Link></div>;
  }
 
- if(inArchive){
+ if(inArchive&&!editorActions){
   return <div className="appcontrols"><Link className="archivebutton" href="/archivio">Archivio</Link><Link className="backbutton" href="/">← <span>Indietro</span></Link></div>;
  }
 
@@ -36,5 +36,6 @@ export default function AppControls({onConfirm,confirmBusy=false,confirmDate,con
   return <div className="appcontrols"><button type="button" onClick={refreshNews} aria-label="Aggiorna news">↻ <span>Aggiorna</span></button><Link className="backbutton" href="/">← <span>Indietro</span></Link></div>;
  }
 
- return <div className="appcontrols homecontrols" aria-label="Navigazione rassegna"><div className="navstack"><Link className="archivebutton" href="/archivio">Archivio</Link></div><button type="button" onClick={refreshHome} aria-label="Aggiorna rassegna">↻ <span>Aggiorna</span></button>{onConfirm&&<PublishConfirmation onConfirm={onConfirm} disabled={confirmBusy} date={confirmDate} version={confirmVersion}/>}{editorActions&&<EditorActions {...editorActions} date={confirmDate}/>}</div>;
+ if(editorActions)return <div className="appcontrols editorial-toolbar" aria-label="Comandi editor"><EditorActions {...editorActions} showTrash={onArchiveIndex} date={confirmDate}/><div className="editorial-toolbar-links"><Link href="/archivio">Archivio</Link>{onReaderPreview&&<button type="button" onClick={onReaderPreview}>Anteprima lettore</button>}</div>{onConfirm&&<PublishConfirmation isRevision={isRevision} onConfirm={onConfirm} disabled={confirmBusy} date={confirmDate} version={confirmVersion}/>}</div>;
+ return <div className="appcontrols homecontrols" aria-label="Navigazione rassegna"><Link className="archivebutton" href="/archivio">Archivio</Link><button type="button" onClick={refreshHome} aria-label="Aggiorna rassegna" title="Aggiorna rassegna">↻</button></div>;
 }

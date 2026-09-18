@@ -13,6 +13,7 @@ const colorByLabel={
   'Juventus Women':'#e11d48',
   'Prossimo avversario':'#2563eb',
   'Europa League':'#a16207',
+  'Competizioni europee':'#a16207',
   'Altri temi':'#0f766e',
   'Altro':'#64748b'
 };
@@ -42,7 +43,7 @@ function build(){
     counts.set(label,(counts.get(label)||0)+1);
   });
   if(!counts.size) return;
-  const order=['Prima squadra','Mercato','Editoriali','Youth / Next Gen','Politica sportiva','Intervista','Juventus Women','Prossimo avversario','Europa League','Altri temi','Altro'];
+  const order=['Prima squadra','Mercato','Editoriali','Youth / Next Gen','Politica sportiva','Intervista','Juventus Women','Prossimo avversario','Competizioni europee','Europa League','Altri temi','Altro'];
   const entries=[...counts.entries()].sort((a,b)=>{
     const ia=order.indexOf(a[0]),ib=order.indexOf(b[0]);
     return (ia<0?99:ia)-(ib<0?99:ib);

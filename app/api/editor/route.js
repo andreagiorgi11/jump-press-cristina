@@ -18,6 +18,7 @@ export async function POST(request){try{
  const x=JSON.parse(raw);let result;
  const draftId=x.id?id.parse(x.id):null;
  switch(x.action){
+ case 'withdraw':result=await service.withdrawDraft(db,id.parse(x.id),z.number().int().positive().parse(x.version),z.literal('RITIRA_E_MODIFICA').parse(x.confirmation));break;
  case 'delete':result=await service.deleteDraft(db,id.parse(x.id),z.number().int().positive().parse(x.version));break;
  case 'recover':result=await service.recoverDraft(db,id.parse(x.id),z.number().int().positive().parse(x.version));break;
  case 'save':result=await service.saveDraft(db,id.parse(x.id),z.number().int().nonnegative().parse(x.version),x.body);break;
