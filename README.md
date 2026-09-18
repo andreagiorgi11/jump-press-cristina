@@ -247,3 +247,27 @@ Il collegamento esposto alla sessione mostra 20 strumenti: non espone i cinque a
 
 ### Anteprima online separata per Cristina
 Pubblicata il 18 settembre su https://jump-press-approvazione.vercel.app, progetto Vercel jump-press-approvazione nel team andrea-giorgi. Sorgenti autonomi in ../jump-press-approval: solo pagina statica Next, PDF pregenerati e 22 ritagli gia pubblici copiati. Nessun MCP, editor API, credenziale o accesso in scrittura alla produzione; senza password su richiesta di Andrea. Non sostituisce il sito ufficiale e non attiva il nuovo automatismo. Rimozione al termine della revisione su indicazione di Andrea. Aggiornamento del collegamento ChatGPT lasciato ad Andrea su sua richiesta; nessuna disconnessione eseguita.
+
+
+## Stato attuale e passaggio al sito principale — 18 settembre 2026
+Questa sezione prevale sulle descrizioni storiche del laboratorio sopra. Le prime versioni con stampa browser, sei pagine, campi temporanei e selezione di due temi sono superate.
+
+- Locale: http://127.0.0.1:3018, ramo feature/juventus-summary. Pagina originale con quattro aree; bande numerate scure e lime sugli articoli; Summary di una pagina e PDF completo di otto pagine sul campione. Anteprima prima del download.
+- Dati di prova: .local/summary-edition.json, copia della rassegna pubblicata con executiveSummary curato per la proposta. Non è una nuova analisi integrale automatica delle fonti.
+- GPT: summary-v1 definisce le quattro categorie canoniche, massimo cinque temi maschili, nessuna quota minima nelle altre aree, tre keyPoints per il sito. Istruzioni e schema sono nel codice del ramo; non sono attivi sul server principale.
+- Sicurezza del Summary: variazioni di contenuto, rilevanza, attribuzione o fonte invalidano una sintesi rimasta identica. Client che omettono il campo non lo cancellano quando i contenuti restano invariati. L'associazione di un ritaglio non invalida la sintesi. Bozze incomplete non possono essere dichiarate pronte nel nuovo modello.
+- PDF: entrambi i generatori accettano font forniti dal chiamante. Senza font esterni usano Helvetica standard e funzionano senza i file Windows; il laboratorio passa Arial esplicitamente, mantenendo l'aspetto approvato. Prima del rilascio con Arial, predisporre font distribuibili con licenza verificata; non copiare i file Windows sul server. Convalidare l'impaginazione usando gli stessi font impiegati nell'esportazione finale.
+- L'anteprima pubblica jump-press-approvazione è statica, con PDF pregenerati. Le ultime modifiche locali non sono automaticamente pubblicate. Non ha autenticazione editor o MCP.
+
+### Passaggi ancora necessari dopo l'approvazione
+1. Integrare la vista nuova e i comandi PDF nelle pagine reali (home, edizione, bozza editor); oggi /summary e /summary/pdf restano esclusivamente laboratorio. Non promuovere la copia statica come backend principale.
+2. Esportare dallo snapshot reale selezionato: pubblicato per il lettore, bozza con sessione editor e controllo autorizzazioni per l'editor. Nessuna lettura del campione .local in produzione; no cache pubblica per bozze. Summary assente nelle vecchie edizioni: non inventarlo né obbligare a rigenerarlo.
+3. Distribuire font/licenze e asset necessari; collaudare entrambi i PDF nell'ambiente server finale.
+4. Su un ambiente autenticato separato, aggiornare il catalogo del connettore: verificare i cinque tool automation_run e lo schema save_draft. Non rinominare o rimuovere gli strumenti di compatibilità durante la migrazione.
+5. Collaudo GPT con copia di una fonte storica e archivio dati isolato: due partenze concorrenti, una sola prenotazione; seconda partenza dopo completamento salta; ripresa da checkpoint dopo interruzione; Summary valido e bozza integra. Non nascondere né ritirare una rassegna pubblicata per testare.
+6. Verificare nel sistema che programma GPT orari, stato attivo e motivo della pausa precedente. Il lock server impedisce duplicazioni, ma non garantisce che il pianificatore esterno esegua o riprenda un'attività.
+7. Solo con approvazione e collaudo riuscito: deploy del ramo completo e attivazione esplicita JUMP_EDITORIAL_MODEL=summary-v1. Conservare deployment precedente e snapshot dati. Nessuna riscrittura automatica dello storico. Un rollback del codice non deve eliminare campi o dati nuovi.
+
+Nessun deploy principale, refresh/disconnessione del connettore o modifica alle automazioni è stato eseguito durante questa preparazione.
+
+Il pacchetto locale ../jump-press-approval Ã¨ stato allineato agli ultimi PDF e alle bande numerate, pronto per un futuro aggiornamento dell'anteprima. Nessun deploy eseguito. Verifica preparatoria: 62 test locali e build Press/News riusciti; home e due endpoint PDF rispondono 200 sul laboratorio.
