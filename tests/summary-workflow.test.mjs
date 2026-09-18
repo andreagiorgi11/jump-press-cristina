@@ -1,0 +1,31 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
+import {editionSchema,executiveSummarySchema,summaryAreas} from '../lib/schema.js';
+import {saveDraft,publicBody} from '../lib/editor-service.js';
+import {validateSummaryReady} from '../lib/summary-workflow.js';
+import {readInstructions} from '../lib/editorial-instructions.js';
+import {MemoryStore} from './helpers.mjs';
+const summary=()=>({intro:'La Juventus prepara la prossima gara.',sections:summaryAreas.map((title,i)=>({title,items:i===0?['Preparazione: la squadra lavora in vista della prossima gara.']:[]}))});
+const body=()=>editionSchema.parse({editorialModel:'summary-v1',executiveSummary:summary(),date:'2026-09-18',title:'Rassegna',intro:'La giornata Juventus.',keyPoints:['Preparazione','Disponibilità','Avversario'],articles:[{id:randomUUID(),category:summaryAreas[0],title:'La preparazione',outlet:'Testata',summary:'La squadra si prepara.'}]});
+test('Summary validates named areas, order and maximum five mens topics',()=>{
+ const s=summary();assert(executiveSummarySchema.safeParse(s).success);s.sections[0].items=Array(6).fill('Tema: descrizione');assert(!executiveSummarySchema.safeParse(s).success);
+ const reversed=summary();reversed.sections.reverse();assert(!executiveSummarySchema.safeParse(reversed).success);
+});
+test('Summary persists, survives asset attachment and is invalidated after editorial changes',async()=>{
+ const ctx={role:'editor',user:{id:'test'},store:new MemoryStore(),editorialModel:'summary-v1'},id=randomUUID();
+ let d=await saveDraft(ctx,id,0,body());assert.deepEqual(d.body.executiveSummary,summary());assert.deepEqual(publicBody(d.body).executiveSummary,summary());
+ d.body.articles[0].clipId=randomUUID();d=await saveDraft(ctx,id,1,d.body);assert(d.body.executiveSummary);
+ d.body.articles[0].summary='La squadra cambia preparazione.';d=await saveDraft(ctx,id,2,d.body);assert.equal(d.body.executiveSummary,null);await assert.rejects(validateSummaryReady(d.body),/Summary mancante/);
+});
+test('Readiness rejects empty, wrong categories and overflowing Summary; legacy is unaffected',async()=>{
+ const b=body();await validateSummaryReady(b);const empty=body();empty.executiveSummary.sections.forEach(s=>s.items=[]);await assert.rejects(validateSummaryReady(empty),/highlights/);
+ b.articles[0].category='Editoriali';await assert.rejects(validateSummaryReady(b),/quattro aree/);
+ const long=body();long.executiveSummary.sections[1].items=Array(30).fill('Un tema lungo: '+ 'Testo verificato. '.repeat(20));await assert.rejects(validateSummaryReady(long),/supera una pagina/);
+ await validateSummaryReady({articles:[]});
+});
+test('Summary instructions selected only for the new profile',async()=>{
+ const ctx={role:'editor',user:{id:'test'},store:new MemoryStore()};
+ const old=await readInstructions(ctx),next=await readInstructions({...ctx,editorialModel:'summary-v1'});
+ assert.equal(old.editorialModel,undefined);assert.equal(next.editorialModel,'summary-v1');assert(next.text.includes('CAMPO executiveSummary'));assert(!next.text.includes('editoriali consecutivi all’inizio'));assert(next.text.includes('claim_automation_run'));
+});

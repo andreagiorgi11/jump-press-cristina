@@ -13,6 +13,8 @@ for(const role of ['producer','editor','publisher'])test(`MCP handshake and tool
  try{
   await server.connect(a);await client.connect(b);
   const {tools}=await client.listTools();
+  const bodyProperties=tools.find(t=>t.name==='save_draft').inputSchema.properties.body.properties;
+  assert(bodyProperties.executiveSummary);assert(bodyProperties.editorialModel);
   assert.equal(tools.some(t=>t.name==='publish_edition'),role==='publisher');
   for(const name of ['read_source_text_batch','read_source_pages','read_clip_pages','create_import_clips','import_source_url','read_import_status','read_source_text','read_source_page','create_import_clip','read_clip_page','prepare_clip_upload','read_draft','save_draft','create_clip','prepare_pdf_upload','restore_revision'])assert(tools.some(t=>t.name===name));
   const response=await client.callTool({name:'read_editorial_instructions',arguments:{}});
