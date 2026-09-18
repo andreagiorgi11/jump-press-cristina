@@ -33,6 +33,6 @@ export default function EditionAnalysis({body,onClip,privateClips=false,onEdit,c
    <div className={`jump-insight-card ${onEdit?'editable-section':''}`}><SectionEditButton onEdit={onEdit} section="tone" label="toni prevalenti"/><b>Toni prevalenti</b><div className="tonechips">{body.tones.map(t=><span key={t}>{t}</span>)}</div><p>{body.toneSummary||(body.tones.length?'':'Analisi del tono da completare.')}</p></div>
   </div></section>
   </>}
-  <aside id="jump-rating-guide" className="rating-note" aria-label="Come leggere le stelle"><p><b>Peso delle notizie.</b> Le stelle indicano la rilevanza nella rassegna, non la qualità della testata o il tono della notizia.</p><ul>{[5,4,3,2,1].map(n=><li key={n}><span className="rating-level" aria-label={`${n} su 5`}>{n}<span className="rating-segments" aria-hidden="true">{[1,2,3,4,5].map(i=><i key={i} className={i<=n?'is-filled':''}/>)}</span></span><span>{n===5?'Dominante':ratingCopy[n][0]}</span></li>)}</ul></aside>
+  {!compact&&<aside id="jump-rating-guide" className="rating-note" aria-label="Come leggere le stelle"><p><b>Peso delle notizie.</b> Le stelle indicano la rilevanza nella rassegna, non la qualità della testata o il tono della notizia.</p><ul>{[5,4,3,2,1].map(n=><li key={n}><span className="rating-level" aria-label={`${n} su 5`}>{n}<span className="rating-segments" aria-hidden="true">{[1,2,3,4,5].map(i=><i key={i} className={i<=n?'is-filled':''}/>)}</span></span><span>{n===5?'Dominante':ratingCopy[n][0]}</span></li>)}</ul></aside>}
  </>;
 }
