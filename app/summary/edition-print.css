@@ -39,7 +39,7 @@
 /* Numbered article bands, scoped to the experimental summary site. */
 @media screen{
  .summary-edition .articles>article{position:relative;padding-left:86px}
- .summary-edition .article-number-rail{position:absolute;inset:0 auto 0 0;width:54px;display:flex;justify-content:center;align-items:flex-start;padding-top:30px;background:#171e17;color:#dcf55a;border-bottom:4px solid #dcf55a;border-radius:0;font:700 18px/1 Arial;font-variant-numeric:tabular-nums;letter-spacing:-.5px;pointer-events:none}
+ .summary-edition .article-number-rail{position:absolute;inset:0 auto 7px 0;width:54px;display:flex;justify-content:center;align-items:flex-start;padding-top:30px;background:#171e17;color:#dcf55a;border-bottom:4px solid #dcf55a;border-radius:0;font:700 18px/1 Arial;font-variant-numeric:tabular-nums;letter-spacing:-.5px;pointer-events:none}
 }
 @media screen and (max-width:700px){
  .summary-edition .articles>article{padding-left:52px}
