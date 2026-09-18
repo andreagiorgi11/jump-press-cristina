@@ -224,3 +224,8 @@ La versione parallela usa la barra editor originale (menu Editor, Archivio local
 
 ### Summary separato di una pagina
 Il pulsante Summary apre un'anteprima PDF dedicata con sintesi generale e highlights delle quattro aree, scaricabile separatamente. Usa la proposta locale .local/summary-preview.json e mantiene la dicitura da revisionare; non genera una nuova analisi GPT. Esporta PDF continua a mostrare la rassegna completa. Entrambi gli endpoint sono limitati al laboratorio locale. Verificati il Summary su una sola pagina A4, anteprima e download, e le build Press e News.
+
+### Temi del Summary: numero variabile
+Non assegnare quote fisse di temi alle quattro aree e non usare il numero degli articoli come numero degli highlights. Leggere l'intera selezione, accorpare gli articoli sullo stesso argomento e riportare ogni tema rilevante distinto una sola volta nell'area pertinente. Le aree possono avere numeri di temi diversi; non aggiungere temi per riempirle. Ordinare per rilevanza e scrivere una frase breve per highlight, integrando i commenti editoriali nel tema.
+Obiettivo: una pagina A4 leggibile. Prima ridurre ripetizioni e lunghezza delle frasi senza perdere i temi; non troncare liste né eliminare automaticamente gli ultimi highlights, non rimpicciolire indefinitamente il testo. Se non basta, richiedere una scelta editoriale tra selezione degli highlights principali e più pagine. L'esportazione segnala il superamento della pagina e non produce un PDF tagliato.
+Il campione locale del 18 ora contiene 7 temi prima squadra e 2 per ciascuna altra area: sono il risultato di questa selezione, non limiti per le giornate successive. Istruzioni del laboratorio; il connettore GPT di produzione non è stato modificato.
