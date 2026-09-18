@@ -2,6 +2,10 @@ import {NextResponse} from 'next/server';
 import {routeAllowed} from './lib/routing';
 export function middleware(request){
  const {pathname,searchParams}=request.nextUrl;
+ if(process.env.JUMP_SUMMARY_SANDBOX==='1'){
+  if(process.env.VERCEL||!['/','/summary'].includes(pathname))return new NextResponse('Ambiente Summary isolato: percorso disabilitato',{status:404});
+  return NextResponse.next();
+ }
  const site=process.env.NEXT_PUBLIC_JUMP_SITE||'press';
  if(!routeAllowed(pathname,site))return new NextResponse('Pagina non disponibile',{status:404,headers:{'X-Robots-Tag':'noindex, nofollow','Cache-Control':'no-store'}});
  if(site==='news'&&pathname==='/'){const url=request.nextUrl.clone();url.pathname='/news';return NextResponse.redirect(url);}

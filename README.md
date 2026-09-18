@@ -202,3 +202,11 @@ Il catalogo in lib/editorial-topics.js ordina i blocchi e conserva l’ordine in
 
 ### Accorpamento dei temi
 Otto blocchi: Editoriali, Prima squadra, Prossimo avversario, Settore giovanile, Next Gen, Juventus Women, Politica sportiva, Altri temi. La presentazione accorpa anche i vecchi valori senza riscrivere i dati: Mercato e Società e dirigenza in Prima squadra; Arbitri e VAR in Politica sportiva; Nazionale e Competizioni europee in Altri temi. Istruzioni locali allineate; schema compatibile con gli argomenti editoriali precedenti.
+
+## Laboratorio Summary — ramo feature/juventus-summary
+Worktree separato dal sito pubblicato, basato sul rilascio 4e0ae17. Avvio con avvia-summary.bat, porta 3018 su 127.0.0.1. Installazione indipendente delle dipendenze; nessun file .env o credenziale di produzione copiato. Il launcher rifiuta file env e rimuove le credenziali ereditate. In modalità laboratorio sono accessibili solo / e /summary, con API, OAuth e connettore disabilitati.
+
+Il campione .local/summary-source.json contiene esclusivamente una copia dei testi pubblicati del 18 settembre, non PDF originali, account o dati privati. .local/summary-preview.json contiene la sintesi proposta, basata sui 22 articoli selezionati e non su una nuova lettura integrale del PDF. Entrambi sono esclusi da Git. La pagina segnala questa provenienza e la classificazione provvisoria di giovani/Next Gen nelle Varie. Modifiche dei campi solo nello stato della pagina, senza persistenza; esportazione tramite stampa del browser. Nessun invio o pubblicazione automatico. I PDF completi delle sezioni e il collegamento GPT restano da definire.
+
+### Istruzioni della proposta Summary
+Output: una pagina, sintesi generale breve e highlights accorpati nelle quattro aree richieste. Un tema non è un titolo di articolo; più pezzi sullo stesso argomento contribuiscono a un solo highlight. Nessuna sezione autonoma Editoriali o Sentiment: i commenti alimentano il tema pertinente, il tono può essere richiamato nel cappello. Giovani e Next Gen nelle Varie solo come ipotesi provvisoria. Non inventare temi né riempire aree prive di notizie. Revisione umana prima di qualsiasi invio; canale e composizione dei PDF dettagliati ancora da concordare. Queste regole del laboratorio non aggiornano le istruzioni del connettore di produzione.
