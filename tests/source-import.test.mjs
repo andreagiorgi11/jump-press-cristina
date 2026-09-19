@@ -6,7 +6,7 @@ import {MemoryStore} from './helpers.mjs';
 import {sourceUrl} from '../lib/source-download.js';
 import {extractSourceText,renderSourcePage} from '../lib/source-pdf.js';
 import {importPdf,getImport,readImportText,createImportClip,purgeOriginals} from '../lib/source-service.js';
-import {saveDraft,publishDraft,publicClip} from '../lib/editor-service.js';
+import {saveDraft,publishDraft,publicClip,withdrawDraft} from '../lib/editor-service.js';
 import {newEdition} from '../lib/schema.js';
 const url='https://rassegna.dominiocliente.it/Areas/Rassegna/Elab/CheckedDownload.aspx?nome_file=PP_RAS_1626482_20260917_16377886.pdf';
 async function fixture(){
@@ -41,8 +41,13 @@ test('server import -> text/image -> clip -> private draft -> explicit publicati
  await assert.rejects(publishDraft({...ctx,role:'producer'},id,2,'PUBBLICA'),/Permesso/);
  await publishDraft(ctx,id,2,'PUBBLICA');assert(await publicClip(clip.clipId,ctx.store,ctx.blobs));
  const published=await getImport(ctx,r.importId);assert(published.deleteAfter);
+ assert.equal(Date.parse(published.deleteAfter)-Date.parse(published.firstPublishedAt),24*60*60*1000);
+ const withdrawn=await withdrawDraft(ctx,id,2,'RITIRA_E_MODIFICA');
+ assert.equal((await purgeOriginals(ctx,Date.parse(published.deleteAfter))).deleted,0);
+ await publishDraft(ctx,id,withdrawn.version,'PUBBLICA');
+ assert.equal((await getImport(ctx,r.importId)).deleteAfter,published.deleteAfter);
  assert.equal((await purgeOriginals(ctx,Date.parse(published.deleteAfter)-1)).deleted,0);
- assert.equal((await purgeOriginals(ctx,Date.parse(published.deleteAfter)+1)).deleted,1);
+ assert.equal((await purgeOriginals(ctx,Date.parse(published.deleteAfter))).deleted,1);
  assert(!ctx.files.has(row.originalPath));assert(ctx.files.has(row.textPath));assert(await publicClip(clip.clipId,ctx.store,ctx.blobs));
  assert.equal((await readImportText(ctx,r.importId,1,1)).pages.length,1);
 });

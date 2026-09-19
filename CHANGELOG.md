@@ -1,3 +1,7 @@
+## 2026-09-19 — conservazione originali allineata nella candidata
+
+Codice e istruzioni Summary a 24 ore dalla prima pubblicazione dell’editor. Menu Istruzioni esplicativo nell’anteprima; testi e ritagli preservati. Nessuna attivazione del modello in produzione.
+
 # Temi in ordine fisso (locale)
 Catalogo condiviso, articoli raggruppati stabilmente, argomento degli editoriali nel campo topic e selezione guidata nel pop-up. Istruzioni GPT locali aggiornate; nessuna modifica ai dati salvati o alle istruzioni online.
 
