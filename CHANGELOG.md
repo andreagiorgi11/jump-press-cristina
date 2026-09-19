@@ -1,3 +1,7 @@
+## 2026-09-19 — originali a 24 ore dalla pubblicazione (locale)
+
+Scadenza degli originali ridotta a 24 ore dalla prima pubblicazione esplicita dell'editor. Ritiro e ripubblicazione conservano l'inizio del conteggio; la pulizia rimane sospesa durante il ritiro. Testi e ritagli preservati, nessuna migrazione delle scadenze esistenti. Rimozione alla prima pulizia MCP successiva alla scadenza.
+
 # Temi in ordine fisso (locale)
 Catalogo condiviso, articoli raggruppati stabilmente, argomento degli editoriali nel campo topic e selezione guidata nel pop-up. Istruzioni GPT locali aggiornate; nessuna modifica ai dati salvati o alle istruzioni online.
 
