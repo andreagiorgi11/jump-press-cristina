@@ -277,3 +277,5 @@ Aggiornamento anteprima autorizzato e pubblicato: deployment dpl_E7nsenJkw2SuCGV
 
 ### Allineamento conservazione — 19 settembre 2026
 Originali a 24 ore dalla prima pubblicazione esplicita dell’editor: codice, istruzioni GPT ereditate dal modello Summary e menu Istruzioni dell’anteprima allineati. Ritiro sospende pulizia, ripubblicazione conserva il conteggio. Testi e ritagli restano. Scadenze esistenti non migrate. Regola candidata, non attivata sul sito principale; ottimizzazione ritagli ancora solo sperimentale.
+
+19 settembre 2026: la conservazione a 24 ore è stata rilasciata sul sito operativo con PR #24 (merge cd4d26b), istruzioni online v13. Il modello Summary resta separato e in approvazione; nessuna attivazione del profilo sul sito principale. L’avviso dell’anteprima è allineato a questa distinzione.
