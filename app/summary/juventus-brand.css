@@ -178,7 +178,7 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 .summary-content .combined-points .key-point-negativo>span{background:#fbe9ed;color:#a11932;border-radius:4px;padding:3px 6px}
 .summary-content .key-point-negativo .key-point-label{color:#a11932}
 .summary-content .approval-frontpages{background:transparent;padding:28px 0 0;border:0;border-top:1px solid #e5e7eb;border-radius:0;margin-top:28px}
-.summary-content .approval-frontpages>b{display:block;text-align:left;font-size:18px;margin-bottom:20px;color:#20252b}
+.summary-content .approval-frontpages>b{display:block;text-align:center;font-size:18px;margin-bottom:20px;color:#20252b}
 .summary-content .approval-frontpages>div{gap:12px!important;align-items:stretch!important}
 .summary-content .approval-frontpages .frontpage-tile{box-sizing:border-box;min-height:100px;padding:18px;background:#fff;border:1px solid #e4e7eb;border-radius:12px}
 .summary-content .approval-frontpages .frontpage-tile:has(a:hover),.summary-content .approval-frontpages .frontpage-tile:has(button:hover){border-color:#486581;background:#f7f9fb}
