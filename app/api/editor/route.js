@@ -3,7 +3,7 @@ import {requireEditor} from '../../../lib/server-client';
 import {failure,sameOrigin} from '../../../lib/errors';
 import * as service from '../../../lib/editor-service';
 export const dynamic='force-dynamic';
-export const maxDuration=60;
+export const maxDuration=300;
 const id=z.string().uuid();
 export async function GET(request){try{
  const {db,role}=await requireEditor(request);

@@ -136,3 +136,10 @@ Interfaccia editor e archivio, correzioni per sezione, anteprima lettore, catego
 - PDF dallo snapshot pubblicato o dalla versione autenticata della bozza, con ritagli autorizzati e risposta streaming.
 - Profilo Summary derivato dalle istruzioni operative, versionato separatamente.
 - Font distribuiti e isolamento dei campioni locali; test permessi, privacy e compatibilità.
+
+## 2026-09-22 — Ritagli automatici e controlli non bloccanti
+- Preparazione server da sourceImportId/pages in un salvataggio, riscontro titolo, riuso dei ritagli, durata misurata.
+- Avvisi PDF/sintesi in redazione, estratti a supporto del controllo dichiarato da GPT, invalidazione dopo modifiche; completamento con avvisi.
+- Barrette rimosse da Approvazione e PDF. Nessuna pubblicazione automatica.
+- Rollback codice: deployment precedente dpl_4jCCMptniAn68vjcUNYM8jckaV2r; ripristinare anche istruzioni Summary v20 conservate nello storico. I nuovi campi devono essere conservati nei dati; il vecchio schema non li accetta in salvataggio, quindi evitare scritture da client vecchi senza migrazione compatibile.
+- Bozza del 22 v8 archiviata in modo recuperabile prima del nuovo collaudo. Originale e ritagli conservati; test automatico completo ancora da eseguire.
