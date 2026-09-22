@@ -317,3 +317,6 @@ Le istruzioni chiedono selezione integrale, sintesi in piccoli gruppi e confront
 ### Archivi di rilancio
 read_draft MCP restituisce archived_for_relaunch solo per bozze eliminate con archivePurpose=relaunch, archivedAt e assenti dagli indici attivi/cestino/pubblicati. Non consente modifiche al vecchio ID: claim_automation_run resta autoritativo per i duplicati. Il cestino ordinario conserva HTTP 410.
 
+
+### Rinnovo su attivita — sperimentale, non attivo in produzione
+Attivabile soltanto con JUMP_ACTIVITY_RENEWAL=1 o activityRenewal=true nei test. I commit di contenuti associati a un run valido aggiornano la scadenza nella stessa transazione. Le letture MCP riuscite della fonte assegnata rinnovano dopo almeno due minuti dall ultimo rinnovo; errori e letture di stato non rinnovano. Non cambia checkpoint, fase o verifiche editoriali e non riattiva lease scadute. I controlli di versione e generazione restano invariati. Nessun timer tiene vivo un modello inattivo. Le operazioni lunghe devono ancora terminare entro la lease valida. Le istruzioni online e il rinnovo esplicito restano invariati finche questa prova locale non viene approvata per il rilascio. Rollback: rimuovere il flag; nessuna migrazione dati.
