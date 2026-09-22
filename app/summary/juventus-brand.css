@@ -244,7 +244,7 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 .summary-sidebar .sidebar-coverage dl{padding-top:8px}
 
 /* Two compact columns: topic distribution and daily signals. */
-.summary-content .combined-columns{margin-top:20px;gap:32px}
+.summary-content .combined-columns{margin-top:20px;gap:44px}
 .summary-content .combined-distribution>h2,.summary-content .day-summary-heading>h2{font:600 25px/1.15 JumpRoboto,Arial,Helvetica,sans-serif;letter-spacing:-.5px;margin:0;color:#151515}
 .summary-content .combined-distribution>h2{margin-bottom:24px}
 
@@ -257,3 +257,5 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 .summary-content .signal-group li:last-child{margin-bottom:0}
 .summary-content .signal-title{margin-bottom:3px}
 @media(max-width:600px){.summary-content .day-summary-heading>h2,.summary-content .combined-distribution>h2{font-size:21px}}
+
+@media(min-width:1101px){.summary-content .combined-distribution{padding-right:40px}}
