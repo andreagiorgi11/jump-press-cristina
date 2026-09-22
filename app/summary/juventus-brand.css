@@ -201,3 +201,11 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 .summary-content .daily-sentiment svg text{font:10px JumpRoboto,Arial;fill:#778188}
 .summary-content .daily-sentiment>strong{display:block;font:600 12px/1.5 JumpRoboto,Arial;color:#42524a}
 .summary-content .daily-sentiment>small{display:block;font:10px/1.5 JumpRoboto,Arial;color:#80898c;margin-top:4px}
+.summary-sidebar .sidebar-coverage{margin:20px 0 12px;padding:18px 10px 0;border-top:1px solid #e8ebed}
+.summary-sidebar .sidebar-coverage h2{margin:0 0 12px;font:600 10px/1.4 JumpRoboto,Arial;letter-spacing:1.2px;color:#7b8387}
+.summary-sidebar .sidebar-coverage dl{margin:0}
+.summary-sidebar .sidebar-coverage dl>div{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:7px 0}
+.summary-sidebar .sidebar-coverage dt{font:11px/1.4 JumpRoboto,Arial;color:#6b747a;max-width:125px}
+.summary-sidebar .sidebar-coverage dd{margin:0;font:600 12px/1.4 JumpRoboto,Arial;color:#26323a;text-align:right;font-variant-numeric:tabular-nums}
+.summary-content .frontpages-only .approval-frontpages{border:0;margin:0;padding:0}
+@media(max-height:800px) and (min-width:901px){.summary-sidebar-heading{padding-top:16px;padding-bottom:14px}.summary-sidebar .summary-downloads{margin-top:16px;padding-top:12px}.summary-sidebar .sidebar-coverage{margin-top:12px;padding-top:12px}.summary-sidebar .sidebar-coverage dl>div{padding:5px 0}.summary-sidebar .summary-sidebar-bottom{padding-top:18px}}

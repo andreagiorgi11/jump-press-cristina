@@ -14,7 +14,7 @@ export function EditionStats({body}){
 export default function EditionAnalysis({body,onClip,privateClips=false,onEdit,compact=false}){
  const a=analyseEdition(body);
  return <>
-  <section className="ranking"><small>QUADRO GENERALE DELLA RASSEGNA</small><h2>I numeri dell’intera copertura</h2>
+  <section className={`ranking ${compact?'frontpages-only':''}`}>{!compact&&<><small>QUADRO GENERALE DELLA RASSEGNA</small><h2>I numeri dell’intera copertura</h2>
    <div id="jump-daily-metrics">
     <Tile number={value(a.examined)} label="voci complessive esaminate" note="Base di lavoro prima della selezione editoriale"/>
     <Tile number={a.selected} label="pezzi selezionati" note={percentage(a.selected,a.examined)?`${percentage(a.selected,a.examined)} del totale esaminato`:'Articoli presenti in questa rassegna'}/>
@@ -22,7 +22,7 @@ export default function EditionAnalysis({body,onClip,privateClips=false,onEdit,c
     <Tile number={a.frontPages===null?'Non verificato':`${a.juventus} / ${a.frontPages}`} label="prime pagine con richiamo Juventus" note={percentage(a.juventus,a.frontPages)}/>
     <Tile number={a.sports===null?'Non verificato':`${a.sportsJuventus} / ${a.sports}`} label="quotidiani sportivi italiani" note="Copertine con Juventus sul totale degli sportivi italiani verificati"/>
     <Tile number={a.frontPages===null?'Non verificato':a.frontPages-a.juventus} label="prime pagine senza Juventus"/>
-   </div>
+   </div></>}
    <div className="jump-frontpages-list frontpages-wordmarks approval-frontpages"><b>La Juventus sulle prime pagine</b><div>{a.outlets===null?<p>Prime pagine da verificare.</p>:a.outlets.length?(body.coverage.frontPages.filter(p=>p.juventus).sort((x,y)=>compact?frontpagePriority(x.outlet)-frontpagePriority(y.outlet):0)).map(p=><div className="frontpage-tile" key={p.page}>{p.clipId?(privateClips?<button type="button" className="frontpage-link" onClick={()=>onClip?.(p.clipId)} aria-label={'Apri prima pagina di '+p.outlet}><OutletWordmark name={p.outlet}/></button>:<a className="frontpage-link" href={'/api/clips/'+p.clipId} target="_blank" rel="noreferrer" aria-label={'Apri prima pagina di '+p.outlet}><OutletWordmark name={p.outlet}/></a>):<OutletWordmark name={p.outlet}/>}</div>):<p>Nessun richiamo Juventus nelle prime pagine verificate.</p>}</div></div>
   </section>
   {compact?<CombinedAnalysis body={body} analysis={a} onEdit={onEdit}/>:<>
