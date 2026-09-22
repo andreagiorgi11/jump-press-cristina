@@ -177,3 +177,21 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 .summary-content .combined-points .key-point-positivo>span{background:#dfff2f;border-radius:4px;padding:3px 6px}
 .summary-content .combined-points .key-point-negativo>span{background:#fbe9ed;color:#a11932;border-radius:4px;padding:3px 6px}
 .summary-content .key-point-negativo .key-point-label{color:#a11932}
+.summary-content .approval-frontpages{background:transparent;padding:28px 0 0;border:0;border-top:1px solid #e5e7eb;border-radius:0;margin-top:28px}
+.summary-content .approval-frontpages>b{display:block;text-align:left;font-size:18px;margin-bottom:20px;color:#20252b}
+.summary-content .approval-frontpages>div{gap:12px!important;align-items:stretch!important}
+.summary-content .approval-frontpages .frontpage-tile{box-sizing:border-box;min-height:100px;padding:18px;background:#fff;border:1px solid #e4e7eb;border-radius:12px}
+.summary-content .approval-frontpages .frontpage-tile:has(a:hover),.summary-content .approval-frontpages .frontpage-tile:has(button:hover){border-color:#486581;background:#f7f9fb}
+.summary-content .approval-frontpages .frontpage-link{width:100%;height:100%;background:none;border:0}
+.summary-content .approval-frontpages .outlet-wordmark{width:100%;text-align:center;display:flex;justify-content:center}
+.summary-content .approval-frontpages .outlet-wordmark img{width:150px!important;height:40px!important;max-width:100%;object-fit:contain}
+.summary-content .signal-group{padding:18px 20px;margin:0 0 14px;border-radius:12px;border:1px solid #dbe5df;background:#f4f7f4}
+.summary-content .signal-group h4{font:700 13px/1.4 JumpRoboto,Arial;margin:0 0 14px;color:#3c604a}
+.summary-content .signal-group-negativo{background:#faf5f2;border-color:#e9ddd4}
+.summary-content .signal-group-negativo h4{color:#865437}
+.summary-content .signal-group-neutro{background:#f7f8fa;border-color:#e3e6eb}
+.summary-content .signal-group-neutro h4{color:#486581}
+.summary-content .signal-group ul{list-style:none;padding:0;margin:0}
+.summary-content .signal-group li{display:block;margin:0 0 14px;padding:0}
+.summary-content .signal-group li:last-child{margin-bottom:0}
+.summary-content .signal-title{display:block;font-size:14px;margin-bottom:4px;color:#20252b}
