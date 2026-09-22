@@ -262,3 +262,6 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 @font-face{font-family:JumpRoboto;src:url('/brand/fonts/roboto-semibold.ttf') format('truetype');font-weight:600;font-style:normal;font-display:swap}
 @font-face{font-family:JumpRoboto;src:url('/brand/fonts/roboto-bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
 .summary-content .signal-group li p{font-family:JumpRoboto,Arial,Helvetica,sans-serif}
+.summary-content .signal-group li{position:relative;padding-left:34px}
+.summary-content .signal-group li::before{content:'';position:absolute;left:10px;top:8px;width:5px;height:5px;border-radius:50%;background:#252525}
+.summary-content .signal-group-negativo li::before{background:#8b3840}
