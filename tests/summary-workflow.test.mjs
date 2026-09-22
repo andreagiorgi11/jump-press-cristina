@@ -65,7 +65,7 @@ test('Full PDF omits operating counters, retains signals and paginates long poin
  const read=async bytes=>{const loading=getDocument({data:bytes,useSystemFonts:true});const doc=await loading.promise;let text='';for(let i=1;i<=doc.numPages;i++){const p=await doc.getPage(i);const content=await p.getTextContent();text+=content.items.map(x=>x.str).join(' ')+'\n';}const pages=doc.numPages;await loading.destroy();return {text,pages};};
  const regular=await read(await exportEditionPdf(b));
  assert(!/Voci esaminate|Prime pagine verificate|I numeri dell/.test(regular.text));
- assert.match(regular.text,/Segnali positivi/);assert.match(regular.text,/Criticità/);assert.match(regular.text,/La squadra si prepara/);
+ assert.match(regular.text,/Segnali positivi/);assert.match(regular.text,/Segnali di criticità/);assert.match(regular.text,/La squadra si prepara/);
  b.keyPoints=Array.from({length:5},(_,i)=>`Negativo: Tema ${i+1}. ${'Contenuto da verificare nelle fonti. '.repeat(24)} Fine punto ${i+1}.`);
  const long=await read(await exportEditionPdf(b));assert(long.pages>regular.pages);
  for(let i=1;i<=5;i++)assert.match(long.text,new RegExp(`Fine punto ${i}`));
