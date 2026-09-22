@@ -242,3 +242,17 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 .summary-sidebar .sidebar-coverage[open]>summary svg{transform:rotate(180deg)}
 .summary-sidebar .sidebar-coverage>summary:focus-visible{outline:2px solid #151515;outline-offset:3px;border-radius:3px}
 .summary-sidebar .sidebar-coverage dl{padding-top:8px}
+
+/* Two compact columns: topic distribution and daily signals. */
+.summary-content .combined-columns{margin-top:20px;gap:32px}
+.summary-content .combined-distribution>h2{font-size:25px;line-height:1.15;margin:0 0 8px}
+.summary-content .distribution-caption{font:12px/1.5 JumpRoboto,Arial;color:#737373;margin:0 0 22px}
+.summary-content .day-summary-heading{margin:0 0 20px}
+.summary-content .day-summary-heading>h3{font-size:25px;line-height:1.15;letter-spacing:-.5px;margin:0}
+.summary-content .signal-group{margin-bottom:18px}
+.summary-content .signal-group:last-child{margin-bottom:0}
+.summary-content .signal-group h4{margin-bottom:12px;padding-top:12px}
+.summary-content .signal-group li{margin-bottom:12px}
+.summary-content .signal-group li:last-child{margin-bottom:0}
+.summary-content .signal-title{margin-bottom:3px}
+@media(max-width:600px){.summary-content .day-summary-heading>h3,.summary-content .combined-distribution>h2{font-size:21px}}
