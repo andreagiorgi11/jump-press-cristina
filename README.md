@@ -313,3 +313,7 @@ Il nuovo flusso passa `sourceImportId` nel corpo di `save_draft`, insieme a `pag
 Titolo confrontato con testo della prima pagina; difformità e guasti diventano «PDF da verificare», senza impedire salvataggio o consegna dell’automatismo. `factCheck` contiene la verifica dichiarata da GPT e gli estratti con pagina; il server riscontra gli estratti ma non certifica la correttezza semantica. Verifica assente, dubbia o invalidata dalle modifiche: «Sintesi da verificare». I risultati server non sono accettati sulla fiducia dal client. Avvisi visibili soltanto in redazione, esclusi dallo snapshot pubblico. Il completamento con avvisi conserva `reviewWarnings` e non richiede più immagini/checkpoint dei ritagli nel nuovo flusso; il protocollo precedente rimane compatibile. Pubblicazione esplicita e controlli di integrità dei PDF invariati.
 
 Le istruzioni chiedono selezione integrale, sintesi in piccoli gruppi e confronto fattuale separato prima della consegna; nessun controllo visivo sistematico dei ritagli, immagini originali solo per copertine o ambiguità del testo. Le barrette sono rimosse dalla vista Approvazione e dal PDF. Non confondere l’archivio di collaudo privato con l’archivio pubblico delle edizioni.
+
+### Archivi di rilancio
+read_draft MCP restituisce archived_for_relaunch solo per bozze eliminate con archivePurpose=relaunch, archivedAt e assenti dagli indici attivi/cestino/pubblicati. Non consente modifiche al vecchio ID: claim_automation_run resta autoritativo per i duplicati. Il cestino ordinario conserva HTTP 410.
+
