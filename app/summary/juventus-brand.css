@@ -195,3 +195,9 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 .summary-content .signal-group li{display:block;margin:0 0 14px;padding:0}
 .summary-content .signal-group li:last-child{margin-bottom:0}
 .summary-content .signal-title{display:block;font-size:14px;margin-bottom:4px;color:#20252b}
+.summary-content .daily-sentiment{border-top:1px solid #e8ebed;margin:24px 0 0;padding-top:19px;text-align:center}
+.summary-content .daily-sentiment h4{font:600 12px/1.4 JumpRoboto,Arial;color:#52616a;margin:0 0 8px}
+.summary-content .daily-sentiment svg{display:block;width:190px;max-width:100%;margin:0 auto}
+.summary-content .daily-sentiment svg text{font:10px JumpRoboto,Arial;fill:#778188}
+.summary-content .daily-sentiment>strong{display:block;font:600 12px/1.5 JumpRoboto,Arial;color:#42524a}
+.summary-content .daily-sentiment>small{display:block;font:10px/1.5 JumpRoboto,Arial;color:#80898c;margin-top:4px}
