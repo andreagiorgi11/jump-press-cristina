@@ -47,3 +47,26 @@ test('Full PDF exports without workstation font files',async()=>{
  const bytes=await exportEditionPdf(body());
  const pdf=await PDFDocument.load(bytes);assert(pdf.getPageCount()>=2);
 });
+
+test('Key points support variable counts and preserve historical unlabelled text',async()=>{
+ const {parseKeyPoint,formatKeyPoint}=await import('../lib/key-point-signals.js');
+ assert.deepEqual(parseKeyPoint('Positivo: Recupero verificato'),{kind:'positivo',text:'Recupero verificato'});
+ assert.deepEqual(parseKeyPoint('Negativo: Emergenza portiere'),{kind:'negativo',text:'Emergenza portiere'});
+ assert.deepEqual(parseKeyPoint('Risultato negativo secondo il commentatore'),{kind:'neutro',text:'Risultato negativo secondo il commentatore'});
+ assert.equal(formatKeyPoint('negativo','Tema'),'Negativo: Tema');
+ for(const count of [1,2,4,5]){const b=body();b.keyPoints=Array(count).fill('Positivo: Recupero verificato');await validateSummaryReady(b);}
+ const empty=body();empty.keyPoints=[];await assert.rejects(validateSummaryReady(empty),/uno a cinque/);
+});
+
+test('Full PDF omits operating counters, retains signals and paginates long points',async()=>{
+ const {exportEditionPdf}=await import('../lib/summary-pdf.js');
+ const {getDocument}=await import('pdfjs-dist/legacy/build/pdf.mjs');
+ const b=body();b.keyPoints=['Positivo: Recupero verificato','Negativo: Emergenza portiere'];
+ const read=async bytes=>{const loading=getDocument({data:bytes,useSystemFonts:true});const doc=await loading.promise;let text='';for(let i=1;i<=doc.numPages;i++){const p=await doc.getPage(i);const content=await p.getTextContent();text+=content.items.map(x=>x.str).join(' ')+'\n';}const pages=doc.numPages;await loading.destroy();return {text,pages};};
+ const regular=await read(await exportEditionPdf(b));
+ assert(!/Voci esaminate|Prime pagine verificate|I numeri dell/.test(regular.text));
+ assert.match(regular.text,/Positivo/);assert.match(regular.text,/Negativo/);assert.match(regular.text,/La squadra si prepara/);
+ b.keyPoints=Array.from({length:5},(_,i)=>`Negativo: Tema ${i+1}. ${'Contenuto da verificare nelle fonti. '.repeat(24)} Fine punto ${i+1}.`);
+ const long=await read(await exportEditionPdf(b));assert(long.pages>regular.pages);
+ for(let i=1;i<=5;i++)assert.match(long.text,new RegExp(`Fine punto ${i}`));
+});

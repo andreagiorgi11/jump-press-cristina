@@ -173,3 +173,7 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 
 .summary-pdf-continuous>nav .pdf-page-input{box-sizing:border-box;width:36px;min-height:40px;padding:4px 2px;text-align:center;border:1px solid #ffffff60;border-radius:6px;background:#ffffff15;color:#fff;font:inherit}.summary-pdf-continuous>nav .pdf-page-input:focus{outline:2px solid #dfff2f;outline-offset:1px}@media(max-width:600px){.summary-pdf-continuous>nav .pdf-page-input{width:30px;min-height:44px}}
 @media(max-width:600px){.summary-pdf-continuous>nav{width:280px;gap:2px}}
+.summary-content .key-point-label{display:block;margin-bottom:5px;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+.summary-content .combined-points .key-point-positivo>span{background:#dfff2f;border-radius:4px;padding:3px 6px}
+.summary-content .combined-points .key-point-negativo>span{background:#fbe9ed;color:#a11932;border-radius:4px;padding:3px 6px}
+.summary-content .key-point-negativo .key-point-label{color:#a11932}
