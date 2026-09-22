@@ -279,3 +279,27 @@ Aggiornamento anteprima autorizzato e pubblicato: deployment dpl_E7nsenJkw2SuCGV
 Originali a 24 ore dalla prima pubblicazione esplicita dell’editor: codice, istruzioni GPT ereditate dal modello Summary e menu Istruzioni dell’anteprima allineati. Ritiro sospende pulizia, ripubblicazione conserva il conteggio. Testi e ritagli restano. Scadenze esistenti non migrate. Regola candidata, non attivata sul sito principale; ottimizzazione ritagli ancora solo sperimentale.
 
 19 settembre 2026: la conservazione a 24 ore è stata rilasciata sul sito operativo con PR #24 (merge cd4d26b), istruzioni online v13. Il modello Summary resta separato e in approvazione; nessuna attivazione del profilo sul sito principale. L’avviso dell’anteprima è allineato a questa distinzione.
+
+## Passaggio operativo ad Approvazione — 22 settembre 2026
+
+Andrea ha richiesto di rendere `jump-press-approvazione.vercel.app` la piattaforma operativa. Questa sezione sostituisce le precedenti indicazioni di sola anteprima statica; `/summary` rimane un laboratorio esclusivamente locale.
+
+La modalità `JUMP_APPROVAL_LIVE=1` integra la grafica approvata nella home, nelle edizioni pubblicate e nelle bozze della redazione. `JUMP_EDITORIAL_MODEL=summary-v1` attiva quattro categorie e il Summary strutturato. Il repository dati e lo store Blob privati sono gli stessi del servizio precedente: nessuna copia, pubblicazione o riscrittura dello storico. L'ultima edizione pubblicata può essere diversa dall'anteprima dimostrativa.
+
+`/api/edition-pdf` legge lo snapshot pubblicato della data richiesta oppure una bozza autenticata con versione esatta. I ritagli devono appartenere alla medesima edizione; originali e altre bozze non sono esportabili. Il PDF completo viene validato prima della risposta in streaming. Una vecchia edizione senza Summary mantiene il PDF rassegna; non viene inventato un Summary. I font provengono dagli asset distribuiti, senza dipendenze da Windows o `.local`.
+
+Le istruzioni Summary derivano dalle istruzioni operative correnti e conservano selezione della mail primaria, controllo duplicati, lease e recupero. Eventuali modifiche al profilo vengono salvate separatamente in `settings/summary-editorial-instructions.json` con storico e controllo di versione; il testo operativo precedente non viene sovrascritto.
+
+Distribuzione: usare questo worktree completo, collegato al progetto Vercel `jump-press-approvazione`, non il vecchio pacchetto statico `jump-press-approval`. `.vercelignore` esclude credenziali, campioni locali e build locali di tutte le modalità. Configurare `JUMP_PUBLIC_URL=https://jump-press-approvazione.vercel.app`, le credenziali server, `JUMP_SITE=press` e i due flag sopra. Il nuovo dominio usa una chiave di sessione distinta e richiede un collegamento OAuth proprio.
+
+Rollback disponibile: precedente deployment statico `dpl_k9N7ZPqL4CQpCkbPdfJ7YPPEq2Yx`. Ripristinarlo ripristina solo l'anteprima, non un backend operativo. Il vecchio servizio Juventus rimane disponibile finché il collegamento nuovo e tutti e tre gli automatismi ChatGPT di Cristina non sono verificati. Nessun rollback deve eliminare dati o campi nuovi.
+
+Verifiche locali: 66 test superati, build press e news, home reale e PDF nel browser; API privata senza sessione 401, data non pubblicata 404, Summary assente 422. Il passaggio dei tre automatismi va verificato nella loro UI: trigger Gmail Ecostampa, controllo 07:40 e controllo 07:45, senza alterare le correzioni operative del 22 settembre né avviare pubblicazioni automatiche.
+
+### Esito del passaggio (22 settembre, pomeriggio)
+- Deploy operativo: `dpl_9TfSewndyfwMTFDGtBYJtMQY8sUz`, alias `https://jump-press-approvazione.vercel.app`.
+- Collegamento ChatGPT di Cristina: `Jump Press approvazione`, app `asdk_app_6ab2958c792c81919e12e2820e304406`. Catalogo caricato dopo aver sostituito lo schema tuple del Summary con array omogeneo compatibile, mantenendo tutti i controlli server su ordine e limiti.
+- Rilettura reale da ChatGPT riuscita: istruzioni v14, `editorialModel=summary-v1`, sei bozze e run del 22 completato. Nessun run acquisito per il collaudo.
+- Tre automatismi esistenti aggiornati senza ricrearli: Gmail `6ab0d7ba1c1881918937d3ec7d59f9ea`, 07:40 `6ab0d590d524819194d4d8c14a992363`, 07:45 `6aad1ec764908191a450c38b8431b219`. Prompt originale integralmente conservato, con destinazione esclusiva Approvazione aggiunta in apertura. Orari, trigger e stato attivo conservati e riletti.
+- Andrea ha confermato esplicitamente di mantenere «Consenti tutte le azioni» sul nuovo collegamento. Il ruolo tecnico resta publisher; divieto di pubblicazione automatica invariato, con rifiuto server delle pubblicazioni che includono run.
+- PDF pubblico con ritagli verificato in produzione: 47 pagine, 9.09 MB. I PDF delle bozze restano autenticati. Il sito vecchio e il vecchio collegamento non sono stati eliminati né nascosti in questa fase.

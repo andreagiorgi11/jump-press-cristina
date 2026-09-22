@@ -3,6 +3,8 @@ import {requireEditor} from '../lib/server-client';
 import './globals.css';
 import EditorAccess from './components/EditorAccess';
 import './controls.css';
+import './summary/edition-print.css';
+import './summary/juventus-brand.css';
 import SiteEnhancements from './components/SiteEnhancements';
 
 export const dynamic='force-dynamic';

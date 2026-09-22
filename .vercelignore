@@ -1,0 +1,9 @@
+.git
+.env*
+.local
+.next
+.next-news
+.next-summary
+node_modules
+test-results
+coverage

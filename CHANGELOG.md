@@ -1,3 +1,11 @@
+## 2026-09-21 — regola sulle sintesi dirette
+
+Istruzioni operative online aggiornate alla versione 14 su richiesta di Andrea. Nel testo base della candidata Summary aggiunte la regola esplicita contro aperture centrate sul giornalista e la rilettura obbligatoria di sintesi e Summary nella checklist finale. Conservate le attribuzioni necessarie e tutte le altre istruzioni.
+
+## 2026-09-21 — anteprima locale dell’edizione del giorno
+
+Campione locale aggiornato alla bozza del 21 settembre, con Summary in quattro aree, due PDF e ritagli locali privati. Data dinamica nei dialoghi, filtro per tema compatibile con l’impaginazione compatta e singolare corretto nel PDF. Nessuna pubblicazione o modifica dei dati online.
+
 ## 2026-09-19 — conservazione originali allineata nella candidata
 
 Codice e istruzioni Summary a 24 ore dalla prima pubblicazione dell’editor. Menu Istruzioni esplicativo nell’anteprima; testi e ritagli preservati. Nessuna attivazione del modello in produzione.
@@ -120,3 +128,11 @@ Nessun deploy o push online eseguito nelle consegne locali.
 
 ## 2026-09-18 — rilascio cumulativo
 Interfaccia editor e archivio, correzioni per sezione, anteprima lettore, categorie ordinate, testate e copertine, visualizzatore PDF e adattamento mobile. Coordinamento atomico delle esecuzioni MCP, istruzioni centralizzate e lettura a gruppi. Verifica: 56 test isolati e build press/news riusciti. Il calendario ChatGPT e la modalità di test su una data storica non vengono attivati da questo rilascio.
+
+19 settembre 2026: associato anche Corriere dello Sport-Stadio al logo esistente nella candidata e nell'anteprima di approvazione. Deploy anteprima verificato; originale invariato.
+
+## 2026-09-22 — Approvazione operativa
+- Collegata la grafica approvata a home, archivio ed editor con dati reali.
+- PDF dallo snapshot pubblicato o dalla versione autenticata della bozza, con ritagli autorizzati e risposta streaming.
+- Profilo Summary derivato dalle istruzioni operative, versionato separatamente.
+- Font distribuiti e isolamento dei campioni locali; test permessi, privacy e compatibilità.

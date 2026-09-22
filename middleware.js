@@ -7,7 +7,7 @@ export function middleware(request){
   if(/^\/api\/clips\/[\w-]+$/.test(pathname)){
    const url=request.nextUrl.clone();url.pathname=pathname.replace('/api/clips/','/summary/clip/');return NextResponse.rewrite(url);
   }
-  if(!['/','/summary','/summary/pdf'].includes(pathname)&&!['/pdfjs/','/testate/','/summary/clip/'].some(prefix=>pathname.startsWith(prefix)))return new NextResponse('Ambiente Summary isolato: percorso disabilitato',{status:404});
+  if(!['/','/summary','/summary/pdf'].includes(pathname)&&!['/pdfjs/','/testate/','/brand/','/summary/clip/'].some(prefix=>pathname.startsWith(prefix)))return new NextResponse('Ambiente Summary isolato: percorso disabilitato',{status:404});
   return NextResponse.next();
  }
  const site=process.env.NEXT_PUBLIC_JUMP_SITE||'press';

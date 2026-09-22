@@ -1,0 +1,175 @@
+/* Local approval preview. Palette and font sources inspected on juventus.com/it/.
+   Font files: https://www.juventus.com/assets/fonts/JuventusFans/ */
+@font-face{font-family:JuventusFans;src:url('/brand/fonts/juventus-fans-light.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:JuventusFans;src:url('/brand/fonts/juventus-fans-regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:JuventusFans;src:url('/brand/fonts/juventus-fans-medium.woff2') format('woff2');font-weight:500 600;font-style:normal;font-display:swap}
+@font-face{font-family:JuventusFans;src:url('/brand/fonts/juventus-fans-bold.woff2') format('woff2');font-weight:700 900;font-style:normal;font-display:swap}
+body:has(.summary-content){--lime:#ff2850;--black:#151515;--paper:#fafafa;--juve-font:JuventusFans,Arial,Helvetica,sans-serif}
+.summary-content,.summary-sidebar,.summary-pdf-preview{font-family:var(--juve-font)}
+.summary-content :is(h1,h2,h3,p,small,strong,b,span,button,select,nav,a,li,aside,footer),.summary-sidebar :is(a,span,strong,small,p,button),.summary-pdf-preview :is(strong,small,button,a,nav){font-family:var(--juve-font)}
+.summary-content .outlet-wordmark,.summary-content .outlet-wordmark *{font-family:inherit}
+.summary-sidebar .summary-nav-item.is-active{background:#fff0f3;color:#151515;box-shadow:inset 3px 0 #ff2850}.summary-sidebar .summary-nav-item.is-active svg{color:#151515}
+.summary-sidebar a:focus-visible,.summary-sidebar button:focus-visible{outline-color:#ff2850}
+.summary-content .combined-analysis{--summary-theme-0:#151515;--summary-theme-1:#ff2850;--summary-theme-2:#777;--summary-theme-3:#dfff2f}
+.summary-content .combined-analysis h3,.summary-content .combined-chart li,.summary-content .combined-chart li b,.summary-content .combined-points li p,.summary-content .compact-ring strong{color:#151515}
+.summary-content .combined-points li>span{color:#b71938}.summary-content .compact-ring span,.summary-content .article-relevance{color:#707070}.summary-content .combined-distribution{border-color:#e5e5e5}
+.summary-content .article-relevance-bars i{background:#e5e5e5}.summary-content .article-relevance-bars i.is-filled{background:#151515}
+.summary-content .articles>.article-group-heading{background:#f1f1f1;color:#151515;border-color:#dedede}.summary-content .articles>.article-group-heading::before{background:#ff2850}.summary-content .articles>.article-group-heading small{background:#fafafa;color:#555;border-color:#dedede}
+.summary-content .article-number-rail{background:#151515;color:#fff;border-bottom-color:#ff2850}
+.summary-content .reading-navigation{background:#fffffff5;border-color:#ddd;color:#555}.summary-content .reading-navigation a{color:#555}.summary-content .reading-navigation a:hover{background:#f3f3f3}.summary-content .reading-navigation a[aria-current=location]{background:#fff0f3;color:#151515}
+.summary-content .back-to-top{background:#151515;color:#fff;border-color:#555}
+.summary-pdf-preview{background:#e9e9e9}.summary-pdf-preview>header{background:#151515}.summary-pdf-preview header small{color:#bbb}.summary-pdf-preview header a{background:#ff2850;color:#151515}.summary-pdf-preview>nav{background:#fafafa}.summary-pdf-preview button{border-color:#ccc}
+@media print{body:has(.summary-content){background:#fff!important}}
+/* Keep long-form reading comfortable: both families are used by Juventus. */
+@font-face{font-family:JumpRoboto;src:url('/brand/fonts/roboto-regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
+.summary-content :is(h1,h2),.summary-content .articles>.article-group-heading>span{font-family:JuventusFans,Arial,Helvetica,sans-serif;letter-spacing:0}
+.summary-content .ranking,.summary-content .jump-frontpages-list{border-color:#e5e5e5}
+.summary-content #jump-daily-metrics>div,.summary-content .jump-frontpages-list{background:#f5f5f5;border-color:#e5e5e5}
+/* A quieter masthead gives the edition date the leading position. */
+.summary-content .summary-edition .top{display:none}
+.summary-content .summary-edition .edition-date-line small{font-size:16px;line-height:1.5;font-weight:500;letter-spacing:1.4px;color:#d5d5d5}
+@media(max-width:700px){.summary-content .summary-edition .edition-date-line small{font-size:14px;letter-spacing:1px}}
+@media print{.summary-content .summary-edition .edition-date-line small{color:#555}}
+/* Yellow accents for the approval preview. */
+.summary-content .summary-edition .edition-date-line small{color:#ff2850}
+.summary-sidebar .summary-nav-item.is-active{background:#f7ffcf;box-shadow:inset 3px 0 #dfff2f}
+.summary-sidebar a:focus-visible,.summary-sidebar button:focus-visible{outline-color:#947a43}
+.summary-content .articles>.article-group-heading::before{background:#dfff2f}
+.summary-content .article-number-rail{border-bottom-color:#dfff2f}
+.summary-content .combined-points li>span{color:#151515;background:#dfff2f;border-radius:4px;padding:3px 4px;align-self:start}
+.summary-content .combined-analysis{--summary-theme-1:#777;--summary-theme-2:#ff2850}
+.summary-content .reading-navigation a[aria-current=location]{background:#f7ffcf;color:#151515}
+.summary-pdf-preview header a{background:#dfff2f;color:#151515}
+@media print{.summary-content .summary-edition .edition-date-line small{color:#806a3b}}
+.summary-content .article-relevance-bars i.is-filled{background:#dfff2f}
+/* Red navigation and article bands; yellow remains on relevance and key points. */
+.summary-sidebar .summary-nav-item.is-active{background:#fff0f3;box-shadow:inset 3px 0 #ff2850}
+.summary-sidebar a:focus-visible,.summary-sidebar button:focus-visible{outline-color:#ff2850}
+.summary-content .articles>.article-group-heading::before{background:#ff2850}
+.summary-content .article-number-rail{border-bottom-color:#ff2850}
+/* Balanced rows for the front-page newspaper logos. */
+.summary-content .jump-frontpages-list.frontpages-wordmarks>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 20px;align-items:center}
+.summary-content .frontpages-wordmarks>div>div{min-width:0;display:flex;justify-content:center;align-items:center;min-height:52px}
+.summary-content .frontpages-wordmarks .frontpage-link{max-width:100%;min-height:44px;display:flex;align-items:center;justify-content:center}
+.summary-content .frontpages-wordmarks .outlet-wordmark{max-width:100%}
+.summary-content .frontpages-wordmarks .outlet-wordmark img{max-width:100%;object-fit:contain}
+@media(max-width:600px){.summary-content .jump-frontpages-list.frontpages-wordmarks>div{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 16px}}
+/* Mobile PDF controls remain easy to tap, including in landscape. */
+@media(max-width:900px){
+ .summary-pdf-preview[open]{display:flex;flex-direction:column}
+ .summary-pdf-preview>header,.summary-pdf-preview>nav{flex-shrink:0}
+ .summary-pdf-preview>header{flex-wrap:wrap}
+ .summary-pdf-preview>nav{gap:6px;padding:8px}
+ .summary-pdf-preview button{min-width:44px;min-height:44px}
+ .summary-pdf-preview header a{display:inline-flex;align-items:center;min-height:44px}
+ .summary-pdf-paper{flex:1;min-height:0;height:auto;overscroll-behavior:contain}
+ .summary-content .jump-clip-navigation button,.jump-clip-dialog .jump-clip-navigation button{min-width:44px;min-height:44px}
+ .summary-sidebar-menu{overscroll-behavior:contain}
+}
+@media(max-width:360px){.summary-pdf-preview>nav{gap:4px;padding:8px 4px;font-size:11px}.summary-pdf-preview>header{padding:10px;gap:6px}.summary-pdf-preview header strong{font-size:13px}.summary-pdf-preview header a{padding:8px;font-size:11px}}
+@media(max-width:420px){
+ .jump-clip-dialog .jump-clip-navigation{display:grid;grid-template-columns:repeat(4,minmax(44px,1fr));width:260px;max-width:calc(100% - 20px);gap:5px;padding:8px;border-radius:16px}
+ .jump-clip-navigation>button:nth-child(1){grid-area:1/1}.jump-clip-navigation>span:nth-child(2){grid-area:1/2;white-space:nowrap}.jump-clip-navigation>button:nth-child(3){grid-area:1/3}.jump-clip-navigation>.jump-clip-zoom{grid-area:1/4}
+ .jump-clip-navigation>button:nth-child(4){grid-area:2/1}.jump-clip-navigation>button:nth-child(5){grid-area:2/2}.jump-clip-navigation>button:nth-child(6){grid-area:2/3/3/5}
+ .jump-clip-dialog .jump-clip-pages{padding-bottom:130px}
+}
+@media(max-width:600px){
+ .summary-pdf-preview>header{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:8px;padding:10px 12px}
+ .summary-pdf-preview header>div{grid-area:1/1;margin:0;min-width:0}
+ .summary-pdf-preview header>button{grid-area:1/2}
+ .summary-pdf-preview header>a{grid-area:2/1/3/3;justify-content:center}
+}
+/* Lead with the edition, keeping the publisher mark discreet. */
+.summary-sidebar-client>span{font-size:11px;color:#555;letter-spacing:1.3px}
+.summary-sidebar-client strong{font-size:28px;color:#151515}
+@media screen{.summary-content .summary-edition h1{font-size:72px;line-height:1.02;font-weight:700}}
+@media screen and (max-width:1100px){.summary-content .summary-edition h1{font-size:60px}}
+@media screen and (max-width:700px){.summary-content .summary-edition h1{font-size:48px}.summary-sidebar-client strong{font-size:24px}}
+@media screen and (max-width:360px){.summary-content .summary-edition h1{font-size:42px}}
+/* More yellow highlights, with red reserved for Jump identity and article rails. */
+.summary-content .ranking>small,.summary-content .sectiontitle>small{display:inline-block;background:#fff;color:#151515;padding:5px 8px;border-radius:3px;line-height:1.4}
+.summary-content .articles>.article-group-heading small{background:#dfff2f;color:#151515;border-color:#dfff2f}
+.summary-content .combined-chart li b{background:#dfff2f;color:#151515;min-width:25px;text-align:center;border-radius:4px;padding:2px 5px}
+.summary-content .back-to-top{background:#dfff2f;color:#151515;border-color:#dfff2f}
+/* Yellow edition date in the dark masthead. */
+@media screen{.summary-content .summary-edition .edition-date-line small{color:#dfff2f}}
+/* Yellow navigation accents alongside the red Jump identity. */
+.summary-sidebar .summary-nav-item.is-active{background:#dfff2f;color:#151515;box-shadow:inset 3px 0 #ff2850}
+.summary-sidebar .summary-downloads .summary-nav-item>svg{background:#dfff2f;color:#151515;border-radius:5px;padding:5px;box-sizing:content-box;flex-shrink:0}
+.summary-sidebar .summary-nav-item:not(.is-active):hover{background:#f7ffcf;color:#151515}
+.summary-sidebar .summary-menu-toggle{background:#dfff2f;color:#151515;border-color:#dfff2f}
+/* Article counts: bold text without yellow badges. */
+.summary-content .combined-chart li b{background:transparent;font-weight:700}
+.summary-content .articles>.article-group-heading small{background:transparent;border-color:transparent;font-weight:700}
+/* Restrained palette: no yellow-filled controls or badges. */
+.summary-sidebar .summary-nav-item.is-active{background:#f2f2f2;color:#151515;box-shadow:inset 3px 0 #ff2850}
+.summary-sidebar .summary-downloads .summary-nav-item>svg{background:transparent;color:#151515;border-radius:0;padding:0;box-sizing:border-box}
+.summary-sidebar .summary-nav-item:not(.is-active):hover{background:#f5f5f5;color:#151515}
+.summary-sidebar .summary-menu-toggle{background:#fff;color:#151515;border-color:#ddd}
+.summary-content .combined-points li>span{background:transparent;color:#151515;padding:3px 0;font-weight:700}
+.summary-content .back-to-top{background:#151515;color:#fff;border-color:#151515}
+.summary-content .reading-navigation a[aria-current=location]{background:#f2f2f2;color:#151515}
+.summary-pdf-preview header a{background:#fff;color:#151515}
+/* Red active navigation marker. */
+.summary-sidebar .summary-nav-item.is-active{box-shadow:inset 3px 0 #ff2850}
+/* Yellow interaction state for the topic jump buttons. */
+.summary-content .edition-jump-nav a:hover,.summary-content .edition-jump-nav a:focus-visible{background:#dfff2f;border-color:#dfff2f;color:#151515}
+/* Swap article accents: red relevance, yellow numbered-rail underline. */
+.summary-content .article-relevance-bars i.is-filled{background:#ff2850}
+.summary-content .article-number-rail{border-bottom-color:#dfff2f}
+/* Yellow section markers beside category headings. */
+.summary-content .articles>.article-group-heading::before{background:#dfff2f}
+/* Yellow divider identifies the PDF area without filling the sidebar. */
+.summary-sidebar .summary-downloads{border-top:2px solid #dfff2f;padding-top:16px}
+/* Black active sidebar marker. */
+.summary-sidebar .summary-nav-item.is-active{box-shadow:inset 3px 0 #151515}
+/* Edition first; publisher logo anchors the sidebar footer. */
+.summary-sidebar-heading{justify-content:flex-start;padding:28px 28px 0}
+.summary-sidebar-heading .summary-sidebar-client{width:100%;margin:0 0 24px;padding:0 0 24px;border-top:0}
+.summary-sidebar-heading .summary-sidebar-client>span{font-size:13px;letter-spacing:1px;line-height:1.4}
+.summary-sidebar-heading .summary-sidebar-client strong{font-size:34px;line-height:1.1;margin:8px 0 12px}
+.summary-sidebar-bottom{display:flex;flex-direction:column;align-items:center;padding-top:28px}
+.summary-sidebar-bottom .summary-sidebar-brand{margin-top:16px}
+@media(max-width:900px){
+ .summary-sidebar-heading{height:78px;padding:10px 22px}
+ .summary-sidebar-heading .summary-sidebar-client{width:auto;margin:0;padding:0;border:0}
+ .summary-sidebar-heading .summary-sidebar-client>span{font-size:10px;letter-spacing:1px}
+ .summary-sidebar-heading .summary-sidebar-client strong{font-size:25px;line-height:1;margin:3px 0}
+ .summary-sidebar-heading .summary-sidebar-client small{font-size:10px}
+ .summary-sidebar-bottom{padding-top:18px}
+ .summary-sidebar-bottom .summary-sidebar-brand{margin-top:0}
+}
+/* Yellow outlines on the topic jump links. */
+.summary-content .edition-jump-nav a{border-color:#dfff2f}
+/* Discreet studio credit. */
+.summary-sidebar .summary-sidebar-signature{font-size:7px;letter-spacing:.7px;line-height:1.4}
+.pdf-section-picker{width:min(500px,calc(100vw - 28px));max-height:calc(100dvh - 32px);overflow:auto;border:1px solid #ddd;border-radius:16px;padding:24px;background:#fff;color:#151515;font-family:Arial,sans-serif;box-shadow:0 24px 80px #0004}
+.pdf-section-picker::backdrop{background:#0009;backdrop-filter:blur(3px)}
+.pdf-section-picker header{display:flex;justify-content:space-between;gap:16px;color:#151515;padding:0}.pdf-section-picker header small{font-size:10px;letter-spacing:1.4px}.pdf-section-picker h2{font-size:25px;margin:8px 0 0}.pdf-section-picker button{cursor:pointer;min-height:44px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#151515;padding:10px 14px}.pdf-section-picker header button{align-self:start;font-size:24px;min-width:44px;padding:0}.pdf-section-picker p{font-size:14px;line-height:1.5;color:#555}.pdf-section-picker label{display:flex;align-items:center;gap:12px;min-height:48px;font-size:14px;cursor:pointer}.pdf-section-picker label span{background:none;padding:0;font-weight:400}.pdf-section-picker input{width:18px;height:18px;accent-color:#151515;flex-shrink:0}.pdf-section-picker .pdf-pick-all{border-bottom:2px solid #dfff2f;padding:4px 0 12px;margin-bottom:16px}.pdf-section-picker fieldset{border:0;padding:0;margin:0}.pdf-section-picker legend{font-size:11px;color:#777;text-transform:uppercase;letter-spacing:1px}.pdf-section-picker .pdf-picker-note{font-size:12px;min-height:36px}.pdf-section-picker footer{display:flex;justify-content:flex-end;gap:10px;margin:16px 0 0;padding:0}.pdf-section-picker footer button:last-child{background:#151515;color:#fff;border-color:#151515;font-weight:700}.pdf-section-picker button:disabled{opacity:.4;cursor:not-allowed}
+.pdf-section-picker .pdf-include-clips{align-items:flex-start;border-top:1px solid #e5e5e5;padding-top:16px;margin-top:12px}.pdf-section-picker .pdf-include-clips input{margin-top:2px}.pdf-section-picker .pdf-include-clips small{display:block;font-size:12px;line-height:1.45;color:#666;margin-top:5px;font-weight:400}
+/* Continuous PDF reader and floating translucent controls. */
+.summary-pdf-continuous[open]{display:flex;flex-direction:column;overflow:hidden}
+.summary-pdf-continuous>header{flex-shrink:0}
+.summary-pdf-continuous .summary-pdf-paper{flex:1;min-height:0;height:auto;padding:20px 20px 100px;overscroll-behavior:contain;position:relative}
+.summary-pdf-stack{margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.summary-pdf-sheet{position:relative;width:100%;flex-shrink:0;background:#fff;box-shadow:0 4px 16px #0002;overflow:hidden}
+.summary-pdf-sheet canvas{width:100%;height:100%;max-width:none;margin:0;box-shadow:none;display:block}
+.summary-pdf-continuous>nav{position:absolute;z-index:3;bottom:16px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;width:max-content;max-width:calc(100% - 20px);padding:8px 10px;background:rgba(21,21,21,.78);color:#fff;backdrop-filter:blur(12px);border:1px solid #ffffff30;border-radius:14px;box-shadow:0 5px 22px #0003;font-size:12px}
+.summary-pdf-continuous>nav button{background:transparent;color:#fff;border:1px solid #ffffff38;min-width:40px;min-height:40px;font-size:18px}.summary-pdf-continuous>nav button:hover:not(:disabled){background:#ffffff25}.summary-pdf-continuous>nav button:disabled{opacity:.3}.summary-pdf-continuous>nav span{white-space:nowrap}.summary-pdf-continuous .pdf-control-divider{height:22px;border-left:1px solid #ffffff30;margin:0 2px}.pdf-zoom-value{min-width:34px;text-align:center}
+@media(max-width:600px){.summary-pdf-continuous .summary-pdf-paper{padding:12px 10px 100px}.summary-pdf-stack{gap:12px}.summary-pdf-continuous>nav{bottom:12px;gap:5px;padding:6px;font-size:11px}.summary-pdf-continuous>nav button{min-width:40px;min-height:44px}.summary-pdf-continuous .pdf-control-divider{margin:0}.pdf-zoom-value{min-width:30px}}
+@media(max-width:600px){.summary-pdf-continuous>nav{gap:3px;padding:5px 4px}.summary-pdf-continuous>nav button{min-width:44px;width:44px;padding:0}.summary-pdf-continuous .pdf-page-prefix,.summary-pdf-continuous .pdf-control-divider{display:none}.summary-pdf-continuous .pdf-zoom-value{min-width:28px}}
+
+/* PDF navigation: compact index overlay, controls remain outside the header. */
+.summary-pdf-continuous>nav .pdf-index-toggle,.summary-pdf-continuous>nav .pdf-fit-button{font-size:12px;padding:0 10px;width:auto}
+.pdf-outline-panel{position:absolute;z-index:5;top:76px;bottom:110px;left:12px;width:min(340px,calc(100% - 24px));overflow:auto;box-sizing:border-box;padding:18px;background:#fff;color:#151515;border:1px solid #ddd;border-radius:12px;box-shadow:0 12px 35px #0004;text-align:left;font:13px/1.45 Arial}
+.pdf-outline-panel>div{display:flex;align-items:center;justify-content:space-between}.pdf-outline-panel ul{list-style:none;padding:0;margin:10px 0}.pdf-outline-panel li{margin:5px 0}.pdf-outline-panel li button{display:block;text-align:left;width:100%;padding:10px;background:#fff;border:0;font:inherit;color:#151515}.pdf-outline-panel li button:hover{background:#f2f2f2}.pdf-outline-panel details{padding-left:14px}.pdf-outline-panel summary{cursor:pointer;padding:8px;font-size:12px;color:#555}
+.clip-page-stack{width:100%;margin:0 auto;display:flex;flex-direction:column;gap:16px}.clip-page-sheet{flex-shrink:0;width:100%;background:#fff;overflow:hidden}.jump-clip-pages .clip-page-sheet canvas{display:block;width:100%;height:100%;max-width:none;margin:0}
+.jump-clip-dialog .jump-clip-pages{display:block;padding:16px 16px 125px}.jump-clip-dialog .jump-clip-navigation{background:rgba(21,21,21,.78);color:white;border-color:#ffffff30;backdrop-filter:blur(12px)}.jump-clip-dialog .jump-clip-navigation button{background:transparent;border-color:#ffffff38;color:white}.jump-clip-dialog .jump-clip-navigation button:hover:not(:disabled){background:#ffffff25}
+@media(max-width:600px){.summary-pdf-continuous>nav{width:270px;flex-wrap:wrap;justify-content:center}.summary-pdf-continuous>nav .pdf-index-toggle{order:1;width:120px}.summary-pdf-continuous>nav .pdf-fit-button{order:2;width:120px}.summary-pdf-continuous .summary-pdf-paper{padding-bottom:125px}.pdf-outline-panel{top:65px;bottom:125px}.jump-clip-dialog .jump-clip-pages{padding:10px 10px 130px}}
+@media(max-width:600px){.summary-pdf-continuous .pdf-outline-panel{top:125px}} .jump-clip-dialog .jump-clip-zoom{color:#fff}
+
+.pdf-index-search{display:block;margin:16px 0 12px;font-size:12px;color:#555}.pdf-index-search input{display:block;box-sizing:border-box;width:100%;margin-top:7px;padding:12px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#151515;font:14px Arial;min-height:44px}.summary-pdf-sheet .pdf-internal-link{position:absolute;min-width:0;min-height:0;border:0;border-radius:0;background:transparent;padding:0;cursor:pointer}.summary-pdf-sheet .pdf-internal-link:hover{background:#dfff2f22}.summary-pdf-sheet .pdf-internal-link:focus-visible{outline:2px solid #151515;background:#dfff2f33}
+
+.summary-pdf-continuous>nav .pdf-page-input{box-sizing:border-box;width:36px;min-height:40px;padding:4px 2px;text-align:center;border:1px solid #ffffff60;border-radius:6px;background:#ffffff15;color:#fff;font:inherit}.summary-pdf-continuous>nav .pdf-page-input:focus{outline:2px solid #dfff2f;outline-offset:1px}@media(max-width:600px){.summary-pdf-continuous>nav .pdf-page-input{width:30px;min-height:44px}}
+@media(max-width:600px){.summary-pdf-continuous>nav{width:280px;gap:2px}}

@@ -22,7 +22,7 @@ export default function ArticleFilter(){
      record={list,heading,control,select,signature:''};records.push(record);
      select.onchange=()=>apply(record);
     }
-    const categories=[...new Set(articles.map(a=>a.querySelector('.meta span')?.textContent?.trim()).filter(Boolean))];
+    const categories=[...new Set(articles.map(a=>(a.dataset.category||a.querySelector('.meta span')?.textContent?.trim())).filter(Boolean))];
     const signature=JSON.stringify(categories);
     if(signature!==record.signature){
      record.signature=signature;const selected=record.select.value;
@@ -34,7 +34,7 @@ export default function ArticleFilter(){
   };
   const apply=record=>{
    record.list.querySelectorAll(':scope > .article-group-heading').forEach(h=>{h.hidden=!!record.select.value&&h.dataset.category!==record.select.value;});
-   record.list.querySelectorAll(':scope > article').forEach(a=>{a.hidden=!!record.select.value&&a.querySelector('.meta span')?.textContent?.trim()!==record.select.value;});
+   record.list.querySelectorAll(':scope > article').forEach(a=>{a.hidden=!!record.select.value&&(a.dataset.category||a.querySelector('.meta span')?.textContent?.trim())!==record.select.value;});
   };
   const jumpToCategory=event=>{
    const link=event.target.closest?.('a[data-edition-jump]');

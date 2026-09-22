@@ -1,6 +1,8 @@
 const logos={
+ 'La Repubblica':'repubblica.png',
  'Corriere dello Sport':'corriere-sport.svg',
  'Corriere dello Sport Stadio':'corriere-sport.svg',
+ 'Corriere dello Sport-Stadio':'corriere-sport.svg',
  'Il Giornale':'giornale.svg',
  'La Gazzetta dello Sport':'gazzetta.svg',
  'Tuttosport':'tuttosport.svg',

@@ -1,6 +1,8 @@
 'use client';
 import {useEffect} from 'react';
 import {usePathname} from 'next/navigation';
+import {continuousClipReader} from '../lib/continuous-clip-reader';
+import {attachPdfPan} from '../lib/pdf-pan';
 
 export default function PdfLinkHandler(){
  const path=usePathname();
@@ -26,7 +28,7 @@ export default function PdfLinkHandler(){
   const pdfModule=()=>import(/* webpackIgnore: true */ '/pdfjs/pdf.mjs');
   const close=()=>{
    const state=active;if(!state)return;active=null;state.closed=true;
-   state.render?.cancel();state.task?.destroy().catch(()=>{});state.dialog.remove();
+   state.disposeReader?.();state.disposePan?.();state.render?.cancel();state.task?.destroy().catch(()=>{});state.dialog.remove();
    document.body.style.overflow=state.overflow;state.focus?.focus();
   };
   const articleContext=clipId=>{
@@ -44,9 +46,10 @@ export default function PdfLinkHandler(){
    const controls=document.createElement('div');controls.className='jump-clip-navigation';
    const makeButton=(text,aria)=>{const b=document.createElement('button');b.type='button';b.textContent=text;b.setAttribute('aria-label',aria);b.disabled=true;controls.append(b);return b;};
    const previous=makeButton('←','Pagina precedente'),counter=document.createElement('span');counter.setAttribute('aria-live','polite');controls.append(counter);
-   const next=makeButton('→','Pagina successiva'),minus=makeButton('−','Riduci ingrandimento'),plus=makeButton('+','Aumenta ingrandimento'),fit=makeButton('Adatta','Adatta pagina alla finestra');
+   const next=makeButton('→','Pagina successiva'),minus=makeButton('−','Riduci ingrandimento'),plus=makeButton('+','Aumenta ingrandimento'),fit=makeButton('Adatta','Adatta ritaglio alla larghezza');
    const zoomLabel=document.createElement('span');zoomLabel.className='jump-clip-zoom';zoomLabel.setAttribute('aria-live','polite');controls.append(zoomLabel);
    const area=document.createElement('div');area.className='jump-clip-pages';
+   state.disposePan=attachPdfPan(area);
    const status=document.createElement('p');status.setAttribute('role','status');status.textContent='Caricamento ritaglio…';area.append(status);
    const articleNav=document.createElement('div');articleNav.className='jump-clip-articles';
    if(context){
@@ -68,19 +71,6 @@ export default function PdfLinkHandler(){
    }else{articleNav.classList.add('single-clip');const heading=document.createElement('strong');heading.textContent=title;articleNav.append(heading);}
    dialog.append(bar,articleNav,area,controls);document.body.append(dialog);
    dialog.addEventListener('cancel',e=>{e.preventDefault();close();});dialog.addEventListener('click',e=>{if(e.target===dialog)close();});dialog.showModal();document.body.style.overflow='hidden';button.focus();
-   const render=async()=>{
-    previous.disabled=next.disabled=minus.disabled=plus.disabled=fit.disabled=true;
-    try{
-     const page=await state.doc.getPage(state.page);if(state.closed)return;
-     const base=page.getViewport({scale:1});
-     const width=Math.max(100,area.clientWidth-32),height=Math.max(100,area.clientHeight-32),scale=Math.min(width/base.width,height/base.height)*state.zoom,pixelRatio=Math.min(window.devicePixelRatio||1,2);
-     const view=page.getViewport({scale:scale*pixelRatio}),canvas=document.createElement('canvas');canvas.width=Math.ceil(view.width);canvas.height=Math.ceil(view.height);canvas.style.width=Math.round(view.width/pixelRatio)+'px';canvas.style.height=Math.round(view.height/pixelRatio)+'px';canvas.setAttribute('role','img');canvas.setAttribute('aria-label',title+' — pagina '+state.page);
-     state.render=page.render({canvasContext:canvas.getContext('2d'),viewport:view});await state.render.promise;if(state.closed)return;
-     area.replaceChildren(canvas);area.scrollTop=0;area.scrollLeft=0;zoomLabel.textContent=Math.round(state.zoom*100)+'%';counter.textContent=state.page+' / '+state.doc.numPages;
-     previous.disabled=state.page<=1;next.disabled=state.page>=state.doc.numPages;minus.disabled=state.zoom<=.5;plus.disabled=state.zoom>=4;fit.disabled=false;
-    }catch(error){if(!state.closed){status.textContent='Impossibile visualizzare questa pagina. Chiudi e riprova.';area.replaceChildren(status);}}
-   };
-   previous.onclick=()=>{state.page--;render();};next.onclick=()=>{state.page++;render();};minus.onclick=()=>{state.zoom-=.25;render();};plus.onclick=()=>{state.zoom+=.25;render();};fit.onclick=()=>{state.zoom=1;render();};
    try{
     const [pdfjs,resolvedUrl,prepared]=await Promise.all([pdfModule(),privateClipId?privateUrl(privateClipId):Promise.resolve(url),privateClipId?Promise.resolve(null):publicBytes(url)]);if(state.closed||disposed)return;
     pdfjs.GlobalWorkerOptions.workerSrc='/pdfjs/pdf.worker.mjs';
@@ -88,7 +78,7 @@ export default function PdfLinkHandler(){
     const cacheKey=privateClipId||new URL(url,location.href).href,cached=cachedPdfs.get(cacheKey);
     const source=prepared?{data:prepared.slice()}:cached&&Date.now()-cached.at<60000?{data:cached.bytes.slice()}:{url:resolvedUrl};
     state.task=pdfjs.getDocument({...source,worker,isEvalSupported:false,cMapUrl:'/pdfjs/cmaps/',cMapPacked:true,standardFontDataUrl:'/pdfjs/standard_fonts/',wasmUrl:'/pdfjs/wasm/'});
-    state.doc=await state.task.promise;if(state.closed)return;await render();
+    state.doc=await state.task.promise;if(state.closed)return;await continuousClipReader({state,area,title,previous,next,minus,plus,fit,counter,zoomLabel});
     // Bounded, memory-only reuse; private access is checked again on every open.
     if(!state.closed)state.doc.getData().then(bytes=>{
      if(state.closed||disposed||bytes.byteLength>8*1024*1024)return;

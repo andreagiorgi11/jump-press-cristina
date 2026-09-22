@@ -208,3 +208,5 @@
  #jump-daily-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
  #jump-daily-metrics>div{min-width:0;overflow-wrap:anywhere}
 }
+
+.pdf-pan-enabled{cursor:grab;user-select:none}.pdf-pan-enabled.is-panning{cursor:grabbing;scroll-behavior:auto}.pdf-pan-enabled canvas{user-select:none;-webkit-user-drag:none}
