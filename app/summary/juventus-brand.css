@@ -259,3 +259,6 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 @media(max-width:600px){.summary-content .day-summary-heading>h2,.summary-content .combined-distribution>h2{font-size:21px}}
 
 @media(min-width:1101px){.summary-content .combined-distribution{padding-right:40px}}
+@font-face{font-family:JumpRoboto;src:url('/brand/fonts/roboto-semibold.ttf') format('truetype');font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:JumpRoboto;src:url('/brand/fonts/roboto-bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+.summary-content .signal-group li p{font-family:JumpRoboto,Arial,Helvetica,sans-serif}
