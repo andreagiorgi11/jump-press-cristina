@@ -18,10 +18,10 @@ test('Summary persists, survives asset attachment and is invalidated after edito
  d.body.articles[0].clipId=randomUUID();d=await saveDraft(ctx,id,1,d.body);assert(d.body.executiveSummary);
  d.body.articles[0].summary='La squadra cambia preparazione.';d=await saveDraft(ctx,id,2,d.body);assert.equal(d.body.executiveSummary,null);await assert.rejects(validateSummaryReady(d.body),/Summary mancante/);
 });
-test('Readiness rejects empty, wrong categories and overflowing Summary; legacy is unaffected',async()=>{
+test('Readiness rejects empty and wrong categories, accepts long Summary; legacy is unaffected',async()=>{
  const b=body();await validateSummaryReady(b);const empty=body();empty.executiveSummary.sections.forEach(s=>s.items=[]);await assert.rejects(validateSummaryReady(empty),/highlights/);
  b.articles[0].category='Editoriali';await assert.rejects(validateSummaryReady(b),/quattro aree/);
- const long=body();long.executiveSummary.sections[1].items=Array(30).fill('Un tema lungo: '+ 'Testo verificato. '.repeat(20));await assert.rejects(validateSummaryReady(long),/supera una pagina/);
+ const long=body();long.executiveSummary.sections[1].items=Array(30).fill('Un tema lungo: '+ 'Testo verificato. '.repeat(20));await validateSummaryReady(long);
  await validateSummaryReady({articles:[]});
 });
 test('Summary instructions selected only for the new profile',async()=>{
@@ -81,5 +81,30 @@ test('Summary adapts spacing for thirteen highlights without losing content',asy
  const before=JSON.stringify(s);
  const bytes=await exportSummaryPdf(s,'2026-09-23',await loadPdfFonts());
  assert.equal((await PDFDocument.load(bytes)).getPageCount(),1);
+ assert.equal(JSON.stringify(s),before);
+});
+
+async function inspectSummary(s){
+ const {exportSummaryPdf}=await import('../lib/executive-summary-pdf.js');
+ const {getDocument}=await import('pdfjs-dist/legacy/build/pdf.mjs');
+ const bytes=await exportSummaryPdf(s,'2026-09-23');
+ const loading=getDocument({data:bytes,useSystemFonts:true}),doc=await loading.promise,pages=[];
+ for(let i=1;i<=doc.numPages;i++)pages.push((await (await doc.getPage(i)).getTextContent()).items);
+ await loading.destroy();return pages;
+}
+test('Normal Summary retains one page and original 11/10 point text',async()=>{
+ const pages=await inspectSummary(summary());assert.equal(pages.length,1);
+ const intro=pages[0].find(x=>x.str==='La Juventus prepara la prossima gara.');
+ const item=pages[0].find(x=>x.str==='Preparazione');
+ assert.equal(intro.transform[0],11);assert.equal(item.transform[0],10);
+});
+test('Long Summary continues on two branded pages with every highlight preserved',async()=>{
+ const s=summary();s.sections.forEach((section,i)=>section.items=Array.from({length:5},(_,n)=>
+  'Argomento '+i+'-'+n+': '+ 'Informazioni verificate sulle condizioni della squadra e sulle decisioni del tecnico. '.repeat(3)+'Fine '+i+'-'+n));
+ const before=JSON.stringify(s),pages=await inspectSummary(s);assert.equal(pages.length,2);
+ const text=pages.flat().map(x=>x.str).join(' ');
+ for(let i=0;i<4;i++)for(let n=0;n<5;n++)assert(text.includes('Fine '+i+'-'+n));
+ for(const page of pages){assert(page.some(x=>x.str==='JUMP PRESS'));assert(page.some(x=>x.str==='SUMMARY'));assert(page.filter(x=>x.str.trim()&&x.transform[0]>=8).every(x=>x.transform[5]>=24));}
+ const highlight=pages.flat().find(x=>x.str==='Argomento 0-0');assert.equal(highlight.transform[0],8.5);
  assert.equal(JSON.stringify(s),before);
 });

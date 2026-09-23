@@ -1,4 +1,5 @@
 const logos={
+ 'Il Sole 24 Ore':'sole-24-ore.png',
  'La Repubblica':'repubblica.png',
  'Corriere dello Sport':'corriere-sport.svg',
  'Corriere dello Sport Stadio':'corriere-sport.svg',
@@ -13,6 +14,6 @@ const logos={
 };
 export default function OutletWordmark({name}){
  const localStampa=name.startsWith('La Stampa ');
- const logo=logos[name]||(localStampa?logos['La Stampa']:null);
+ const logo=(/^(il\s+)?sole\s*24\s*ore$/i.test(name.trim())?logos['Il Sole 24 Ore']:logos[name])||(localStampa?logos['La Stampa']:null);
  return <b className="outlet-wordmark">{logo?<><img src={'/testate/'+logo} alt={name} loading="lazy"/>{localStampa&&<small>{name.replace(/^La Stampa\s*[–—-]?\s*/, '')}</small>}</>:name}</b>;
 }
