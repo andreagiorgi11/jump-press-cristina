@@ -50,5 +50,5 @@ test('automation completes with attention without visual clip checkpoints',async
  const x=await setup();const result=await claimRun(x.ctx,{date,url:'https://rassegna.dominiocliente.it/Areas/Rassegna/Elab/CheckedDownload.aspx?nome_file=PP_RAS_1626482_20260922_16377886.pdf',requestId:randomUUID()});
  await updateRun(x.ctx,{run:result.run,phase:'reading',checkpoint:{importId:x.importId,nextPage:4}});x.body.articles[0].pages=[99];
  const d=await saveDraft({...x.ctx,automation:result.run},result.draftId,0,x.body);
- const done=await updateRun(x.ctx,{run:result.run,phase:'review',status:'completed',draftVersion:d.version});assert.equal(done.status,'completed');assert(done.reviewWarnings.includes('PDF da verificare.'));assert(done.reviewWarnings.includes('Sintesi da verificare.'));
+ const done=await updateRun(x.ctx,{run:result.run,phase:'review',status:'completed',draftVersion:d.version});assert.equal(done.status,'completed');assert(done.reviewWarnings.includes('PDF da verificare.'));assert(done.reviewWarnings.includes('Riscontro fonte incompleto.'));
 });

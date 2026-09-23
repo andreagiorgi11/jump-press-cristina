@@ -71,3 +71,15 @@ test('Full PDF omits operating counters, retains signals and paginates long poin
  const long=await read(await exportEditionPdf(b));assert(long.pages>regular.pages);
  for(let i=1;i<=5;i++)assert.match(long.text,new RegExp(`Fine punto ${i}`));
 });
+
+test('Summary adapts spacing for thirteen highlights without losing content',async()=>{
+ const {exportSummaryPdf}=await import('../lib/executive-summary-pdf.js');
+ const {loadPdfFonts}=await import('../lib/pdf-theme.js');
+ const {PDFDocument}=await import('pdf-lib');
+ const s=summary();s.intro='La Juventus prepara il prossimo incontro e valuta le condizioni dei giocatori, mentre il settore giovanile continua il proprio percorso. '.repeat(2);
+ s.sections.forEach((section,i)=>section.items=Array.from({length:[5,2,3,3][i]},(_,n)=>'Tema '+n+': La squadra prepara la prossima partita con attenzione alle condizioni dei giocatori e alle scelte del tecnico.'));
+ const before=JSON.stringify(s);
+ const bytes=await exportSummaryPdf(s,'2026-09-23',await loadPdfFonts());
+ assert.equal((await PDFDocument.load(bytes)).getPageCount(),1);
+ assert.equal(JSON.stringify(s),before);
+});
