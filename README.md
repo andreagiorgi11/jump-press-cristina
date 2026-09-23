@@ -11,7 +11,8 @@ il progetto News/Social né il progetto Approvazione. Build: `node build.mjs`.
 Home, Summary, editor ed edizioni rimandano al nuovo sito; i vecchi collegamenti
 archivio senza equivalenza verificata portano all'archivio nuovo. MCP, OAuth e API
 ritirati restituiscono 410; richieste di scrittura non vengono inoltrate. Nessun
-token o parametro query viene copiato nella destinazione. Redirect inizialmente
+codice o token OAuth viene inoltrato: i parametri sensibili noti restituiscono 410;
+i normali parametri di navigazione sono conservati da Vercel. Redirect inizialmente
 307 con `no-store`, per consentire ripristino e verifica. Il deployment precedente
 `6i4BjviXg844aKjX7JXkeNHeaEep` resta il riferimento di rollback; prima di riattivarlo
 verificare che non riabiliti un secondo flusso editoriale. Non eliminare Blob o

@@ -9,6 +9,7 @@ const destination='https://jump-press-approvazione.vercel.app';
 const headers={'Cache-Control':'no-store','X-Robots-Tag':'noindex'};
 const redirect=(src,suffix)=>({src,methods:['GET','HEAD'],status:307,headers:{...headers,Location:destination+suffix}});
 const routes=[
+ ...['code','token','access_token','refresh_token','id_token','client_secret','code_verifier','state'].map(key=>({src:'/.*',has:[{type:'query',key}],status:410,headers})),
  {src:'/(?:mcp|oauth|api|\\.well-known)(?:/.*)?',status:410,headers},
  {src:'/editor/consent/?',status:410,headers},
  redirect('/','/'),
