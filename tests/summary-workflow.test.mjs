@@ -20,7 +20,7 @@ test('Summary persists, survives asset attachment and is invalidated after edito
 });
 test('Readiness rejects empty and wrong categories, accepts long Summary; legacy is unaffected',async()=>{
  const b=body();await validateSummaryReady(b);const empty=body();empty.executiveSummary.sections.forEach(s=>s.items=[]);await assert.rejects(validateSummaryReady(empty),/highlights/);
- b.articles[0].category='Editoriali';await assert.rejects(validateSummaryReady(b),/quattro aree/);
+ b.articles[0].category='Editoriali';await assert.rejects(validateSummaryReady(b),/cinque aree/);
  const long=body();long.executiveSummary.sections[1].items=Array(30).fill('Un tema lungo: '+ 'Testo verificato. '.repeat(20));await validateSummaryReady(long);
  await validateSummaryReady({articles:[]});
 });
@@ -107,4 +107,12 @@ test('Long Summary continues on two branded pages with every highlight preserved
  for(const page of pages){assert(page.some(x=>x.str==='JUMP PRESS'));assert(page.some(x=>x.str==='SUMMARY'));assert(page.filter(x=>x.str.trim()&&x.transform[0]>=8).every(x=>x.transform[5]>=24));}
  const highlight=pages.flat().find(x=>x.str==='Argomento 0-0');assert.equal(highlight.transform[0],8.5);
  assert.equal(JSON.stringify(s),before);
+});
+
+test('Reordering articles persists without invalidating the unchanged Summary',async()=>{
+ const ctx={role:'editor',user:{id:'test'},store:new MemoryStore(),editorialModel:'summary-v1'},id=randomUUID(),b=body();
+ b.articles.push({...b.articles[0],id:randomUUID(),title:'Seconda notizia'});
+ const d=await saveDraft(ctx,id,0,b),next=structuredClone(d.body);next.articles.reverse();
+ const saved=await saveDraft(ctx,id,d.version,next);
+ assert.deepEqual(saved.body.articles.map(a=>a.id),next.articles.map(a=>a.id));assert.deepEqual(saved.body.executiveSummary,d.body.executiveSummary);
 });

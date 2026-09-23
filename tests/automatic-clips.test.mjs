@@ -52,3 +52,53 @@ test('automation completes with attention without visual clip checkpoints',async
  const d=await saveDraft({...x.ctx,automation:result.run},result.draftId,0,x.body);
  const done=await updateRun(x.ctx,{run:result.run,phase:'review',status:'completed',draftVersion:d.version});assert.equal(done.status,'completed');assert(done.reviewWarnings.includes('PDF da verificare.'));assert(done.reviewWarnings.includes('Riscontro fonte incompleto.'));
 });
+
+test('Single text edit reads extracted text only; unchanged clips and checks are reused',async()=>{
+ const x=await setup();let d=await saveDraft(x.ctx,x.id,0,x.body);const id=d.body.articles[0].clipId;let textReads=0,exists=0;const read=x.ctx.blobs.readText;
+ x.ctx.blobs.readText=async(...args)=>{textReads++;return read(...args);};x.ctx.blobs.readOriginal=async()=>{throw Error('PDF must not be downloaded for text edit');};x.ctx.blobs.exists=async()=>{exists++;throw Error('Must reuse trusted asset');};
+ d.body.articles[0].summary='La sintesi è stata corretta dall’editor.';d=await saveDraft(x.ctx,x.id,d.version,d.body);
+ assert.equal(textReads,1);assert.equal(exists,0);assert.equal(d.body.articles[0].clipId,id);assert.equal(d.body.articles[0].factCheck,null);assert.equal(d.body.articles[0].synthesisCheck.status,'attention');
+});
+test('Layout-only save needs no source reads and ignores forged client checks',async()=>{
+ const x=await setup();let d=await saveDraft(x.ctx,x.id,0,x.body);const version=d.version,checks=structuredClone(d.body.articles[0].synthesisCheck);
+ x.ctx.blobs.readText=async()=>{throw Error('no source work');};x.ctx.blobs.readOriginal=x.ctx.blobs.readText;
+ d.body.intro='Introduzione aggiornata.';d.body.articles[0].synthesisCheck={status:'verified',note:'forged'};
+ d=await saveDraft(x.ctx,x.id,d.version,d.body);assert.equal(d.version,version+1);assert.deepEqual(d.body.articles[0].synthesisCheck,checks);
+});
+test('Changing pages still generates a new PDF clip',async()=>{
+ const x=await setup();let d=await saveDraft(x.ctx,x.id,0,x.body);const old=d.body.articles[0].clipId;d.body.articles[0].pages=[2];d=await saveDraft(x.ctx,x.id,d.version,d.body);
+ assert.equal(x.reads(),2);assert.notEqual(d.body.articles[0].clipId,old);assert.equal(d.body.articles[0].pdfCheck.status,'attention');
+});
+
+test('Reordering preserves warning and clip identities without reading source again',async()=>{
+ const x=await setup();x.body.articles[0].title='Titolo non corrispondente alla fonte';x.body.articles.push({...x.body.articles[0],id:randomUUID(),pages:[3]});
+ let d=await saveDraft(x.ctx,x.id,0,x.body);assert.equal(d.automaticClips.status,'attention');
+ const before=structuredClone(d.body.articles),v=d.version;d.body.articles.reverse();
+ x.ctx.blobs.readText=async()=>{throw Error('no source reads for order');};x.ctx.blobs.readOriginal=x.ctx.blobs.readText;
+ d=await saveDraft(x.ctx,x.id,d.version,d.body);assert.equal(d.version,v+1);assert.deepEqual(d.body.articles,before.reverse());
+});
+
+
+test('Text source outage preserves unchanged checks and clips without inventing article failures',async()=>{
+ const x=await setup();x.body.articles.push({...x.body.articles[0],id:randomUUID()});
+ let d=await saveDraft(x.ctx,x.id,0,x.body);const before=structuredClone(d.body.articles),read=x.ctx.blobs.readText;
+ x.ctx.blobs.readText=async()=>{throw Error('access denied');};
+ d.body.articles[1].summary='Sintesi modificata';
+ d=await saveDraft(x.ctx,x.id,d.version,d.body);
+ assert.deepEqual(d.body.articles[0],before[0]);
+ assert.equal(d.body.articles[1].pdfCheck.status,'matched');
+ assert.equal(d.body.articles[1].clipId,before[1].clipId);
+ assert.equal(d.body.articles[1].synthesisCheck.status,'pending');
+ assert.equal(d.automaticClips.sourceUnavailable,true);
+ x.ctx.blobs.readText=read;d=await saveDraft(x.ctx,x.id,d.version,d.body);
+ assert.equal(d.automaticClips.sourceUnavailable,false);
+ assert.notEqual(d.body.articles[1].synthesisCheck.status,'pending');
+});
+
+test('New title remains pending when source cannot be read; old success cannot apply',async()=>{
+ const x=await setup();let d=await saveDraft(x.ctx,x.id,0,x.body);
+ x.ctx.blobs.readText=async()=>{throw Error('source down');};
+ d.body.articles[0].title='Un titolo diverso';d=await saveDraft(x.ctx,x.id,d.version,d.body);
+ assert.equal(d.body.articles[0].pdfCheck.status,'pending');assert.equal(d.automaticClips.sourceUnavailable,true);
+ assert(d.body.articles[0].clipId);
+});

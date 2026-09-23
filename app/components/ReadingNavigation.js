@@ -25,5 +25,5 @@ export default function ReadingNavigation({articles}){
   if(link){const scroller=link.parentElement;scroller.scrollTo({left:link.offsetLeft-scroller.clientWidth/2+link.offsetWidth/2,behavior:'instant'});}
  },[active,visible]);
  if(categories.length<2)return null;
- return <nav ref={nav} className="reading-navigation" hidden={!visible} aria-label="Navigazione rapida della rassegna"><span>Temi</span><div>{categories.map(category=><a key={category} href={'#articolo-'+articles.find(a=>a.category===category).id} data-edition-jump="true" aria-current={active===category?'location':undefined}>{category}</a>)}</div></nav>;
+ return <nav ref={nav} className="reading-navigation" hidden={!visible} aria-label="Navigazione rapida della rassegna"><div>{categories.map(category=><a key={category} href={'#articolo-'+articles.find(a=>a.category===category).id} data-edition-jump="true" aria-current={active===category?'location':undefined}>{category}</a>)}</div></nav>;
 }

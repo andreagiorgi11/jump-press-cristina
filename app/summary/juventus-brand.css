@@ -346,3 +346,14 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 .instructions-readonly{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.7 JumpRoboto,Arial,sans-serif;margin:20px 0 0;user-select:text}
 .sidebar-access-error{font-size:11px;color:#9e3030;padding:0 10px}
 @media print{.instructions-dialog{display:none!important}}
+
+/* Balance the Tuttosport wordmark against the other mastheads. */
+.summary-content .outlet-wordmark img[src*="tuttosport"]{transform:scale(.9);transform-origin:center}
+
+.instructions-edit-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0;font-size:12px}.instructions-edit-actions button{padding:8px 12px;border:1px solid #dce0d7;border-radius:5px;background:#f7f8f4;cursor:pointer}.instructions-editable{display:block;width:100%;height:55dvh;resize:vertical;box-sizing:border-box;padding:14px;border:1px solid #c9cec4;border-radius:6px;font:13px/1.7 JumpRoboto,Arial,sans-serif;color:#171919;background:white}
+
+/* Soft olive tint separates article navigation from the white page. */
+.summary-content .reading-navigation{background:#f0f0f0;border-color:#dedede;box-shadow:0 5px 18px #252d1514}
+.summary-content .reading-navigation a{color:#454b3d}
+.summary-content .reading-navigation a:hover{background:#e5e5e5}
+.summary-content .reading-navigation a[aria-current=location]{background:#d7ff00;color:#202718}
