@@ -1,6 +1,7 @@
 'use client';
 import {useCallback,useRef,useState} from 'react';
 import SidebarEditorTools from './SidebarEditorTools';
+import StorageUsage from './StorageUsage';
 import PdfPreview from './PdfPreview';
 import PdfSectionPicker from './PdfSectionPicker';
 function Icon({kind}){
@@ -10,6 +11,7 @@ function Icon({kind}){
 export default function ExportPage({date,live=false,pdfEndpoint,summaryAvailable=true,coverageStats}){
  const editionDate=new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(date+'T12:00:00Z'));
  const [refreshing,setRefreshing]=useState(false);
+ const [coverageOpen,setCoverageOpen]=useState(false),[storageLevel,setStorageLevel]=useState('unknown');
  const [pdf,setPdf]=useState(false),[menuOpen,setMenuOpen]=useState(false);
  const [picker,setPicker]=useState(false),[sections,setSections]=useState(null);
  const [includeClips,setIncludeClips]=useState(false);
@@ -25,15 +27,16 @@ export default function ExportPage({date,live=false,pdfEndpoint,summaryAvailable
   <div className="summary-sidebar-menu" id="summary-sidebar-menu">
 
    <nav aria-label="Navigazione rassegna"><p className="summary-nav-label">LEGGI</p><a className="summary-nav-item is-active" href="#rassegna-oggi" aria-current="page" onClick={()=>setMenuOpen(false)}><Icon kind="today"/><span>Rassegna di oggi</span></a>
-   {coverageStats&&<button ref={coverageTrigger} className="summary-nav-item" type="button" aria-haspopup="dialog" onClick={()=>{setMenuOpen(false);coverage.current.showModal();}}><Icon kind="stats"/><span>Copertura odierna</span></button>}
+   {coverageStats&&<button ref={coverageTrigger} className="summary-nav-item" type="button" aria-haspopup="dialog" onClick={()=>{setMenuOpen(false);setCoverageOpen(true);coverage.current.showModal();}}><Icon kind="stats"/><span>Copertura odierna</span>{['warning','critical'].includes(storageLevel)&&<i className="storage-alert-dot" aria-label="Spazio in esaurimento"/>}</button>}
    <button type="button" className="summary-nav-item" aria-haspopup="dialog" onClick={event=>openPdf('edition',event)}><Icon kind="download"/><span>Scarica PDF</span></button></nav>
    <div className="summary-sidebar-bottom"><nav className="sidebar-secondary" aria-label="Archivio e redazione"><SidebarEditorTools><button className="summary-editor-access" type="button" onClick={()=>{if(menuOpen)closeMenu();if(live)window.location.assign('/archivio');else archive.current.showModal();}}><Icon kind="archive"/><span>Archivio</span></button></SidebarEditorTools></nav><a href="#rassegna-oggi" className="summary-sidebar-brand" aria-label="Jump Press — rassegna di oggi" onClick={()=>setMenuOpen(false)}><img src="/brand/jump-comunicazione.png" width="104" height="57" alt="Jump"/><span>PRESS</span></a><span className="summary-sidebar-signature">POWERED BY <strong>AG STUDIO</strong></span></div>
   </div>
  </aside>
- {coverageStats&&<dialog ref={coverage} className="coverage-dialog" aria-labelledby="coverage-title" onClose={()=>{(window.matchMedia('(max-width: 900px)').matches?toggle.current:coverageTrigger.current)?.focus();}} onClick={event=>{if(event.target===event.currentTarget){const r=event.currentTarget.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)coverage.current.close();}}}>
+ {coverageStats&&<dialog ref={coverage} className="coverage-dialog" aria-labelledby="coverage-title" onClose={()=>{setCoverageOpen(false);(window.matchMedia('(max-width: 900px)').matches?toggle.current:coverageTrigger.current)?.focus();}} onClick={event=>{if(event.target===event.currentTarget){const r=event.currentTarget.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)coverage.current.close();}}}>
   <header className="coverage-dialog-header"><div><p>JUMP PRESS · JUVENTUS</p><h2 id="coverage-title">Copertura odierna</h2><time dateTime={date}>{editionDate}</time></div><button type="button" aria-label="Chiudi statistiche" onClick={()=>coverage.current.close()}><Icon kind="close"/></button></header>
-  <dl className="coverage-grid">{[[coverageStats.sourcePages,'Pagine del PDF originale'],[coverageStats.totalOutlets,'Testate totali'],[coverageStats.selectedOutlets,'Testate nella selezione'],[coverageStats.frontPages,'Prime pagine presenti']].map(([value,label])=><div key={label}><dt>{label}</dt><dd>{value??'Non disponibile'}</dd></div>)}</dl>
+  <dl className="coverage-grid">{[[coverageStats.sourcePages,'Pagine del PDF originale'],[coverageStats.totalOutlets,'Testate totali'],[coverageStats.selectedOutlets,'Testate nella selezione'],[coverageStats.frontPages,'Prime pagine presenti']].map(([value,label])=><div key={label}><dt>{label}</dt><dd className={value==null?"coverage-unavailable":undefined}>{value??'Non disponibile'}</dd></div>)}</dl>
   <p className="coverage-dialog-note">Le edizioni locali della stessa testata sono conteggiate una sola volta.</p>
+  <StorageUsage open={coverageOpen} onLevel={setStorageLevel}/>
  </dialog>}
  <dialog ref={archive} className="publish-dialog" aria-label="Archivio rassegne"><p className="publish-dialog-label">JUMP PRESS · JUVENTUS</p><h2>Rassegne</h2><p>{editionDate}</p><p>In questa anteprima è disponibile solo la rassegna del giorno.</p><div className="publish-dialog-actions"><button onClick={()=>archive.current.close()}>Leggi la rassegna</button></div></dialog>{picker&&<PdfSectionPicker summaryAvailable={summaryAvailable} onSummary={()=>{setSections(null);setIncludeClips(false);setPicker(false);setPdf('summary');}} initialSections={savedSections} initialClips={savedClips} onChange={rememberChoice} onClose={()=>{setPicker(false);pdfTrigger.current?.focus();}} onConfirm={(choice,clips)=>{setSections(choice);setIncludeClips(clips);setPicker(false);setPdf('edition');}}/>}{pdf&&<PdfPreview pdfEndpoint={pdfEndpoint} includeClips={includeClips} sections={sections} key={pdf} kind={pdf} date={editionDate} onClose={()=>{setPdf(false);pdfTrigger.current?.focus();}}/>}</>;
 }

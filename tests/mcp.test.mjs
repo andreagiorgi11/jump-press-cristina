@@ -56,3 +56,13 @@ test('browser writes reject absent or foreign Origin and support Next internal h
 test('MCP refuses missing or unrecognized authenticated roles',()=>{
  for(const role of [undefined,'guest'])assert.throws(()=>createEditorialMcp({role}),/autenticato/);
 });
+
+test('Summary MCP exposes required editorial flag and five current sections only',async()=>{
+ const server=createEditorialMcp({role:'producer',editorialModel:'summary-v1',store:new MemoryStore(),user:{id:'test'}}),client=new Client({name:'schema-test',version:'1'});const [a,b]=InMemoryTransport.createLinkedPair();
+ try{await server.connect(a);await client.connect(b);const {tools}=await client.listTools();const p=tools.find(t=>t.name==='save_draft').inputSchema.properties.body.properties;
+ assert(p.articles.items.required.includes('isEditorial'));assert.equal(p.articles.items.properties.category.enum.length,5);
+ const sections=p.executiveSummary.anyOf.find(x=>x.type==='object').properties.sections;assert.equal(sections.minItems,5);assert.equal(sections.maxItems,5);assert.equal(sections.items.properties.title.enum.length,5);
+ const {mcpSummaryEditionSchema,editionSchema}=await import('../lib/schema.js');const base={date:'2026-09-23',title:'Test',intro:'Test',articles:[{id:'12345678-1234-4234-8234-123456789012',category:'Prima squadra',title:'Test',summary:'Test',outlet:'Test',isEditorial:false}]};assert(mcpSummaryEditionSchema.safeParse(base).success);delete base.articles[0].isEditorial;assert(!mcpSummaryEditionSchema.safeParse(base).success);assert(editionSchema.safeParse(base).success);
+ base.articles[0].isEditorial=true;base.articles[0].category='Prima squadra maschile';assert(!mcpSummaryEditionSchema.safeParse(base).success);
+ }finally{await client.close();await server.close();}
+});

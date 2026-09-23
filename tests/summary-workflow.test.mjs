@@ -18,6 +18,19 @@ test('Summary persists, survives asset attachment and is invalidated after edito
  d.body.articles[0].clipId=randomUUID();d=await saveDraft(ctx,id,1,d.body);assert(d.body.executiveSummary);
  d.body.articles[0].summary='La squadra cambia preparazione.';d=await saveDraft(ctx,id,2,d.body);assert.equal(d.body.executiveSummary,null);await assert.rejects(validateSummaryReady(d.body),/Summary mancante/);
 });
+test('Correcting PDF pages and source preserves Summary, including when omitted by client',async()=>{
+ for(const omit of [false,true]){
+  const ctx={role:'editor',user:{id:'test'},store:new MemoryStore(),editorialModel:'summary-v1'},id=randomUUID();
+  const initial=body();Object.assign(initial.articles[0],{pages:[21,22],sourceId:randomUUID()});
+  let d=await saveDraft(ctx,id,0,initial);
+  const corrected=structuredClone(d.body);Object.assign(corrected.articles[0],{pages:[22],sourceId:null,clipId:randomUUID()});
+  if(omit)delete corrected.executiveSummary;
+  d=await saveDraft(ctx,id,d.version,corrected);
+  assert.deepEqual(d.body.executiveSummary,summary());assert.deepEqual(d.body.articles[0].pages,[22]);
+  const changed=structuredClone(d.body);changed.articles[0].summary='Un contenuto editoriale diverso.';
+  d=await saveDraft(ctx,id,d.version,changed);assert.equal(d.body.executiveSummary,null);
+ }
+});
 test('Readiness rejects empty and wrong categories, accepts long Summary; legacy is unaffected',async()=>{
  const b=body();await validateSummaryReady(b);const empty=body();empty.executiveSummary.sections.forEach(s=>s.items=[]);await assert.rejects(validateSummaryReady(empty),/highlights/);
  b.articles[0].category='Editoriali';await assert.rejects(validateSummaryReady(b),/cinque aree/);
@@ -31,7 +44,7 @@ test('Summary instructions selected only for the new profile',async()=>{
 });
 
 test('Summary survives older clients omitting it, but changed relevance or attribution invalidates it',async()=>{
- for(const patch of [{rating:5},{outlet:'Altra testata'},{author:'Firma verificata'},{sourceId:randomUUID()}]){
+ for(const patch of [{rating:5},{outlet:'Altra testata'},{author:'Firma verificata'}]){
   const ctx={role:'editor',user:{id:'test'},store:new MemoryStore(),editorialModel:'summary-v1'},id=randomUUID();
   let d=await saveDraft(ctx,id,0,body());
   const omitted=structuredClone(d.body);delete omitted.executiveSummary;delete omitted.editorialModel;
