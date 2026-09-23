@@ -1,5 +1,22 @@
 # Jump Press — GitHub e Vercel
 
+## Ritiro del vecchio sito Juventus — 23 settembre 2026
+
+Il sito operativo è https://jump-press-approvazione.vercel.app. La cartella
+`retired-juventus` produce un deployment Vercel statico di soli reindirizzamenti,
+senza funzioni, accesso ai dati o dipendenze. Destinarla esclusivamente al progetto
+`jumpress-juventus` (Root Directory `retired-juventus`, preset Other); non cambiare
+il progetto News/Social né il progetto Approvazione. Build: `node build.mjs`.
+
+Home, Summary, editor ed edizioni rimandano al nuovo sito; i vecchi collegamenti
+archivio senza equivalenza verificata portano all'archivio nuovo. MCP, OAuth e API
+ritirati restituiscono 410; richieste di scrittura non vengono inoltrate. Nessun
+token o parametro query viene copiato nella destinazione. Redirect inizialmente
+307 con `no-store`, per consentire ripristino e verifica. Il deployment precedente
+`6i4BjviXg844aKjX7JXkeNHeaEep` resta il riferimento di rollback; prima di riattivarlo
+verificare che non riabiliti un secondo flusso editoriale. Non eliminare Blob o
+repository contenuti condivisi con il nuovo sito.
+
 Il progetto usa GitHub per i contenuti e Vercel per sito e PDF. Non richiede Supabase, SQL o un provider separato per gli account.
 
 ## Come lavorare
