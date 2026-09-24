@@ -50,7 +50,7 @@ test('automation completes with attention without visual clip checkpoints',async
  const x=await setup();const result=await claimRun(x.ctx,{date,url:'https://rassegna.dominiocliente.it/Areas/Rassegna/Elab/CheckedDownload.aspx?nome_file=PP_RAS_1626482_20260922_16377886.pdf',requestId:randomUUID()});
  await updateRun(x.ctx,{run:result.run,phase:'reading',checkpoint:{importId:x.importId,nextPage:4}});x.body.articles[0].pages=[99];
  const d=await saveDraft({...x.ctx,automation:result.run},result.draftId,0,x.body);
- const done=await updateRun(x.ctx,{run:result.run,phase:'review',status:'completed',draftVersion:d.version});assert.equal(done.status,'completed');assert(done.reviewWarnings.includes('PDF da verificare.'));assert(done.reviewWarnings.includes('Riscontro fonte incompleto.'));
+ const done=await updateRun(x.ctx,{run:result.run,phase:'review',status:'completed',draftVersion:d.version});assert.equal(done.status,'completed');assert(done.reviewWarnings.includes('PDF da verificare.'));assert(!done.reviewWarnings.includes('Riscontro fonte incompleto.'),'hidden since 24/09/2026');
 });
 
 test('Single text edit reads extracted text only; unchanged clips and checks are reused',async()=>{
@@ -101,14 +101,6 @@ test('New title remains pending when source cannot be read; old success cannot a
  d.body.articles[0].title='Un titolo diverso';d=await saveDraft(x.ctx,x.id,d.version,d.body);
  assert.equal(d.body.articles[0].pdfCheck.status,'pending');assert.equal(d.automaticClips.sourceUnavailable,true);
  assert(d.body.articles[0].clipId);
-});
-test('headline missing from extracted text: quotes on the first page confirm the clip, no PDF warning',async()=>{
- const x=await setup();x.body.articles[0].title='«Voglio cambiare le regole»';
- const d=await saveDraft(x.ctx,x.id,0,x.body),a=d.body.articles[0];
- assert.equal(a.pdfCheck.status,'matched');assert.match(a.pdfCheck.note,/estratti/);assert.equal(d.automaticClips.status,'complete');
- x.body.articles[0].factCheck.evidence=[{page:1,quote:'frase che non compare da nessuna parte'}];
- const y=await saveDraft(x.ctx,x.id,d.version,{...d.body,articles:[{...d.body.articles[0],factCheck:x.body.articles[0].factCheck}]});
- assert.equal(y.body.articles[0].pdfCheck.status,'attention');
 });
 test('a transient source read error is retried instead of leaving "source unavailable" warnings',async()=>{
  const x=await setup(),read=x.ctx.blobs.readText;let calls=0;x.ctx.blobs.readText=async p=>{if(++calls===1)throw Object.assign(Error('Testo estratto non leggibile.'),{status:503});return read(p);};

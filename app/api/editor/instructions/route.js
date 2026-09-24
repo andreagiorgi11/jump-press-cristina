@@ -1,5 +1,5 @@
 import {requireEditor} from '../../../../lib/server-client';
-import {readInstructions} from '../../../../lib/editorial-instructions';
+import {readInstructions,localInstructionsPreview} from '../../../../lib/editorial-instructions';
 import {failure,sameOrigin} from '../../../../lib/errors';
 import {createHash} from 'node:crypto';
 const revision=text=>createHash('sha256').update(text).digest('hex');
@@ -7,10 +7,10 @@ export const dynamic='force-dynamic';
 export const maxDuration=60;
 export async function GET(request){try{const {db}=await requireEditor(request);return Response.json(await editableInstructions(db),{headers:{'Cache-Control':'private, no-store'}});}catch(e){return failure(e);}}
 
-async function editableInstructions(db){const data=await readInstructions(db);return {...data,localEditable:process.env.NODE_ENV==='development'&&['editor','publisher'].includes(db.role),localRevision:revision(data.text)};}
+async function editableInstructions(db){const data=await readInstructions(db);return {...data,localEditable:localInstructionsPreview()&&['editor','publisher'].includes(db.role),localRevision:revision(data.text)};}
 export async function POST(request){
  try{
-  if(process.env.NODE_ENV!=='development')return Response.json({error:'Modifica disponibile solo in locale.'},{status:404});
+  if(!localInstructionsPreview())return Response.json({error:'Modifica locale delle istruzioni non attiva.'},{status:404});
   sameOrigin(request);const {db}=await requireEditor(request);
   if(!['editor','publisher'].includes(db.role))return Response.json({error:'Accesso editor richiesto.'},{status:403});
   const input=await request.json(),current=await readInstructions(db);

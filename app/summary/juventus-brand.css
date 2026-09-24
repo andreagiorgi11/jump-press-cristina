@@ -359,3 +359,31 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 .summary-content .reading-navigation a[aria-current=location]{background:#d7ff00;color:#202718}
 .storage-usage{margin:0 28px 26px;padding:22px 0 0;border-top:1px solid #e2e4e4;font-size:13px}.storage-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.storage-heading h3{font-size:17px;margin:0}.storage-heading>span{font-size:9px;letter-spacing:.8px;color:#737878}.storage-scope{color:#727777;margin:7px 0 18px;font-size:12px}.storage-total{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}.storage-total strong{font-size:28px;font-weight:600}.storage-total>span{color:#727777}.storage-composition{display:flex;height:8px;background:#eceeee;border-radius:8px;overflow:hidden}.storage-originals{background:#171919}.storage-articlePdfs{background:#b8da00}.storage-other{background:#a3a8a8}.storage-usage dl{margin:16px 0}.storage-usage dl>div{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #eff0f0}.storage-usage dt{display:flex;align-items:center;gap:7px}.storage-usage dt i{height:7px;width:7px;border-radius:50%}.storage-usage dt small{color:#777;font-size:10px}.storage-usage dd{margin:0;font-weight:600}.storage-note{font-size:11px;line-height:1.6;color:#737878}.storage-warning{padding:10px 12px;background:#fff5df;border-radius:6px;line-height:1.5;color:#75501d}.storage-alert-dot{height:7px;width:7px;border-radius:50%;background:#c77c15;margin-left:auto}.storage-usage progress{width:100%;height:8px;accent-color:#b8da00}@media(max-width:420px){.storage-usage{margin:0 20px 20px}.storage-usage dt small{display:none}}
 .coverage-grid dd.coverage-unavailable{font-size:16px;line-height:1.4;overflow-wrap:normal}
+
+/* Sidebar heading: the Juventus mark alone, optically centred. Refresh and menu are positioned
+   outside the flow so they never push the mark off-centre. Replaces the textual client heading. */
+.summary-sidebar .summary-sidebar-heading{position:relative;display:flex;align-items:center;justify-content:center;height:116px;margin:0 18px 20px;padding:0;border-bottom:1px solid #ebebeb}
+.sidebar-client-mark{display:block;line-height:0;border-radius:6px}
+.sidebar-client-mark img{display:block;width:auto;height:52px}
+@media(max-height:800px) and (min-width:901px){.summary-sidebar .summary-sidebar-heading{height:96px;margin-bottom:14px}.sidebar-client-mark img{height:44px}}
+@media(max-width:900px){
+ .summary-sidebar .summary-sidebar-heading{height:78px;margin:0;padding:0 22px;border-bottom:0}
+ .sidebar-client-mark img{height:40px}
+}
+
+/* LEGGI label with the refresh action aligned on the same line. */
+.summary-nav-heading{display:flex;align-items:center;justify-content:space-between;margin:0 4px 10px 12px}
+.summary-nav-heading .summary-nav-label{margin:0}
+/* Light donut areas need an edge on white. */
+.jcd-row i{box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+
+/* Larger Juventus mark; refresh icon sized and weighted to read cleanly beside LEGGI. */
+.summary-sidebar .summary-sidebar-heading{height:140px}
+.sidebar-client-mark img{height:72px}
+.summary-nav-heading .sidebar-refresh{width:30px;height:30px;color:#5f676b}
+.summary-nav-heading .sidebar-refresh svg{width:17px;height:17px;stroke-width:2}
+@media(max-height:800px) and (min-width:901px){.summary-sidebar .summary-sidebar-heading{height:118px}.sidebar-client-mark img{height:60px}}
+@media(max-width:900px){.summary-sidebar .summary-sidebar-heading{height:78px}.sidebar-client-mark img{height:50px}}
+
+/* Editor only: Summary missing or to recheck, flagged on the download entry. */
+.summary-pdf-alert{display:inline-flex;margin-left:auto;line-height:0;cursor:help}

@@ -12,5 +12,6 @@ Leggere README.md per architettura, avvio, configurazione e incidenti. Progetto 
 - Test isolati per permessi, OAuth, privacy e concorrenza; build di entrambe le modalità e verifica browser.
 - Niente credenziali in repository, output, chat o log. Nessuna modifica a dati di produzione per effettuare test.
 - Porte locali 3015 press e 3016 News; nessun processo estraneo da terminare.
+- Regola di Andrea (24/09/2026): in locale si lavora SEMPRE sui dati reali, come la produzione. Avvio con `avvia-reale.bat` / `node scripts/dev-real.mjs` su http://127.0.0.1:3019 (profilo summary-v1, layout approvazione, istruzioni online). Non mostrare ad Andrea l’ambiente isolato `avvia-summary.bat` né anteprime locali delle istruzioni (`JUMP_LOCAL_INSTRUCTIONS_PREVIEW` resta spento). In locale salvataggi e conferme sono reali: avvisare prima di scrivere. I test automatici restano isolati su archivi simulati.
 
 Contesto operativo: consultare le fonti locali Come lavorare con Andrea, AG Studio e Risorse/Regole di programmazione nel Second Brain. Le istruzioni esplicite correnti di Andrea prevalgono sui documenti precedenti.

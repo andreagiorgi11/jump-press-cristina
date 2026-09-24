@@ -12,13 +12,16 @@ test('Summary validates named areas, order and maximum five mens topics',()=>{
  const s=summary();assert(executiveSummarySchema.safeParse(s).success);s.sections[0].items=Array(6).fill('Tema: descrizione');assert(!executiveSummarySchema.safeParse(s).success);
  const reversed=summary();reversed.sections.reverse();assert(!executiveSummarySchema.safeParse(reversed).success);
 });
-test('Summary persists, survives asset attachment and is invalidated after editorial changes',async()=>{
+test('Summary persists, survives asset attachment and is marked to recheck after editorial changes',async()=>{
  const ctx={role:'editor',user:{id:'test'},store:new MemoryStore(),editorialModel:'summary-v1'},id=randomUUID();
  let d=await saveDraft(ctx,id,0,body());assert.deepEqual(d.body.executiveSummary,summary());assert.deepEqual(publicBody(d.body).executiveSummary,summary());
  d.body.articles[0].clipId=randomUUID();d=await saveDraft(ctx,id,1,d.body);assert(d.body.executiveSummary);
- d.body.articles[0].summary='La squadra cambia preparazione.';d=await saveDraft(ctx,id,2,d.body);assert.equal(d.body.executiveSummary,null);await assert.rejects(validateSummaryReady(d.body),/Summary mancante/);
+ d.body.articles[0].summary='La squadra cambia preparazione.';d=await saveDraft(ctx,id,2,d.body);assert.deepEqual(d.body.executiveSummary,summary());assert.equal(d.body.executiveSummaryStale,true);await validateSummaryReady(d.body);
+ d.body.intro='Nuovo cappello.';d=await saveDraft(ctx,id,d.version,d.body);assert.equal(d.body.executiveSummaryStale,true,'a form edit does not clear the recheck');
+ d=await saveDraft(ctx,id,d.version,d.body,{summaryConfirmed:true});assert.equal(d.body.executiveSummaryStale,undefined);assert.deepEqual(d.body.executiveSummary,summary());
+ d.body.executiveSummary=null;d=await saveDraft(ctx,id,d.version,d.body);await assert.rejects(validateSummaryReady(d.body),/Summary mancante/);
 });
-test('Correcting PDF pages and source preserves Summary, including when omitted by client',async()=>{
+test('Correcting PDF pages and source preserves Summary, including when omitted by client; content edits mark it',async()=>{
  for(const omit of [false,true]){
   const ctx={role:'editor',user:{id:'test'},store:new MemoryStore(),editorialModel:'summary-v1'},id=randomUUID();
   const initial=body();Object.assign(initial.articles[0],{pages:[21,22],sourceId:randomUUID()});
@@ -28,7 +31,8 @@ test('Correcting PDF pages and source preserves Summary, including when omitted 
   d=await saveDraft(ctx,id,d.version,corrected);
   assert.deepEqual(d.body.executiveSummary,summary());assert.deepEqual(d.body.articles[0].pages,[22]);
   const changed=structuredClone(d.body);changed.articles[0].summary='Un contenuto editoriale diverso.';
-  d=await saveDraft(ctx,id,d.version,changed);assert.equal(d.body.executiveSummary,null);
+  d=await saveDraft(ctx,id,d.version,changed);assert.deepEqual(d.body.executiveSummary,summary());assert.equal(d.body.executiveSummaryStale,true);
+  const renewed=structuredClone(d.body);renewed.executiveSummary.intro='Summary aggiornato.';d=await saveDraft(ctx,id,d.version,renewed);assert.equal(d.body.executiveSummaryStale,undefined);
  }
 });
 test('Readiness rejects empty and wrong categories, accepts long Summary; legacy is unaffected',async()=>{
@@ -43,14 +47,14 @@ test('Summary instructions selected only for the new profile',async()=>{
  assert.equal(old.editorialModel,undefined);assert.equal(next.editorialModel,'summary-v1');assert(next.text.includes('CAMPO executiveSummary'));assert(!next.text.includes('editoriali consecutivi all’inizio'));assert(next.text.includes('claim_automation_run'));
 });
 
-test('Summary survives older clients omitting it, but changed relevance or attribution invalidates it',async()=>{
+test('Summary survives older clients omitting it; changed relevance or attribution marks it to recheck',async()=>{
  for(const patch of [{rating:5},{outlet:'Altra testata'},{author:'Firma verificata'}]){
   const ctx={role:'editor',user:{id:'test'},store:new MemoryStore(),editorialModel:'summary-v1'},id=randomUUID();
   let d=await saveDraft(ctx,id,0,body());
   const omitted=structuredClone(d.body);delete omitted.executiveSummary;delete omitted.editorialModel;
   d=await saveDraft(ctx,id,d.version,omitted);assert.deepEqual(d.body.executiveSummary,summary());assert.equal(d.version,1);
   Object.assign(omitted.articles[0],patch);
-  d=await saveDraft(ctx,id,d.version,omitted);assert.equal(d.body.executiveSummary,null);assert.equal(d.body.editorialModel,'summary-v1');
+  d=await saveDraft(ctx,id,d.version,omitted);assert.deepEqual(d.body.executiveSummary,summary());assert.equal(d.body.executiveSummaryStale,true);assert.equal(d.body.editorialModel,'summary-v1');
  }
 });
 
@@ -128,4 +132,13 @@ test('Reordering articles persists without invalidating the unchanged Summary',a
  const d=await saveDraft(ctx,id,0,b),next=structuredClone(d.body);next.articles.reverse();
  const saved=await saveDraft(ctx,id,d.version,next);
  assert.deepEqual(saved.body.articles.map(a=>a.id),next.articles.map(a=>a.id));assert.deepEqual(saved.body.executiveSummary,d.body.executiveSummary);
+});
+
+test('Title punctuation and case never touch the Summary; changed title words mark it; clients cannot set the flag',async()=>{
+ const ctx={role:'editor',user:{id:'test'},store:new MemoryStore(),editorialModel:'summary-v1'},id=randomUUID(),b=body();
+ b.articles[0].title='LA COOP DEL GOL Dieci marcatori';let d=await saveDraft(ctx,id,0,b);
+ const punct=structuredClone(d.body);punct.articles[0].title='La coop del gol, dieci marcatori';delete punct.executiveSummary;
+ d=await saveDraft(ctx,id,d.version,punct);assert.deepEqual(d.body.executiveSummary,summary());assert.equal(d.body.executiveSummaryStale,undefined);
+ const forged=structuredClone(d.body);forged.executiveSummaryStale=true;d=await saveDraft(ctx,id,d.version,forged);assert.equal(d.body.executiveSummaryStale,undefined);
+ const words=structuredClone(d.body);words.articles[0].title='La coop del gol, undici marcatori';d=await saveDraft(ctx,id,d.version,words);assert.equal(d.body.executiveSummaryStale,true);
 });
