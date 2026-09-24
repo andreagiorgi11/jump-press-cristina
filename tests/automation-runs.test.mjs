@@ -85,3 +85,14 @@ test('after the import, a failed run still requires explicit recovery',async()=>
  await updateRun(ctx,{run:first.run,phase:'reading',status:'failed',retryable:false});
  assert.equal((await claim(ctx)).reason,'recovery_requires_review');
 });
+test('a concurrent unrelated commit (login attempt) does not make renew or finish fail',async()=>{
+ const ctx=fixture(),job=await claim(ctx),store=ctx.store,commit=store.commit.bind(store);let injected=0;
+ // Simulates the login-attempt record committed between the read and the write of the run.
+ store.commit=async(files,head,message)=>{if(injected<1&&Object.keys(files).some(p=>p.startsWith('automation/runs/'))){injected++;await commit({'auth/attempts.json':{n:1}},await store.begin(),'Controllo tentativi di accesso');}return commit(files,head,message);};
+ const renewed=await updateRun(ctx,{run:job.run,phase:'reading',checkpoint:{nextPage:3}});
+ assert.equal(injected,1);assert.equal(renewed.phase,'reading');assert.equal((await readRun(ctx,date)).checkpoint.nextPage,3);
+ store.commit=async()=>{throw Object.assign(Error('Conflitto concorrente'),{status:409,storeConflict:true});};
+ await assert.rejects(updateRun(ctx,{run:job.run,phase:'reading'}),e=>e.storeConflict);
+ store.commit=commit;
+ await assert.rejects(updateRun(ctx,{run:{...job.run,generation:9},phase:'reading'}),e=>e.status===409&&!e.storeConflict);
+});
