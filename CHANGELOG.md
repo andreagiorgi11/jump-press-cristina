@@ -4,6 +4,8 @@ Su indicazione di Andrea, superata la prima correzione parziale del menu: riapri
 
 Verifiche: 133 test superati, inclusi sessioni valide, scadute, revocate, tipo errato e guasti di configurazione. Prova HTTP Next su ambiente isolato: home autenticata 307 verso /editor; anonima e scaduta 200; nessun redirect su /editor o sulle edizioni. Rollback codice: deployment precedente dpl_7VtJQvPjxr7jeRVVSQZ7hS3Fu1xz, senza ripristinare i dati.
 
+Rilasciato il 24 settembre alle 20:02 (Europe/Rome): sorgenti f46b9be, deployment dpl_BrvTVgV7auHniM3U1aGBmmd5He5V su jump-press-approvazione.vercel.app. Build locali Press/News e build Vercel riuscite. Verifica online anonima: home, editor, edizione del 18, sessione e stato del giorno 200; API editor 401. Nel browser anonimo compare soltanto Accesso editor. Il reindirizzamento autenticato è stato verificato via HTTP con credenziali sintetiche nell'ambiente isolato; nessuna sessione reale di Andrea usata nel collaudo online.
+
 ## 2026-09-24 — menu redazione nella home (Codex, locale)
 
 Corretto il menu degli editor collegati sulle pagine di lettura: REDAZIONE appariva solo con una bozza aperta, mentre nella home restavano soltanto Istruzioni ed Esci. La stessa verifica di sessione ora abilita REDAZIONE con Apri editor e Istruzioni; nessun comando di pubblicazione viene aggiunto alla pagina pubblicata. Nessuna modifica a sessioni, permessi server o contenuti. Rollback: ripristinare i tre componenti della barra alla revisione precedente. Verifica ripetibile: aprire home come anonimo e come editor, controllare accesso a /editor, istruzioni uniche nella sezione REDAZIONE e menu mobile. Rilascio online non eseguito.
