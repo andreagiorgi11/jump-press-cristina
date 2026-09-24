@@ -10,7 +10,10 @@ function editorCard(e){
  const {run,draft}=e,phase=phases[run.phase]||'';
  if(e.published)return null;
  if(run.status==='completed'||(draft&&run.status!=='running'&&run.status!=='failed'))return {tone:'ready',title:'Bozza pronta per la revisione',text:(run.warnings?run.warnings+(run.warnings===1?' avviso da controllare. ':' avvisi da controllare. '):'')+'I lettori la vedranno solo dopo la conferma.',link:draft&&{href:'/editor?draft='+encodeURIComponent(draft.id),label:'Apri la bozza'}};
- if(run.status==='running'&&run.stalled)return {tone:'alert',title:'Automatismo fermo',text:phase+(run.updatedAt?' · ultimo aggiornamento alle '+time(run.updatedAt):'')+'. Il prossimo controllo programmato può riprenderlo.'};
+ // Only an import-phase stop is picked up by the next scheduled check; later phases need someone to resume or close it.
+ const resumeHint=run.phase==='import'?'Il prossimo controllo programmato lo riprende da solo.':'Il lavoro non è stato chiuso: fai riprendere GPT oppure verifica la bozza.';
+ if(run.status==='running'&&run.stalled&&draft)return {tone:'alert',title:'Bozza salvata, lavoro non chiuso',text:'GPT si è fermato in fase «'+phase+'»'+(run.updatedAt?' alle '+time(run.updatedAt):'')+' senza chiudere il lavoro. '+resumeHint,link:{href:'/editor?draft='+encodeURIComponent(draft.id),label:'Apri la bozza'}};
+ if(run.status==='running'&&run.stalled)return {tone:'alert',title:'Automatismo fermo',text:phase+(run.updatedAt?' · ultimo aggiornamento alle '+time(run.updatedAt):'')+'. '+resumeHint};
  if(run.status==='running')return {tone:'working',title:'Rassegna in preparazione',text:phase+(run.phase==='reading'&&run.nextPage?' · pagina '+run.nextPage:'')+(run.updatedAt?' · aggiornato alle '+time(run.updatedAt):'')};
  if(run.status==='failed')return {tone:'alert',title:'Automatismo interrotto',text:(phase?'Fase: '+phase+'. ':'')+(run.phase==='import'&&run.attemptsRemaining>0?'La data resta disponibile per il prossimo controllo programmato.':'Serve un intervento: verifica da GPT.')};
  return {tone:'idle',title:'Automatismo non ancora partito',text:'Parte all’arrivo della mail Ecostampa; controllo programmato alle 7:45.'};

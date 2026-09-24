@@ -16,6 +16,7 @@ const demos={
  'editor-attesa':demoRun({}),
  'editor-lavoro':demoRun({status:'running',phase:'reading',nextPage:63,updatedAt:Date.parse('2026-09-24T06:52:00Z')}),
  'editor-fermo':demoRun({status:'running',phase:'reading',nextPage:63,updatedAt:Date.parse('2026-09-24T06:52:00Z'),stalled:true}),
+ 'editor-fermo-bozza':demoRun({status:'running',phase:'review',updatedAt:Date.parse('2026-09-24T06:30:00Z'),stalled:true},{draft:{id:'demo',version:6}}),
  'editor-errore':demoRun({status:'failed',phase:'import',attemptsRemaining:2}),
  'editor-pronta':demoRun({status:'completed',phase:'review',warnings:2},{draft:{id:'demo',version:4}})
 };
