@@ -1,0 +1,19 @@
+.today-notice{--notice-tone:#dfff2f;position:relative;margin:28px 40px 0;padding:22px 26px 22px 30px;background:linear-gradient(135deg,#171b1e,#101315);border:1px solid #2c3236;border-radius:18px;color:#f4f5f2;font-family:JumpRoboto,Arial,Helvetica,sans-serif;box-shadow:0 14px 34px rgba(0,0,0,.28);overflow:hidden}
+.today-notice:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--notice-tone)}
+.today-notice small{display:block;color:var(--notice-tone);font-size:12px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase}
+.today-notice h2{display:flex;align-items:center;gap:12px;margin:10px 0 8px;font-family:JuventusFans,Arial,Helvetica,sans-serif;font-size:34px;line-height:1.05;font-weight:700;letter-spacing:-.3px;color:#fff}
+.today-notice h2 i{flex:none;width:12px;height:12px;border-radius:50%;background:var(--notice-tone)}
+.today-notice p{margin:0;max-width:760px;font-size:16px;line-height:1.55;color:#c9ced1}
+.today-notice p b{color:#fff;font-weight:700}
+.today-notice a{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:10px 16px;border-radius:999px;background:var(--notice-tone);color:#0b0d0f;font-size:14px;font-weight:800;text-decoration:none}
+.today-notice a:hover,.today-notice a:focus-visible{background:#fff}
+.today-notice.is-working h2 i{animation:today-pulse 1.8s ease-in-out infinite}
+.today-notice.is-scheduled h2 i{background:transparent;border:2px solid var(--notice-tone)}
+.today-notice.is-alert{--notice-tone:#ffb547}
+.today-notice.is-idle{--notice-tone:#9aa3a8}
+@keyframes today-pulse{0%,100%{box-shadow:0 0 0 0 rgba(223,255,47,.55)}50%{box-shadow:0 0 0 8px rgba(223,255,47,0)}}
+@media(prefers-reduced-motion:reduce){.today-notice.is-working h2 i{animation:none}}
+@media(max-width:760px){.today-notice{margin:16px 14px 0;padding:18px 18px 18px 22px;border-radius:15px}.today-notice h2{font-size:27px}.today-notice p{font-size:15px}}
+/* Below 900px the sidebar becomes a fixed top bar: clear it here and tighten the edition that follows. */
+@media(max-width:900px){.today-notice{margin-top:96px}.summary-content .today-notice+main.summary-edition{padding-top:36px}}
+@media print{.today-notice{display:none}}
