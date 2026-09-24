@@ -56,6 +56,13 @@ test('failed download stays failed, creates no blank edition and needs explicit 
  await assert.rejects(importPdf(ctx,{url,date:'2026-09-17'}),/fallito/);
  const result=await importPdf(ctx,{url,date:'2026-09-17'});assert.equal(result.status,'failed');assert.equal(ctx.store.files['index.json'].drafts.length,0);
 });
+test('a PDF not ready yet is checked again by the next call without retry',async()=>{
+ const ctx=await fixture(),good=ctx.downloadSource;let calls=0;
+ ctx.downloadSource=async(...a)=>{if(++calls===1)throw Object.assign(Error('PDF Ecostampa non ancora disponibile'),{status:422,sourceNotReady:true});return good(...a);};
+ await assert.rejects(importPdf(ctx,{url,date:'2026-09-17'}),/non ancora disponibile/);
+ const again=await importPdf(ctx,{url,date:'2026-09-17'});assert.equal(again.status,'ready');assert.equal(calls,2);
+ assert.equal((await importPdf(ctx,{url,date:'2026-09-17'})).status,'ready');assert.equal(calls,2);
+});
 test('concurrent imports reserve one job and deferred calls expose progress',async()=>{
  const ctx=await fixture(),work=[];ctx.defer=fn=>work.push(fn);
  const results=await Promise.allSettled([importPdf(ctx,{url,date:'2026-09-17'}),importPdf(ctx,{url,date:'2026-09-17'})]);

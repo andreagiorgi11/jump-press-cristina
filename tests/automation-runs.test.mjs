@@ -69,3 +69,19 @@ test('MCP carries the run context into saves and disallows automatic publication
  const publish=await call('publish_edition',{id:job.draftId,version:1,confirmation:'PUBBLICA',run:job.run});assert(publish.isError);assert.equal(JSON.parse(publish.content[0].text).status,403);
  }finally{await client.close();await server.close();}
 });
+test('a failed or abandoned import frees the day for the next scheduled check',async()=>{
+ const ctx=fixture(),first=await claim(ctx);
+ await updateRun(ctx,{run:first.run,phase:'import',status:'failed',retryable:false});
+ const second=await claim(ctx);assert(second.acquired);assert.equal(second.run.generation,2);assert.equal(second.draftId,first.draftId);
+ assert.equal((await claim(ctx)).reason,'in_progress');
+ ctx.advance(LEASE_MS+1);const third=await claim(ctx);assert(third.acquired);assert.equal(third.run.generation,3);
+ await assert.rejects(updateRun(ctx,{run:second.run,phase:'reading'}),e=>e.status===409);
+ await updateRun(ctx,{run:third.run,phase:'import',status:'failed',retryable:false});
+ const blocked=await claim(ctx);assert(!blocked.acquired);assert.equal(blocked.reason,'recovery_requires_review');
+});
+test('after the import, a failed run still requires explicit recovery',async()=>{
+ const ctx=fixture(),first=await claim(ctx);
+ await updateRun(ctx,{run:first.run,phase:'reading',checkpoint:{nextPage:5}});
+ await updateRun(ctx,{run:first.run,phase:'reading',status:'failed',retryable:false});
+ assert.equal((await claim(ctx)).reason,'recovery_requires_review');
+});
