@@ -1,11 +1,11 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
 import LoginDialog from '../components/LoginDialog';
-export default function SidebarEditorTools({children,hideInstructions=false}){
+export default function SidebarEditorTools({children,hideInstructions=false,onAuthenticated}){
  const [authenticated,setAuthenticated]=useState(false),[data,setData]=useState(null),[error,setError]=useState(''),[loading,setLoading]=useState(false),[exiting,setExiting]=useState(false),[saving,setSaving]=useState(false),[saved,setSaved]=useState('');
  const dialog=useRef(null),trigger=useRef(null),textEditor=useRef(null);
  useEffect(()=>{const open=()=>openInstructions();window.addEventListener('jump-open-instructions',open);return()=>window.removeEventListener('jump-open-instructions',open);});
- useEffect(()=>{let active=true;fetch('/api/auth/session',{cache:'no-store'}).then(async response=>{if(!response.ok)throw Error('Accesso non verificabile. Ricarica la pagina.');return response.json();}).then(result=>{if(active)setAuthenticated(result.authenticated);}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[]);
+ useEffect(()=>{let active=true;fetch('/api/auth/session',{cache:'no-store'}).then(async response=>{if(!response.ok)throw Error('Accesso non verificabile. Ricarica la pagina.');return response.json();}).then(result=>{if(active){setAuthenticated(result.authenticated);onAuthenticated?.(result.authenticated);}}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[onAuthenticated]);
  async function openInstructions(){dialog.current.showModal();if(data?.localEditable)return;setLoading(true);setError('');try{const response=await fetch('/api/editor/instructions',{cache:'no-store'}),result=await response.json();if(!response.ok)throw Error(result.error||'Istruzioni non disponibili.');if(typeof result.text!=='string')throw Error('Istruzioni non disponibili.');setData(result);}catch(e){setError(e.message);}finally{setLoading(false);}}
  function goToCategories(){const el=textEditor.current;if(!el)return;const start=data.text.indexOf('CATEGORIE E ORDINE'),end=data.text.indexOf('CAPPELLO INIZIALE',start);if(start<0)return;
  const mirror=document.createElement('div'),style=getComputedStyle(el);for(const key of ['font','lineHeight','padding','boxSizing','letterSpacing'])mirror.style[key]=style[key];Object.assign(mirror.style,{position:'absolute',visibility:'hidden',whiteSpace:'pre-wrap',overflowWrap:'break-word',width:el.clientWidth+'px'});mirror.textContent=data.text.slice(0,start);document.body.appendChild(mirror);const height=mirror.scrollHeight;mirror.remove();el.focus();el.setSelectionRange(start,end>start?end:start);el.scrollTop=Math.max(0,height-30);

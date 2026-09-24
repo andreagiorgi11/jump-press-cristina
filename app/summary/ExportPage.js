@@ -11,7 +11,7 @@ function Icon({kind}){
 }
 export default function ExportPage({date,live=false,pdfEndpoint,summaryAvailable=true,summaryAlert=null,coverageStats,editorPanel=null}){
  const editionDate=new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(date+'T12:00:00Z'));
- const [refreshing,setRefreshing]=useState(false);
+ const [refreshing,setRefreshing]=useState(false),[authenticated,setAuthenticated]=useState(false);
  const [coverageOpen,setCoverageOpen]=useState(false),[storageLevel,setStorageLevel]=useState('unknown');
  const [pdf,setPdf]=useState(false),[menuOpen,setMenuOpen]=useState(false);
  const [picker,setPicker]=useState(false),[sections,setSections]=useState(null);
@@ -31,8 +31,8 @@ export default function ExportPage({date,live=false,pdfEndpoint,summaryAvailable
    {coverageStats&&<button ref={coverageTrigger} className="summary-nav-item" type="button" aria-haspopup="dialog" onClick={()=>{setMenuOpen(false);setCoverageOpen(true);coverage.current.showModal();}}><Icon kind="stats"/><span>Copertura odierna</span>{['warning','critical'].includes(storageLevel)&&<i className="storage-alert-dot" aria-label="Spazio in esaurimento"/>}</button>}
    <button type="button" className="summary-nav-item" aria-haspopup="dialog" onClick={event=>openPdf('edition',event)}><Icon kind="download"/><span className="summary-nav-text">Scarica PDF{summaryAlert&&<small className="summary-pdf-problem">{summaryAlert}</small>}</span></button>
    <button type="button" className="summary-nav-item" onClick={()=>{if(menuOpen)closeMenu();if(live)window.location.assign('/archivio');else archive.current.showModal();}}><Icon kind="archive"/><span>Archivio</span></button></nav>
-   {editorPanel&&<EditorSidebarSection {...editorPanel} onNavigate={()=>setMenuOpen(false)}/>}
-   <div className="summary-sidebar-bottom"><nav className="sidebar-secondary" aria-label="Archivio e redazione"><SidebarEditorTools hideInstructions={!!editorPanel}/></nav><a href="#rassegna-oggi" className="summary-sidebar-brand" aria-label="Jump Press — rassegna di oggi" onClick={()=>setMenuOpen(false)}><img src="/brand/jump-comunicazione.png" width="104" height="57" alt="Jump"/><span>PRESS</span></a><span className="summary-sidebar-signature">POWERED BY <strong>AG STUDIO</strong></span></div>
+   {(editorPanel||authenticated)&&<EditorSidebarSection {...(editorPanel||{editorHref:'/editor'})} onNavigate={()=>setMenuOpen(false)}/>}
+   <div className="summary-sidebar-bottom"><nav className="sidebar-secondary" aria-label="Archivio e redazione"><SidebarEditorTools hideInstructions onAuthenticated={setAuthenticated}/></nav><a href="#rassegna-oggi" className="summary-sidebar-brand" aria-label="Jump Press — rassegna di oggi" onClick={()=>setMenuOpen(false)}><img src="/brand/jump-comunicazione.png" width="104" height="57" alt="Jump"/><span>PRESS</span></a><span className="summary-sidebar-signature">POWERED BY <strong>AG STUDIO</strong></span></div>
   </div>
  </aside>
  {coverageStats&&<dialog ref={coverage} className="coverage-dialog" aria-labelledby="coverage-title" onClose={()=>{setCoverageOpen(false);(window.matchMedia('(max-width: 900px)').matches?toggle.current:coverageTrigger.current)?.focus();}} onClick={event=>{if(event.target===event.currentTarget){const r=event.currentTarget.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)coverage.current.close();}}}>

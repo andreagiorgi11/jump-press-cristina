@@ -1,3 +1,9 @@
+## 2026-09-24 — menu redazione nella home (Codex, locale)
+
+Corretto il menu degli editor collegati sulle pagine di lettura: REDAZIONE appariva solo con una bozza aperta, mentre nella home restavano soltanto Istruzioni ed Esci. La stessa verifica di sessione ora abilita REDAZIONE con Apri editor e Istruzioni; nessun comando di pubblicazione viene aggiunto alla pagina pubblicata. Nessuna modifica a sessioni, permessi server o contenuti. Rollback: ripristinare i tre componenti della barra alla revisione precedente. Verifica ripetibile: aprire home come anonimo e come editor, controllare accesso a /editor, istruzioni uniche nella sezione REDAZIONE e menu mobile. Rilascio online non eseguito.
+
+Verifiche: 130 test superati, build Press e News riuscite. Browser sulla home locale con dati reali: anonimo e sessione simulata soltanto nella risposta client del test, menu desktop e mobile. REDAZIONE presente con un solo pulsante Istruzioni; nessun comando di pubblicazione sulla home. Nessun login o salvataggio reale usato per il test; permessi server invariati.
+
 ## 2026-09-21 — regola sulle sintesi dirette
 
 Istruzioni operative online aggiornate alla versione 14 su richiesta di Andrea. Nel testo base della candidata Summary aggiunte la regola esplicita contro aperture centrate sul giornalista e la rilettura obbligatoria di sintesi e Summary nella checklist finale. Conservate le attribuzioni necessarie e tutte le altre istruzioni.

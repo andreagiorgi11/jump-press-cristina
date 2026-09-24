@@ -75,6 +75,8 @@ Il client deve supportare registrazione dinamica di client pubblici con PKCE. Se
 
 ## Flusso editoriale
 
+Nel layout Approvazione, la sezione REDAZIONE è visibile anche sulle rassegne pubblicate quando la verifica della sessione conferma l'accesso: contiene Apri editor e Istruzioni. Nella bozza mantiene i comandi legati alla versione aperta. Esci resta nel fondo della barra; i lettori anonimi vedono Accesso editor. Un errore nella verifica della sessione viene segnalato e non abilita comandi riservati.
+
 ### Recupero server tramite MCP (17 settembre 2026)
 
 Il percorso ordinario ora usa `import_source_url(url,date)` dopo il controllo dei duplicati. Il server accetta esclusivamente gli endpoint HTTPS Ecostampa conosciuti e verifica anche ogni redirect. Scarica al massimo 200 MB in un file temporaneo eliminato sempre, controlla firma PDF, estrae il testo di ogni pagina con PDF.js e archivia originale e testo nel Blob privato. Nessun PDF passa nel repository GitHub. Nessuna bozza viene creata durante importazione o in caso di errore.
