@@ -19,7 +19,7 @@ export default function LoginDialog({className='summary-editor-access',children}
   <button ref={trigger} type="button" className={className} aria-haspopup="dialog" onClick={open}>{children}</button>
   <dialog ref={dialog} className="login-dialog" aria-labelledby="login-dialog-title" onClose={()=>trigger.current?.focus()} onCancel={e=>{if(busy)e.preventDefault();}}>
    <form onSubmit={submit}>
-    <header><div><small>AREA RISERVATA</small><h2 id="login-dialog-title">Accedi alla redazione</h2></div><button type="button" className="login-dialog-close" aria-label="Chiudi" disabled={busy} onClick={()=>dialog.current.close()}>×</button></header>
+    <header><div><img className="login-dialog-mark" src="/brand/juventus-j.svg" alt="" width="19" height="30"/><small>AREA RISERVATA · REDAZIONE</small><h2 id="login-dialog-title">Accedi alla redazione</h2></div><button type="button" className="login-dialog-close" aria-label="Chiudi" disabled={busy} onClick={()=>dialog.current.close()}>×</button></header>
     <label>Nome utente<input name="username" autoComplete="username" autoCapitalize="none" spellCheck={false} required maxLength={80} disabled={busy} autoFocus/></label>
     <label>Password<input name="password" type="password" autoComplete="current-password" required maxLength={256} disabled={busy}/></label>
     {error&&<p className="login-dialog-error" role="alert">{error}</p>}

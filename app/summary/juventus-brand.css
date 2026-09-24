@@ -464,22 +464,24 @@ body:has(.summary-content){background:var(--paper)}
 .sidebar-editor-confirm.is-list-item .confirm-draft:hover::after,.sidebar-editor-confirm.is-list-item .confirm-draft:focus-visible::after{background:#151515;color:#dfff2f}
 .sidebar-editor-confirm.is-list-item .confirm-draft:disabled{opacity:.55;cursor:progress}
 
-/* Editor sign-in dialog, over the current page. */
-.login-dialog{width:min(400px,calc(100vw - 32px));padding:0;border:0;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.35);color:#151515}
-.login-dialog::backdrop{background:rgba(11,13,15,.6)}
-.login-dialog form{display:flex;flex-direction:column;gap:14px;padding:24px}
-.login-dialog header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.login-dialog header small{font-size:10px;letter-spacing:1.6px;font-weight:700;color:#8a8a8a}
-.login-dialog h2{margin:4px 0 0;font:700 24px/1.15 JuventusFans,Arial,sans-serif}
-.login-dialog-close{border:0;background:transparent;font-size:26px;line-height:1;color:#666;cursor:pointer}
-.login-dialog label{display:flex;flex-direction:column;gap:6px;font:700 12px Arial,sans-serif;color:#333}
-.login-dialog input{height:44px;padding:0 12px;border:1px solid #cfd3d6;border-radius:10px;font-size:15px}
-.login-dialog input:focus{outline:2px solid #151515;outline-offset:1px}
-.login-dialog-error{margin:0;padding:10px 12px;border-radius:8px;background:#fbe9ed;color:#a11932;font-size:13px}
-.login-dialog-submit{height:46px;border:0;border-radius:10px;background:#151515;color:#fff;font:700 14px Arial,sans-serif;cursor:pointer}
-.login-dialog-submit:hover{background:#000}
+/* Editor sign-in dialog: dark, like the header, the editors' zone and the publish confirmation. */
+.login-dialog{width:min(400px,calc(100vw - 32px));padding:0;border:1px solid #2b3034;border-radius:18px;background:#15181b;color:#fff;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.login-dialog::backdrop{background:rgba(11,13,15,.72);backdrop-filter:blur(3px)}
+.login-dialog form{display:flex;flex-direction:column;gap:14px;padding:26px 24px 22px}
+.login-dialog header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:4px}
+.login-dialog-mark{display:block;height:30px;width:auto;margin-bottom:14px;filter:brightness(0) invert(1)}
+.login-dialog header small{display:block;font:700 10px/1.3 Arial,sans-serif;letter-spacing:1.6px;color:#dfff2f}
+.login-dialog h2{margin:8px 0 0;color:#fff;font:700 28px/1.1 JuventusFans,Arial,sans-serif;letter-spacing:-.2px}
+.login-dialog-close{width:34px;height:34px;border:1px solid #33383c;border-radius:50%;background:#1c2024;color:#b9bdc3;font-size:20px;line-height:1;cursor:pointer}
+.login-dialog-close:hover{color:#fff;border-color:#4a5055}
+.login-dialog label{display:flex;flex-direction:column;gap:7px;font:700 11px/1.3 Arial,sans-serif;letter-spacing:.3px;color:#b9bdc3}
+.login-dialog input{height:46px;padding:0 14px;border:1px solid #33383c;border-radius:12px;background:#1f2327;color:#fff;font-size:15px;transition:border-color .15s}
+.login-dialog input:focus{outline:none;border-color:#dfff2f;box-shadow:0 0 0 3px rgba(223,255,47,.15)}
+.login-dialog-error{margin:0;padding:10px 12px;border-radius:10px;background:#3a1c22;color:#f5b3c0;font-size:13px}
+.login-dialog-submit{height:48px;margin-top:4px;border:0;border-radius:999px;background:#dfff2f;color:#151515;font:700 14px Arial,sans-serif;cursor:pointer}
+.login-dialog-submit:hover{background:#eaff6a}
 .login-dialog-submit:disabled{opacity:.6;cursor:progress}
-.login-dialog-hint{margin:0;font-size:11px;color:#8a8a8a;text-align:center}
+.login-dialog-hint{margin:0;font-size:11px;color:#8d9296;text-align:center}
 .summary-sidebar button.summary-editor-access{border:0;background:transparent;cursor:pointer}
 
 /* Edition menu next to the date: discreet chevron, dark dropdown matching the header. */
@@ -540,3 +542,51 @@ body:has(.summary-content){background:var(--paper)}
  .summary-sidebar.is-open .summary-sidebar-brand,.summary-sidebar.is-open .summary-sidebar-signature{color:#8d9296}
  body:has(.summary-sidebar.is-open) .mobile-confirm-bar{display:none}
 }
+
+/* Clip viewer (24/09/2026): pages as large as possible, title + Chiudi on a slim dark bar, floating − / + only. */
+.jump-clip-dialog{position:fixed;height:calc(100dvh - 32px);max-height:none;max-width:none;border:1px solid #2b3034;border-radius:16px;background:#15181b}
+.jump-clip-bar{flex-shrink:0;padding:10px 12px 10px 18px;background:#15181b;letter-spacing:0}
+.jump-clip-bar strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;font:700 14px/1.3 Arial,sans-serif}
+.jump-clip-bar button{flex:none;background:#dfff2f;color:#151515;font:700 12px/1 Arial,sans-serif;padding:10px 14px}
+.jump-clip-pages{padding:12px 12px 80px;background:#2a2e32}
+.jump-clip-navigation{position:absolute;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);gap:6px;padding:6px;border-radius:999px;background:rgba(21,24,27,.92);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.jump-clip-navigation button{min-width:44px;min-height:44px;border:1px solid #3a3f43;border-radius:50%;background:#23282c;color:#fff;font:700 20px/1 Arial,sans-serif}
+.jump-clip-navigation button:hover:not(:disabled){background:#dfff2f;border-color:#dfff2f;color:#151515}
+@media(max-width:600px){
+}
+.jump-clip-dialog .jump-clip-navigation{display:flex;width:auto;grid-template-columns:none}
+
+/* Editor loading placeholder: the page's own shape with softly pulsing bars instead of a text on black. */
+.editor-loading{position:fixed;inset:0;z-index:9000;display:flex;background:var(--paper,#fafafa)}
+.editor-loading-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.editor-loading i{display:block;height:12px;margin:0 0 14px;border-radius:6px;background:#e7e8e4;animation:editor-loading-pulse 1.3s ease-in-out infinite}
+.editor-loading .w30{width:30%}.editor-loading .w40{width:40%}.editor-loading .w60{width:60%}.editor-loading .w70{width:70%}.editor-loading .w80{width:80%}
+.editor-loading-sidebar{flex:none;width:228px;padding:26px 28px;background:#fff;border-right:1px solid #e5e5e5}
+.editor-loading-sidebar img{display:block;height:60px;width:auto;margin:6px auto 34px}
+.editor-loading-sidebar i{height:14px;margin-bottom:22px}
+.editor-loading .editor-loading-main{flex:1;min-width:0;max-width:none;margin:0;padding:0;overflow:hidden}
+.editor-loading-hero{padding:56px max(24px,calc((100% - 932px)/2)) 70px;background:#15181b}
+.editor-loading-hero i{background:#2a2f33;height:14px}
+.editor-loading-hero i.lime{background:#4d5a14;height:12px;margin-bottom:26px}
+.editor-loading-hero i.tall{height:52px;margin-bottom:28px;border-radius:8px}
+.editor-loading-card{margin:32px max(24px,calc((100% - 932px)/2));padding:28px;border-radius:22px;background:#fff;border:1px solid #e6e6e2}
+@keyframes editor-loading-pulse{0%,100%{opacity:1}50%{opacity:.45}}
+@media(prefers-reduced-motion:reduce){.editor-loading i{animation:none}}
+@media(max-width:900px){
+ .editor-loading{flex-direction:column}
+ .editor-loading-sidebar{width:auto;height:78px;padding:10px;border-right:0;border-bottom:1px solid #e5e5e5}
+ .editor-loading-sidebar img{height:50px;margin:4px auto}
+ .editor-loading-sidebar i{display:none}
+ .editor-loading-hero{padding:40px 18px 50px}
+}
+
+/* Clip viewer as a real popup on computers: sized to the clip (up to the screen), centred, page blurred behind.
+   Phones keep the full-screen reader. */
+.jump-clip-dialog{inset:0;margin:auto;height:fit-content;max-height:calc(100dvh - 48px);border-radius:16px}
+.jump-clip-dialog .jump-clip-pages{flex:0 1 auto;min-height:0;padding:12px}
+@media(max-width:600px){
+ .jump-clip-dialog{max-height:calc(100dvh - 16px);border:1px solid #2b3034;border-radius:14px}
+ .jump-clip-dialog .jump-clip-pages{padding:8px}
+}
+.jump-clip-dialog::backdrop{background:rgba(11,13,15,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.jump-clip-dialog .jump-clip-pages{background:#23282c}

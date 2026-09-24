@@ -8,7 +8,9 @@ const id=z.string().uuid();
 export async function GET(request){try{
  const {db,role}=await requireEditor(request);
  if(new URL(request.url).searchParams.get('view')==='trash')return Response.json({drafts:await service.listTrash(db)},{headers:{'Cache-Control':'private, no-store'}});
- const draftId=new URL(request.url).searchParams.get('id');
+ const draftId=new URL(request.url).searchParams.get('id'),openId=new URL(request.url).searchParams.get('open');
+ // Editor start-up in one round trip: draft list and the draft to open (a given id, or the latest).
+ if(openId){const drafts=await service.listDrafts(db),target=openId==='latest'?drafts[0]?.id:id.parse(openId);return Response.json({role,drafts,draft:target?await service.getDraft(db,target):null},{headers:{'Cache-Control':'private, no-store'}});}
  return Response.json(draftId?await service.getDraft(db,id.parse(draftId)):{role,drafts:await service.listDrafts(db)},{headers:{'Cache-Control':'private, no-store'}});
 }catch(error){return failure(error);}}
 export async function POST(request){try{

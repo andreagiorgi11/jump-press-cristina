@@ -37,39 +37,26 @@ export default function PdfLinkHandler(){
   };
   const open=async(url,title='Ritaglio completo',context=null,privateClipId=null)=>{
    close();const dialog=document.createElement('dialog');dialog.className='jump-clip-dialog';dialog.setAttribute('aria-label',title);
-   // Determine the shell before its first paint; fitting the PDF never resizes it.
-   dialog.style.width=Math.min(window.innerWidth-(window.innerWidth<=600?16:48),Math.max(390,(Math.min(window.innerHeight-40,980)-130)*.707+56))+'px';
+   // Popup sized so the whole first page is visible (then − / + to zoom, scroll for the next pages).
+   // A4 estimate before paint, refined with the real page proportions once the PDF is open.
+   const fitWidth=ratio=>{const phone=window.innerWidth<=600,room=window.innerHeight-(phone?16:48)-56-(phone?16:24);return Math.round(Math.min(window.innerWidth-(phone?16:32),room*ratio+(phone?16:24)+12));};
+   dialog.style.width=fitWidth(.707)+'px';
    const state={dialog,focus:document.activeElement,overflow:document.body.style.overflow,closed:false,page:1,zoom:1};active=state;
    const bar=document.createElement('div');bar.className='jump-clip-bar';
-   const label=document.createElement('strong');label.textContent='JUMP PRESS · RITAGLIO';
+   // Only what reading needs (24/09/2026): the article title and Chiudi on top, the pages as large as possible
+   // (scrolled top to bottom), and a floating − / + for zoom. No clip switching, page buttons or "Adatta".
+   const label=document.createElement('strong');label.textContent=title;
    const button=document.createElement('button');button.type='button';button.textContent='Chiudi ×';button.setAttribute('aria-label','Chiudi ritaglio');button.onclick=close;bar.append(label,button);
    const controls=document.createElement('div');controls.className='jump-clip-navigation';
-   const makeButton=(text,aria)=>{const b=document.createElement('button');b.type='button';b.textContent=text;b.setAttribute('aria-label',aria);b.disabled=true;controls.append(b);return b;};
-   const previous=makeButton('←','Pagina precedente'),counter=document.createElement('span');counter.setAttribute('aria-live','polite');controls.append(counter);
-   const next=makeButton('→','Pagina successiva'),minus=makeButton('−','Riduci ingrandimento'),plus=makeButton('+','Aumenta ingrandimento'),fit=makeButton('Adatta','Adatta ritaglio alla larghezza');
-   const zoomLabel=document.createElement('span');zoomLabel.className='jump-clip-zoom';zoomLabel.setAttribute('aria-live','polite');controls.append(zoomLabel);
+   const makeButton=(text,aria,shown=true)=>{const b=document.createElement('button');b.type='button';b.textContent=text;b.setAttribute('aria-label',aria);b.disabled=true;if(shown)controls.append(b);return b;};
+   // The reader still updates page and zoom state on these; they are simply not displayed.
+   const previous=makeButton('←','Pagina precedente',false),counter=document.createElement('span');
+   const next=makeButton('→','Pagina successiva',false),minus=makeButton('−','Riduci ingrandimento'),plus=makeButton('+','Aumenta ingrandimento'),fit=makeButton('Adatta','Adatta ritaglio alla larghezza',false);
+   const zoomLabel=document.createElement('span');
    const area=document.createElement('div');area.className='jump-clip-pages';
    state.disposePan=attachPdfPan(area);
    const status=document.createElement('p');status.setAttribute('role','status');status.textContent='Caricamento ritaglio…';area.append(status);
-   const articleNav=document.createElement('div');articleNav.className='jump-clip-articles';
-   if(context){
-    const prevArticle=document.createElement('button'),nextArticle=document.createElement('button'),info=document.createElement('div'),position=document.createElement('small'),heading=document.createElement('strong'),error=document.createElement('p');
-    prevArticle.type=nextArticle.type='button';prevArticle.textContent='← Precedente';nextArticle.textContent='Successivo →';prevArticle.setAttribute('aria-label','Articolo precedente');nextArticle.setAttribute('aria-label','Articolo successivo');
-    prevArticle.disabled=context.index===0;nextArticle.disabled=context.index===context.rows.length-1;
-    position.textContent='Ritaglio '+(context.index+1)+' di '+context.rows.length;heading.textContent=title;info.append(position,heading);info.setAttribute('aria-live','polite');error.setAttribute('role','alert');error.hidden=true;
-    const move=async index=>{
-     prevArticle.disabled=nextArticle.disabled=true;error.hidden=true;
-     const item=context.rows[index];
-     try{
-      const originalFocus=state.focus;
-      const opening=open('/api/clips/'+encodeURIComponent(item.clipId),item.title,{rows:context.rows,index},item.private?item.clipId:null);
-      if(active)active.focus=originalFocus;await opening;
-     }catch(e){if(state.closed)return;error.textContent='Impossibile aprire il ritaglio. Riprova tra poco.';error.hidden=false;prevArticle.disabled=context.index===0;nextArticle.disabled=context.index===context.rows.length-1;}
-    };
-    prevArticle.onclick=()=>move(context.index-1);nextArticle.onclick=()=>move(context.index+1);
-    articleNav.append(prevArticle,info,nextArticle,error);
-   }else{articleNav.classList.add('single-clip');const heading=document.createElement('strong');heading.textContent=title;articleNav.append(heading);}
-   dialog.append(bar,articleNav,area,controls);document.body.append(dialog);
+   dialog.append(bar,area,controls);document.body.append(dialog);
    dialog.addEventListener('cancel',e=>{e.preventDefault();close();});dialog.addEventListener('click',e=>{if(e.target===dialog)close();});dialog.showModal();document.body.style.overflow='hidden';button.focus();
    try{
     const [pdfjs,resolvedUrl,prepared]=await Promise.all([pdfModule(),privateClipId?privateUrl(privateClipId):Promise.resolve(url),privateClipId?Promise.resolve(null):publicBytes(url)]);if(state.closed||disposed)return;
@@ -78,7 +65,8 @@ export default function PdfLinkHandler(){
     const cacheKey=privateClipId||new URL(url,location.href).href,cached=cachedPdfs.get(cacheKey);
     const source=prepared?{data:prepared.slice()}:cached&&Date.now()-cached.at<60000?{data:cached.bytes.slice()}:{url:resolvedUrl};
     state.task=pdfjs.getDocument({...source,worker,isEvalSupported:false,cMapUrl:'/pdfjs/cmaps/',cMapPacked:true,standardFontDataUrl:'/pdfjs/standard_fonts/',wasmUrl:'/pdfjs/wasm/'});
-    state.doc=await state.task.promise;if(state.closed)return;await continuousClipReader({state,area,title,previous,next,minus,plus,fit,counter,zoomLabel});
+    state.doc=await state.task.promise;if(state.closed)return;
+    {const first=(await state.doc.getPage(1)).getViewport({scale:1});if(state.closed)return;dialog.style.width=fitWidth(first.width/first.height)+'px';}await continuousClipReader({state,area,title,previous,next,minus,plus,fit,counter,zoomLabel});
     // Bounded, memory-only reuse; private access is checked again on every open.
     if(!state.closed)state.doc.getData().then(bytes=>{
      if(state.closed||disposed||bytes.byteLength>8*1024*1024)return;
