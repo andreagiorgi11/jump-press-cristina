@@ -75,7 +75,7 @@ Il client deve supportare registrazione dinamica di client pubblici con PKCE. Se
 
 ## Flusso editoriale
 
-Nel layout Approvazione, la sezione REDAZIONE è visibile anche sulle rassegne pubblicate quando la verifica della sessione conferma l'accesso: contiene Apri editor e Istruzioni. Nella bozza mantiene i comandi legati alla versione aperta. Esci resta nel fondo della barra; i lettori anonimi vedono Accesso editor. Un errore nella verifica della sessione viene segnalato e non abilita comandi riservati.
+Nel layout Approvazione, aprire la home con una sessione web valida di editor/publisher reindirizza sul server a `/editor`, prima di leggere la rassegna pubblica. Una sessione assente, scaduta o revocata lascia la home pubblica; un errore di configurazione non viene mascherato da logout. L'Anteprima lettore resta dentro l'editor e non attraversa la home. Le edizioni storiche `/edizioni/data` restano consultabili: per gli editor collegati REDAZIONE contiene Apri editor e Istruzioni, mentre i comandi di pubblicazione compaiono soltanto nella bozza aperta. Esci resta nel fondo della barra; i lettori anonimi vedono Accesso editor.
 
 ### Recupero server tramite MCP (17 settembre 2026)
 

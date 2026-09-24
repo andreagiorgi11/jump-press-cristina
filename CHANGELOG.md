@@ -1,3 +1,9 @@
+## 2026-09-24 — rientro nel sito con sessione editor (Codex)
+
+Su indicazione di Andrea, superata la prima correzione parziale del menu: riaprire la home con sessione editor/publisher valida ora porta direttamente a /editor mediante reindirizzamento server, prima della lettura dei contenuti pubblicati. Evita la home mista con soli Istruzioni/Esci e avviso della bozza. Anteprima lettore e URL delle edizioni storiche non sono reindirizzati. Sessioni scadute/revocate restano pubbliche; guasti di configurazione sono espliciti. Nessuna modifica a credenziali, permessi di pubblicazione o dati.
+
+Verifiche: 133 test superati, inclusi sessioni valide, scadute, revocate, tipo errato e guasti di configurazione. Prova HTTP Next su ambiente isolato: home autenticata 307 verso /editor; anonima e scaduta 200; nessun redirect su /editor o sulle edizioni. Rollback codice: deployment precedente dpl_7VtJQvPjxr7jeRVVSQZ7hS3Fu1xz, senza ripristinare i dati.
+
 ## 2026-09-24 — menu redazione nella home (Codex, locale)
 
 Corretto il menu degli editor collegati sulle pagine di lettura: REDAZIONE appariva solo con una bozza aperta, mentre nella home restavano soltanto Istruzioni ed Esci. La stessa verifica di sessione ora abilita REDAZIONE con Apri editor e Istruzioni; nessun comando di pubblicazione viene aggiunto alla pagina pubblicata. Nessuna modifica a sessioni, permessi server o contenuti. Rollback: ripristinare i tre componenti della barra alla revisione precedente. Verifica ripetibile: aprire home come anonimo e come editor, controllare accesso a /editor, istruzioni uniche nella sezione REDAZIONE e menu mobile. Rilascio online non eseguito.
