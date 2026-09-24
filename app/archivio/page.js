@@ -4,11 +4,11 @@ import {requireEditor} from '../../lib/server-client';
 import {listDrafts} from '../../lib/editor-service';
 import {incident} from '../../lib/errors';
 import {publishedEditions} from '../../lib/published';
-const legacy=['2026-09-15','2026-09-13','2026-08-26','2026-08-25','2026-08-24'];
+import {legacyEditionDates as legacy} from '../../lib/archive-dates';
 export const dynamic='force-dynamic';
 export const metadata={title:'Archivio | JUMP PRESS Juventus'};
 export default async function Archivio(){
- const result=await publishedEditions();
+ const result=await publishedEditions(undefined,{full:false});
  let drafts=[],draftsUnavailable=false,canDelete=false;
  if(configured())try{const {db,role}=await requireEditor();canDelete=['editor','publisher'].includes(role);drafts=await listDrafts(db);}catch(e){if(e.status!==401){draftsUnavailable=true;await incident('archive_drafts_unavailable');}}
  // Explicit local visual fixture, never active in production or a deployed preview.

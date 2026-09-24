@@ -387,3 +387,156 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 
 /* Editor only: Summary missing or to recheck, flagged on the download entry. */
 .summary-pdf-alert{display:inline-flex;margin-left:auto;line-height:0;cursor:help}
+
+/* Phones: short section names; "Vai a" as one even row; reading bar fits all sections or hints at more. */
+.section-label-short{display:none}
+@media(max-width:700px){
+ .section-label-full{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+ .section-label-short{display:inline}
+ .summary-content .edition-jump-nav{display:grid;grid-template-columns:repeat(var(--jump-count,5),minmax(0,1fr));gap:6px;align-items:stretch}
+ .summary-content .edition-jump-nav>span{grid-column:1/-1;margin:0 0 2px}
+ .summary-content .edition-jump-nav a{display:flex;align-items:center;justify-content:center;min-height:40px;padding:6px 4px;font-size:12px;text-align:center;white-space:nowrap}
+ .summary-content .reading-navigation{width:calc(100vw - 20px)}
+ .summary-content .reading-navigation>div{flex:1;justify-content:space-between}
+ .summary-content .reading-navigation a{padding:9px 8px}
+ .summary-content .reading-navigation.is-overflowing>div{-webkit-mask-image:linear-gradient(to right,#000 82%,transparent);mask-image:linear-gradient(to right,#000 82%,transparent)}
+}
+
+/* The dark band follows the real height of the edition header (long intros, editor bar, today notice) instead of a
+   fixed 520px page gradient, so white header text never sits on the fade; it fades to paper only below the header.
+   The band is painted beyond the header with border-image-outset, which is ink overflow: it never widens the page
+   (a real -100vw box stretched the phone layout viewport and pushed the top bar off-centre). */
+body:has(.summary-content){background:var(--paper)}
+.summary-content .edition-view>header{position:relative}
+.summary-content .edition-view>header::before,.summary-content .edition-view>header::after{content:"";position:absolute;z-index:-1;left:0;right:0;pointer-events:none}
+.summary-content .edition-view>header::before{top:-3000px;bottom:0;border-image:linear-gradient(var(--black),var(--black)) fill 0/0/0 100vmax}
+.summary-content .edition-view>header::after{top:100%;height:180px;border-image:linear-gradient(to bottom,var(--black),var(--paper)) fill 0/0/0 100vmax}
+@media print{.summary-content .edition-view>header::before,.summary-content .edition-view>header::after{display:none}}
+
+/* Redazione: editor commands in the sidebar instead of the floating dock (approval layout). */
+.sidebar-editor-section{margin-top:22px;padding-top:18px;border-top:1px solid #ebebeb}
+.sidebar-editor-message{margin:0 12px 10px;padding:9px 10px;border-radius:8px;background:#eef5e6;color:#34532d;font-size:12px;line-height:1.45}
+.sidebar-editor-message.is-error{background:#fbe9ed;color:#a11932}
+.sidebar-editor-section .summary-nav-item>span[aria-hidden]{width:20px;text-align:center;color:#737373;font-size:15px}
+.sidebar-editor-section .revision-entry{margin:6px 12px}
+.sidebar-editor-confirm{margin:12px 4px 0}
+.sidebar-editor-confirm .confirm-draft{width:100%;min-height:44px;border-radius:10px}
+.mobile-confirm-bar{display:none}
+.summary-menu-toggle.has-attention{position:absolute}
+.summary-menu-toggle.has-attention::after{content:"";position:absolute;top:6px;right:6px;width:9px;height:9px;border-radius:50%;background:#dfff2f;box-shadow:0 0 0 2px #fff}
+@media(max-width:900px){
+ .mobile-confirm-bar{display:block;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:8500}
+ .mobile-confirm-bar .confirm-draft{width:100%;min-height:50px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+ body:has(.mobile-confirm-bar) .summary-content{padding-bottom:84px}
+ body:has(.mobile-confirm-bar) .back-to-top{bottom:calc(80px + env(safe-area-inset-bottom))}
+}
+@media print{.mobile-confirm-bar,.sidebar-editor-section{display:none}}
+.sidebar-editor-confirm .confirm-draft,.mobile-confirm-bar .confirm-draft{background:#dfff2f;color:#0b0d0f;border:1px solid #c9e61a;font:800 14px/1.2 JumpRoboto,Arial,sans-serif}
+.sidebar-editor-confirm .confirm-draft:hover,.mobile-confirm-bar .confirm-draft:hover{background:#eaff6a}
+
+/* Sidebar clean-up: one divider only (under the mark), one icon family, spacing instead of rules, lighter primary. */
+.sidebar-editor-section{margin-top:26px;padding-top:0;border-top:0}
+.sidebar-editor-section .summary-nav-item svg{color:#737373}
+.sidebar-editor-confirm{margin:14px 12px 0}
+.sidebar-editor-confirm .confirm-draft{min-height:40px;border-radius:8px;font-size:13px}
+.summary-sidebar .sidebar-secondary{border-top:0;padding-top:0;align-items:center}
+.summary-sidebar .sidebar-secondary:empty{display:none}
+.summary-sidebar .summary-editor-access{font-size:12px;color:#8a8f92}
+/* The sidebar already offers "aggiorna" next to LEGGI: no second one next to the date. */
+.summary-content .edition-refresh{display:none}
+
+/* Redazione is visibly an editors-only area: grey panel with a left rule and a "Solo editor" tag.
+   "Conferma bozza" (variant 5): white entry with a lime left edge and a black "Pubblica" tag; fills lime on hover.
+   Phones keep the fixed bottom bar. */
+.summary-sidebar .sidebar-editor-section{margin:22px -18px 0;padding:14px 18px 16px;border-radius:0;background:#15181b;box-shadow:none}
+.sidebar-editor-label{display:flex;align-items:center;justify-content:space-between;margin-right:12px!important}
+.sidebar-editor-label small{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:none;color:#8d9296}
+.summary-sidebar .sidebar-editor-section .summary-nav-label>span{color:#dfff2f}
+.summary-sidebar .sidebar-editor-section .summary-nav-item{color:#d8dadc}
+.summary-sidebar .sidebar-editor-section .summary-nav-item svg{color:#8d9296}
+.summary-sidebar .sidebar-editor-section .summary-nav-item:hover{background:#23282c;color:#fff}
+.sidebar-editor-section .sidebar-editor-message{background:#1f2a22;color:#cfe8c4}
+.sidebar-editor-section .sidebar-editor-message.is-error{background:#3a1c22;color:#f5b3c0}
+.sidebar-editor-confirm.is-list-item{margin:8px 0 0}
+.sidebar-editor-confirm.is-list-item .confirm-draft{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:46px;margin:0;padding:11px 10px 11px 12px;border:0;border-left:4px solid #dfff2f;white-space:nowrap;border-radius:0 9px 9px 0;background:#23282c;color:#fff;font:700 13px/1.3 Arial,Helvetica,sans-serif;text-align:left;text-decoration:none;box-shadow:none;cursor:pointer;transition:background .15s,color .15s}
+.sidebar-editor-confirm.is-list-item .confirm-draft::after{content:"Pubblica";flex:none;padding:3px 8px;border-radius:99px;background:#dfff2f;color:#151515;font:700 10px/1.3 Arial,sans-serif}
+.sidebar-editor-confirm.is-list-item .confirm-draft:hover,.sidebar-editor-confirm.is-list-item .confirm-draft:focus-visible{background:#dfff2f;color:#151515}
+.sidebar-editor-confirm.is-list-item .confirm-draft:hover::after,.sidebar-editor-confirm.is-list-item .confirm-draft:focus-visible::after{background:#151515;color:#dfff2f}
+.sidebar-editor-confirm.is-list-item .confirm-draft:disabled{opacity:.55;cursor:progress}
+
+/* Editor sign-in dialog, over the current page. */
+.login-dialog{width:min(400px,calc(100vw - 32px));padding:0;border:0;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.35);color:#151515}
+.login-dialog::backdrop{background:rgba(11,13,15,.6)}
+.login-dialog form{display:flex;flex-direction:column;gap:14px;padding:24px}
+.login-dialog header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.login-dialog header small{font-size:10px;letter-spacing:1.6px;font-weight:700;color:#8a8a8a}
+.login-dialog h2{margin:4px 0 0;font:700 24px/1.15 JuventusFans,Arial,sans-serif}
+.login-dialog-close{border:0;background:transparent;font-size:26px;line-height:1;color:#666;cursor:pointer}
+.login-dialog label{display:flex;flex-direction:column;gap:6px;font:700 12px Arial,sans-serif;color:#333}
+.login-dialog input{height:44px;padding:0 12px;border:1px solid #cfd3d6;border-radius:10px;font-size:15px}
+.login-dialog input:focus{outline:2px solid #151515;outline-offset:1px}
+.login-dialog-error{margin:0;padding:10px 12px;border-radius:8px;background:#fbe9ed;color:#a11932;font-size:13px}
+.login-dialog-submit{height:46px;border:0;border-radius:10px;background:#151515;color:#fff;font:700 14px Arial,sans-serif;cursor:pointer}
+.login-dialog-submit:hover{background:#000}
+.login-dialog-submit:disabled{opacity:.6;cursor:progress}
+.login-dialog-hint{margin:0;font-size:11px;color:#8a8a8a;text-align:center}
+.summary-sidebar button.summary-editor-access{border:0;background:transparent;cursor:pointer}
+
+/* Edition menu next to the date: discreet chevron, dark dropdown matching the header. */
+.edition-date-line{position:relative}
+.edition-picker{position:relative;display:inline-flex;vertical-align:middle;margin-left:6px}
+.edition-picker-toggle{display:grid;place-items:center;width:24px;height:24px;padding:0;border:1px solid transparent;border-radius:50%;background:transparent;color:#8d9296;cursor:pointer}
+.edition-picker-toggle:hover,.edition-picker-toggle[aria-expanded=true]{color:#dfff2f;border-color:#3a3f43}
+.edition-picker-menu{position:absolute;z-index:8200;top:calc(100% + 8px);left:-8px;width:min(300px,calc(100vw - 32px));max-height:340px;overflow-y:auto;padding:6px;border:1px solid #33383c;border-radius:12px;background:#15181b;box-shadow:0 16px 40px rgba(0,0,0,.45)}
+.edition-picker-menu a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border-radius:8px;color:#e8eaeb;font:500 13px/1.3 Arial,sans-serif;text-decoration:none;text-transform:none;letter-spacing:0}
+.edition-picker-menu a:hover{background:#23282c}
+.edition-picker-menu a.is-current{color:#dfff2f;font-weight:700}
+.summary-content .edition-date-line .edition-picker-menu small{flex:none;margin:0;padding:2px 7px;border-radius:99px;background:#3a3312;color:#f2d26b;font:700 9px/1.4 Arial,sans-serif;letter-spacing:.6px;text-transform:uppercase}
+.edition-picker-menu .edition-picker-all{margin-top:4px;border-top:1px solid #2b3034;border-radius:0 0 8px 8px;color:#b9bdc3;text-transform:none}
+.edition-picker-note{margin:0;padding:10px;color:#b9bdc3;font-size:12px}
+@media print{.edition-picker{display:none}}
+
+/* Summary problem under "Scarica PDF": a readable red line instead of a warning triangle. */
+.summary-nav-text{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.summary-sidebar .summary-nav-item .summary-pdf-problem{display:inline-flex;align-items:center;gap:6px;margin:0;font:700 11px/1.2 Arial,sans-serif;color:#b0122e}
+.summary-sidebar .summary-nav-item .summary-pdf-problem::before{content:"";width:7px;height:7px;border-radius:50%;background:#e5243f;box-shadow:0 0 0 3px #fbe1e6}
+
+/* Publish confirmation: dark, like the header and the editors' zone; no brand strip, no version number. */
+.publish-dialog{background:#15181b;color:#fff;border:1px solid #2b3034;border-radius:18px;padding:26px 24px 22px;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.publish-dialog::backdrop{background:rgba(11,13,15,.72);backdrop-filter:blur(3px)}
+.publish-dialog .publish-dialog-brand{display:none}
+.publish-dialog .publish-dialog-label{margin:0 0 10px;color:#dfff2f;font:700 10px/1.3 Arial,sans-serif;letter-spacing:1.6px}
+.publish-dialog h2{margin:0 0 10px;color:#fff;font:700 28px/1.1 JuventusFans,Arial,sans-serif;letter-spacing:-.2px}
+.publish-dialog p{color:#b9bdc3;font-size:14px}
+.publish-dialog .publish-dialog-error{color:#f5b3c0;background:#3a1c22;border-radius:8px;padding:10px 12px;font-size:13px}
+.publish-dialog .publish-dialog-actions{margin-top:22px}
+.publish-dialog .publish-cancel,.publish-dialog .publish-approve{border-radius:999px;padding:11px 18px;font:700 13px/1 Arial,sans-serif;cursor:pointer;box-shadow:none}
+.publish-dialog .publish-cancel{background:transparent;color:#e8eaeb;border:1px solid #4a5055}
+.publish-dialog .publish-cancel:hover{border-color:#8d9296}
+.publish-dialog .publish-approve{background:#dfff2f;color:#151515;border:1px solid #dfff2f}
+.publish-dialog .publish-approve:hover{background:#eaff6a}
+.publish-dialog button:disabled{opacity:.6;cursor:progress}
+.publish-dialog button:focus-visible{outline:2px solid #dfff2f;outline-offset:2px}
+
+/* Phones: the open menu is a full-screen dark sheet, like the header. LEGGI and REDAZIONE share the same dark ground
+   (no dark band inside white), the page underneath is covered and the fixed confirm bar hides while it is open. */
+@media(max-width:900px){
+ .summary-sidebar.is-open{bottom:0;background:#15181b;border-bottom:0;color:#e8eaeb}
+ .summary-sidebar.is-open .summary-sidebar-heading{background:#15181b}
+ .summary-sidebar.is-open .sidebar-client-mark img{filter:brightness(0) invert(1)}
+ .summary-sidebar.is-open .summary-menu-toggle{background:#23282c;color:#fff;border-color:#33383c}
+ .summary-sidebar.is-open .summary-menu-toggle.has-attention::after{box-shadow:0 0 0 2px #23282c}
+ .summary-sidebar.is-open .summary-sidebar-menu{flex:1;max-height:none;background:#15181b;box-shadow:none;padding-bottom:calc(22px + env(safe-area-inset-bottom))}
+ .summary-sidebar.is-open .summary-nav-label,.summary-sidebar.is-open .sidebar-refresh{color:#8d9296}
+ .summary-sidebar.is-open .summary-nav-item{color:#d8dadc}
+ .summary-sidebar.is-open .summary-nav-item svg{color:#8d9296}
+ .summary-sidebar.is-open .summary-nav-item:hover{background:#23282c;color:#fff}
+ .summary-sidebar.is-open .summary-nav-item.is-active{background:#23282c;color:#fff;box-shadow:inset 3px 0 #dfff2f}
+ .summary-sidebar.is-open .summary-nav-item .summary-pdf-problem{color:#ff8196}
+ .summary-sidebar.is-open .summary-nav-item .summary-pdf-problem::before{box-shadow:0 0 0 3px #3a1c22}
+ .summary-sidebar.is-open .sidebar-editor-section{margin:20px 0 0;padding:18px 0 0;background:transparent;border-top:1px solid #2b3034}
+ .summary-sidebar.is-open .summary-editor-access{color:#b9bdc3}
+ .summary-sidebar.is-open .summary-sidebar-brand img{filter:brightness(0) invert(1)}
+ .summary-sidebar.is-open .summary-sidebar-brand,.summary-sidebar.is-open .summary-sidebar-signature{color:#8d9296}
+ body:has(.summary-sidebar.is-open) .mobile-confirm-bar{display:none}
+}
