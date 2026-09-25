@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {MemoryStore} from './helpers.mjs';
 import {romeNow,readerNotice,editorStatus,todayStatus} from '../lib/today-status.js';
-import {claimRun,updateRun} from '../lib/automation-runs.js';
+import {claimRun,updateRun,recordActivity} from '../lib/automation-runs.js';
 const at=iso=>Date.parse(iso);
 test('Rome time decides the day and the 8:00 threshold, including DST and midnight',()=>{
  assert.deepEqual(romeNow(at('2026-09-23T22:30:00Z')),{date:'2026-09-24',hour:0});
@@ -18,7 +18,7 @@ test('status exposes only states, never document content',async()=>{
  assert.equal((await todayStatus(ctx)).latestDate,null);
  const date='2026-09-18',url='https://rassegna.dominiocliente.it/Areas/Rassegna/Elab/CheckedDownload.aspx?nome_file=PP_RAS_1626482_20260918_16377886.pdf';
  assert.equal((await editorStatus(ctx,date)).run.status,'not_started');
- const job=await claimRun(ctx,{date,url,requestId:randomUUID()});await updateRun(ctx,{run:job.run,phase:'reading',checkpoint:{nextPage:12}});
+ const job=await claimRun(ctx,{date,url,requestId:randomUUID()}),importId=randomUUID();await store.commit({['imports/'+importId+'.json']:{date,status:'ready',pageCount:30}},await store.begin());await updateRun(ctx,{run:job.run,phase:'reading',checkpoint:{importId}});await recordActivity(ctx,{run:job.run,importId,pages:Array.from({length:11},(_,i)=>i+1)});
  const s=await editorStatus(ctx,date);
  assert.equal(s.run.status,'running');assert.equal(s.run.phase,'reading');assert.equal(s.run.nextPage,12);assert.equal(s.draft,null);
  assert.deepEqual(Object.keys(s.run).sort(),['attemptsRemaining','nextPage','phase','stalled','status','updatedAt','warnings']);

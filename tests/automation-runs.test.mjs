@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {MemoryStore} from './helpers.mjs';
-import {claimRun,readRun,updateRun,automationStore,LEASE_MS} from '../lib/automation-runs.js';
+import {claimRun,readRun,updateRun,automationStore,recordActivity,LEASE_MS} from '../lib/automation-runs.js';
 import {saveDraft} from '../lib/editor-service.js';
 import {newEdition} from '../lib/schema.js';
 import {Client} from '@modelcontextprotocol/sdk/client/index.js';
@@ -20,14 +20,15 @@ test('simultaneous checks have one winner; lost response reuses reservation',asy
 test('takeover preserves checkpoint and draft; fences stale and unclaimed writes',async()=>{
  const ctx=fixture(),first=await claim(ctx),old={...ctx,automation:first.run};
  const d=await saveDraft(old,first.draftId,0,newEdition(date));
- await updateRun(ctx,{run:first.run,phase:'reading',checkpoint:{nextPage:41}});
+ const importId=randomUUID();await ctx.store.commit({['imports/'+importId+'.json']:{date,status:'ready',pageCount:100}},await ctx.store.begin());
+ await updateRun(ctx,{run:first.run,phase:'reading',checkpoint:{importId}});await recordActivity(ctx,{run:first.run,importId,pages:Array.from({length:40},(_,i)=>i+1)});
  await assert.rejects(saveDraft(ctx,d.id,1,{...d.body,intro:'manual edit'}),e=>e.status===409);
- ctx.advance(LEASE_MS+1);assert.equal((await claim(ctx)).reason,'recovery_requires_review');
- const second=await claim(ctx,{resume:true});assert(second.acquired);assert.equal(second.draftId,d.id);assert.equal(second.checkpoint.nextPage,41);assert.equal(second.run.generation,2);
+ ctx.advance(LEASE_MS+1);
+ const second=await claim(ctx);assert(second.recovered);assert(second.acquired);assert.equal(second.draftId,d.id);assert.equal(second.checkpoint.nextPage,41);assert.equal(second.run.generation,2);
  await assert.rejects(saveDraft(old,d.id,1,{...d.body,intro:'stale'}),e=>e.status===409);
  await assert.rejects(updateRun(ctx,{run:first.run,phase:'reading'}),e=>e.status===409);
  const next=await saveDraft({...ctx,automation:second.run},d.id,1,{...d.body,intro:'resumed'});assert.equal(next.version,2);
- await assert.rejects(saveDraft({...ctx,automation:second.run},randomUUID(),0,newEdition('2026-09-19')),e=>e.status===409);
+ await assert.rejects(saveDraft({...ctx,automation:second.run},randomUUID(),0,newEdition('2026-09-19')),e=>e.status===422&&!e.stop);
 });
 test('Git snapshot fences an old commit prepared before takeover',async()=>{
  const ctx=fixture(),first=await claim(ctx),guarded=automationStore({...ctx,automation:first.run});const head=await guarded.begin();
@@ -54,7 +55,7 @@ test('finish rejects incomplete work; completed draft is not rerun or published'
  const sourceId=randomUUID(),clipId=randomUUID();const body={...d.body,intro:'Verified summary',coverage:{examinedItems:1,sourceNote:'Verified source',frontPages:[],frontPageSummary:''},articles:[{id:randomUUID(),category:'Test',title:'Article',outlet:'Test',summary:'Summary',rating:3,sourceId,clipId,pages:[1]}]};
  d=await saveDraft(worker,d.id,1,body);await ctx.store.commit({['drafts/'+d.id+'.json']:{...d,assets:[{id:sourceId,kind:'source'},{id:clipId,kind:'clip',source_id:sourceId,storage_path:'test.pdf',pages:[1]}]}},await ctx.store.begin());
  const importId=randomUUID();await ctx.store.commit({['imports/'+importId+'.json']:{date,status:'ready',pageCount:1}},await ctx.store.begin());
- await updateRun(ctx,{run:job.run,phase:'review',checkpoint:{importId,nextPage:2}});
+ await updateRun(ctx,{run:job.run,phase:'review',checkpoint:{importId}});await recordActivity(ctx,{run:job.run,importId,pages:[1]});
  await assert.rejects(updateRun(ctx,{run:job.run,phase:'review',status:'completed',draftVersion:2}),e=>e.status===422);
  await updateRun(ctx,{run:job.run,phase:'review',checkpoint:{reviewedClipPages:[{clipId,page:1}]}});
  ctx.advance(2000);const result=await updateRun(ctx,{run:job.run,phase:'review',status:'completed',draftVersion:2});assert.equal(result.status,'completed');assert.equal(result.timings.review,2000);assert.equal((await claim(ctx)).reason,'completed');assert.equal(ctx.store.files['index.json'].published.length,0);
@@ -90,7 +91,7 @@ test('a concurrent unrelated commit (login attempt) does not make renew or finis
  // Simulates the login-attempt record committed between the read and the write of the run.
  store.commit=async(files,head,message)=>{if(injected<1&&Object.keys(files).some(p=>p.startsWith('automation/runs/'))){injected++;await commit({'auth/attempts.json':{n:1}},await store.begin(),'Controllo tentativi di accesso');}return commit(files,head,message);};
  const renewed=await updateRun(ctx,{run:job.run,phase:'reading',checkpoint:{nextPage:3}});
- assert.equal(injected,1);assert.equal(renewed.phase,'reading');assert.equal((await readRun(ctx,date)).checkpoint.nextPage,3);
+ assert.equal(injected,1);assert.equal(renewed.phase,'reading');assert.equal((await readRun(ctx,date)).checkpoint.nextPage,undefined);
  store.commit=async()=>{throw Object.assign(Error('Conflitto concorrente'),{status:409,storeConflict:true});};
  await assert.rejects(updateRun(ctx,{run:job.run,phase:'reading'}),e=>e.storeConflict);
  store.commit=commit;

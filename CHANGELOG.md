@@ -1,3 +1,9 @@
+## 2026-09-25 — automatismo senza blocchi da stato dichiarato dal modello
+
+Causa del blocco del 25/09: GPT ha dichiarato nextPage=271 senza aver letto le pagine, poi ha tentato di arretrarlo e ha ricevuto 409 (cursore non arretrabile), che il protocollo tratta come arresto. Registro del giorno azzerato a mano alle 07:52 (cursore rimosso, status failed/retryable) senza toccare fonte o bozze.
+Correzione strutturale: cursore di lettura calcolato dal server dalle pagine consegnate; nextPage dichiarato ignorato; rinnovo automatico a ogni chiamata di lavoro (non più sperimentale); prenotazione scaduta proseguibile dallo stesso worker finché nessuno la riprende; ripresa automatica al controllo successivo senza resume; stop=true soltanto per lavoro perso o chiuso, gli altri errori sono 422/503 correggibili. Istruzioni online da allineare (versione 30).
+Verifiche: 138 test superati, incluso lo scenario completo del 25/09 via MCP (letture a blocchi, cursori dichiarati avanti e indietro, pausa oltre la scadenza, ripresa, subentro con stop=true). Build Press riuscita.
+
 ## 2026-09-24 — rientro nel sito con sessione editor (Codex)
 
 Su indicazione di Andrea, superata la prima correzione parziale del menu: riaprire la home con sessione editor/publisher valida ora porta direttamente a /editor mediante reindirizzamento server, prima della lettura dei contenuti pubblicati. Evita la home mista con soli Istruzioni/Esci e avviso della bozza. Anteprima lettore e URL delle edizioni storiche non sono reindirizzati. Sessioni scadute/revocate restano pubbliche; guasti di configurazione sono espliciti. Nessuna modifica a credenziali, permessi di pubblicazione o dati.
