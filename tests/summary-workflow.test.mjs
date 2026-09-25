@@ -142,3 +142,17 @@ test('Title punctuation and case never touch the Summary; changed title words ma
  const forged=structuredClone(d.body);forged.executiveSummaryStale=true;d=await saveDraft(ctx,id,d.version,forged);assert.equal(d.body.executiveSummaryStale,undefined);
  const words=structuredClone(d.body);words.articles[0].title='La coop del gol, undici marcatori';d=await saveDraft(ctx,id,d.version,words);assert.equal(d.body.executiveSummaryStale,true);
 });
+
+test('Typography in article summaries leaves Summary valid; factual and numeric changes require review',async()=>{
+ const ctx={role:'editor',user:{id:'test'},store:new MemoryStore(),editorialModel:'summary-v1'},id=randomUUID();
+ const initial=body();initial.articles[0].summary='La Juve vince, poi riparte.';
+ let d=await saveDraft(ctx,id,0,initial);
+ d.body.articles[0].summary='LA JUVE VINCE.\nPoi   riparte!';
+ d=await saveDraft(ctx,id,d.version,d.body);assert.equal(d.body.executiveSummaryStale,undefined);
+ d.body.articles[0].summary='La Juve non vince, poi riparte.';
+ d=await saveDraft(ctx,id,d.version,d.body);assert.equal(d.body.executiveSummaryStale,true);
+ for(const [before,after] of [['Costa 1,5 milioni.','Costa 15 milioni.'],['Sono 10 giocatori.','Sono 11 giocatori.'],['Arriva Mece.','Arriva Møe.']]){
+  const c={...ctx,store:new MemoryStore()},key=randomUUID(),b=body();b.articles[0].summary=before;
+  let row=await saveDraft(c,key,0,b);row.body.articles[0].summary=after;row=await saveDraft(c,key,row.version,row.body);assert.equal(row.body.executiveSummaryStale,true);
+ }
+});

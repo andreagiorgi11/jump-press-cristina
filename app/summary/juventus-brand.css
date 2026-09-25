@@ -590,3 +590,9 @@ body:has(.summary-content){background:var(--paper)}
 }
 .jump-clip-dialog::backdrop{background:rgba(11,13,15,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .jump-clip-dialog .jump-clip-pages{background:#23282c}
+
+/* Editorial warning stays in the Summary viewer, outside the exported PDF. */
+.summary-review-warning{flex-shrink:0;padding:12px 20px;background:#fff0f2;color:#a10f29;border-bottom:1px solid #eab5bf;font:14px/1.4 Arial,sans-serif;max-height:35dvh;overflow:auto}
+.summary-review-warning p{margin:5px 0 0}
+.summary-sidebar .summary-nav-item .summary-pdf-problem::before{content:"⚠";width:auto;height:auto;border-radius:0;background:transparent;box-shadow:none;color:#d58a00;font-size:16px}
+.summary-sidebar.is-open .summary-nav-item .summary-pdf-problem::before{box-shadow:none}
