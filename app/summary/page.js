@@ -5,7 +5,7 @@ import ArticleFilter from '../components/ArticleFilter';
 import PdfLinkHandler from '../PdfLinkHandler';
 import {analyseEdition} from '../../lib/edition-analysis';
 import ExportPage from './ExportPage';
-import {summaryEdition,summarySections} from '../../lib/summary-sections';
+import {summaryEdition,articleSections} from '../../lib/summary-sections';
 import './edition-print.css';
 import './juventus-brand.css';
 import TodayNotice from '../components/TodayNotice';
@@ -25,5 +25,5 @@ export default async function SummaryPage({searchParams}){
  if(process.env.JUMP_SUMMARY_SANDBOX!=='1'||process.env.VERCEL)notFound();
  const demo=demos[(await searchParams)?.avviso];
  const source=JSON.parse(await readFile(process.cwd()+'/.local/summary-edition.json','utf8'));
- return <><ExportPage coverageStats={analyseEdition(source)} date={source.date}/><ArticleFilter/><PdfLinkHandler/><div className="summary-content">{demo&&<TodayNotice demo={demo}/>}<main id="rassegna-oggi" className="summary-edition"><EditionView hideBrand body={summaryEdition(source)} categoryOrder={summarySections} compactAnalysis/></main></div></>;
+ return <><ExportPage coverageStats={analyseEdition(source)} date={source.date}/><ArticleFilter/><PdfLinkHandler/><div className="summary-content">{demo&&<TodayNotice demo={demo}/>}<main id="rassegna-oggi" className="summary-edition"><EditionView hideBrand body={summaryEdition(source)} categoryOrder={articleSections} compactAnalysis/></main></div></>;
 }

@@ -285,3 +285,5 @@
 .article-edit-dialog .article-source-label{display:flex;align-items:center;height:26px;padding:0;background:none;border:0;border-radius:0;font:inherit;color:inherit}
 .article-edit-dialog .article-check-option>span{display:inline;padding:0;margin:0;background:none;border:0;border-radius:0;font:inherit;color:inherit;letter-spacing:normal;text-transform:none}
 .article-edit-dialog label.article-check-option{box-sizing:border-box;height:26px;padding:4px 8px}
+/* Delete sits apart on the left, quiet until hovered: a destructive action, confirmed before saving. */
+.section-edit-actions .section-edit-delete{margin-right:auto;background:transparent;border:1px solid #e3c5c5;color:#9b2c2c;font-weight:700}.section-edit-actions .section-edit-delete:hover{background:#fbeeee;border-color:#c98b8b}

@@ -1,4 +1,4 @@
-import {summarySections} from '../../../lib/summary-sections';
+import {articleSections} from '../../../lib/summary-sections';
 import {loadPdfFonts} from '../../../lib/pdf-theme';
 import {readFile} from 'node:fs/promises';
 import {exportSummaryPdf} from '../../../lib/executive-summary-pdf';
@@ -9,8 +9,8 @@ export async function GET(request){
  const summary=new URL(request.url).searchParams.get('kind')==='summary';
  const raw=new URL(request.url).searchParams.get('sections');
  const indices=raw===null?null:raw.split(',').map(Number);
- if(indices&&(!raw||indices.some(i=>!Number.isInteger(i)||i<0||i>=summarySections.length)||new Set(indices).size!==indices.length))return new Response('Selezione non valida',{status:400});
- const selected=indices?.map(i=>summarySections[i]);
+ if(indices&&(!raw||indices.some(i=>!Number.isInteger(i)||i<0||i>=articleSections.length)||new Set(indices).size!==indices.length))return new Response('Selezione non valida',{status:400});
+ const selected=indices?.map(i=>articleSections[i]);
  const clipOption=new URL(request.url).searchParams.get('clips');
  if(clipOption!==null&&clipOption!=='1')return new Response('Opzione ritagli non valida',{status:400});
  const includeClips=!summary&&clipOption==='1';
