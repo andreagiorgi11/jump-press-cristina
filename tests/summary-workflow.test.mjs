@@ -156,3 +156,11 @@ test('Typography in article summaries leaves Summary valid; factual and numeric 
   let row=await saveDraft(c,key,0,b);row.body.articles[0].summary=after;row=await saveDraft(c,key,row.version,row.body);assert.equal(row.body.executiveSummaryStale,true);
  }
 });
+
+test('Summary PDF omits empty categories without shifting headings or changing stored sections',async()=>{
+ const s=summary();s.sections[2].items=['Esordio: le Women preparano la prima gara.'];
+ const before=JSON.stringify(s),pages=await inspectSummary(s),text=pages.flat().map(x=>x.str).join(' ');
+ assert.match(text,/Prima squadra/);assert.match(text,/Juventus Women/);
+ assert.doesNotMatch(text,/Next Gen|Politica sportiva|Altri temi|0 temi/);
+ assert.equal(JSON.stringify(s),before);
+});
