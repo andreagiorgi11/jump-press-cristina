@@ -2,7 +2,7 @@
 
 Leggere README.md per architettura, avvio, configurazione e incidenti. Progetto corrente: repository di Cristina guerricristina-creator/jump-press-rassegna-stampa; verificare i remote prima di push e non aggirare upstream con push disabilitato.
 
-- La richiesta corrente esclude Supabase: usare GitHub privato per i JSON, Vercel Blob privato per i PDF e login con nome utente e password; GitHub resta soltanto archivio server.
+- La richiesta corrente esclude Supabase: usare GitHub privato per i JSON, il servizio privato jump-press-files su Hetzner per i PDF e login con nome utente e password; GitHub resta soltanto archivio server. I PDF storici del 17–24/09 non sono stati migrati dal vecchio Blob.
 - Il repository dati è distinto dal codice: niente deploy a ogni salvataggio.
 - Bozze e originali sono privati. Solo gli snapshot pubblicati e i ritagli associati sono accessibili ai lettori.
 - Applicare i permessi server a ogni operazione. OAuth richiede PKCE, consenso, codici monouso, token con scadenza e refresh ruotati.

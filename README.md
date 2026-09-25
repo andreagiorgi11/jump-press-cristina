@@ -1,6 +1,16 @@
 # Jump Press — GitHub e Vercel
 
-Il progetto usa GitHub per i contenuti e Vercel per sito e PDF. Non richiede Supabase, SQL o un provider separato per gli account.
+Il progetto usa GitHub privato per i contenuti JSON, Vercel per il sito e Hetzner per l’archivio PDF. Non richiede Supabase, SQL o un provider separato per gli account.
+
+## Stato corrente — 25 settembre 2026
+
+Produzione: https://jump-press-approvazione.vercel.app (team Vercel `andrea-giorgi`). Contenuti: repository privato `andreagiorgi11/jump-press-contenuti`. Codice di rilascio: branch `feature/juventus-summary` del remote `editor-fork`; il push di `upstream` resta disabilitato.
+
+PDF e ritagli correnti risiedono su `https://jpfiles.agprojects.dev`, con `JUMP_FILES_URL` e `JUMP_FILES_SECRET`; configurazione in `services/jump-press-files/INSTALLAZIONE.md`. I file storici dal 17 al 24 settembre non sono stati migrati e restano indisponibili sul vecchio Blob. Le sezioni successive che descrivono Blob documentano la configurazione precedente.
+
+Il locale corrente si avvia con `avvia-reale.bat` su http://127.0.0.1:3019 e usa dati reali. Le build vanno eseguite separatamente dalla directory del dev server. Prima del rilascio: test isolati, build Press e News, verifica del deployment e delle protezioni delle API. Un deploy del codice non pubblica le bozze e non aggiorna le istruzioni editoriali: queste si salvano separatamente con controllo versione e storico nel repository dei contenuti.
+
+Versione precedente al rilascio Nazionale: commit `35f4816`, deployment `dpl_4cZa8JdmdhQMsiw52vRPvuM2AqbX`. Prima di un rollback verificare la compatibilità dei contenuti: questa versione precedente non accetta la nuova categoria Nazionale.
 
 ## Come lavorare
 

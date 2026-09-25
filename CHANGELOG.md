@@ -1,3 +1,9 @@
+## 2026-09-25 — Nazionale e rimozione articoli dalla redazione
+
+Categoria Nazionale accettata in bozze e MCP, con sezione autonoma da quattro articoli nel sito e nei PDF; fino a tre articoli confluisce in Altri temi. Il Summary conserva cinque aree e include la Nazionale in Altri temi. L’editor può eliminare un singolo articolo dopo conferma, salvando la revisione.
+
+Verifica: 145 test isolati superati. Istruzioni v32 predisposte in `docs/istruzioni-v32-bozza.txt`: massimo sette articoli Nazionale aggiuntivi e firma verificata nel campo author per ogni articolo firmato; visualizzazione della firma invariata. Il testo va salvato online separatamente dal deploy, con controllo della versione corrente.
+
 ## 2026-09-25 — archivio PDF su server AG Studio, falsi «PDF da verificare», editoriali, loghi
 
 Causa del blocco dei PDF: archivio Vercel Blob (piano Hobby di Cristina) sospeso fino al 25/10/26 per traffico in uscita 10,4/10 GB. Ogni lettura di pagina o ritaglio scaricava l’intero originale (90–180 MB). Nuovo servizio `jump-press-files` su Hetzner (https://jpfiles.agprojects.dev, porta interna 3320, dati in /opt/jump-press-files/data): pagine e ritagli tagliati con qpdf accanto al file; al sito arrivano solo le pagine richieste. Accesso con chiave condivisa (JUMP_FILES_URL/JUMP_FILES_SECRET) o link firmati a scadenza. I file dal 17 al 24/09 restano su Vercel, non migrati per scelta di Andrea.
