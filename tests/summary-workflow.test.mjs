@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {editionSchema,executiveSummarySchema,summaryAreas} from '../lib/schema.js';
-import {saveDraft,publicBody} from '../lib/editor-service.js';
+import {saveDraft,publicBody,updateArticles,getDraft} from '../lib/editor-service.js';
 import {validateSummaryReady} from '../lib/summary-workflow.js';
 import {readInstructions} from '../lib/editorial-instructions.js';
 import {MemoryStore} from './helpers.mjs';
@@ -163,4 +163,15 @@ test('Summary PDF omits empty categories without shifting headings or changing s
  assert.match(text,/Prima squadra/);assert.match(text,/Juventus Women/);
  assert.doesNotMatch(text,/Next Gen|Politica sportiva|Altri temi|0 temi/);
  assert.equal(JSON.stringify(s),before);
+});
+
+test('batch article corrections retain omitted data and Summary formal versus substantive behavior',async()=>{
+ const ctx={role:'editor',user:{id:'test'},store:new MemoryStore(),editorialModel:'summary-v1'},id=randomUUID(),b=body();
+ b.articles[0].author='Firma da conservare';b.articles[0].rating=5;
+ b.articles.push({...structuredClone(b.articles[0]),id:randomUUID(),title:'Secondo articolo'});
+ let d=await saveDraft(ctx,id,0,b);
+ let result=await updateArticles(ctx,id,d.version,d.body.articles.map(a=>({id:a.id,changes:{title:a.title+'!'}})));
+ assert.equal(result.articles.length,2);assert.equal(result.articles[0].author,'Firma da conservare');assert.equal(result.articles[0].rating,5);assert.equal(result.executiveSummaryStale,false);
+ d=await getDraft(ctx,id);assert.deepEqual(d.body.keyPoints,b.keyPoints);assert.deepEqual(d.body.executiveSummary,b.executiveSummary);
+ result=await updateArticles(ctx,id,d.version,[{id:b.articles[0].id,changes:{summary:'Un fatto diverso.'}}]);assert.equal(result.executiveSummaryStale,true);
 });

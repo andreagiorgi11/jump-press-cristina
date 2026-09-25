@@ -18,7 +18,7 @@ for(const role of ['producer','editor','publisher'])test(`MCP handshake and tool
   const summaryObject=bodyProperties.executiveSummary.anyOf.find(s=>s.type==='object');
   assert.equal(summaryObject.properties.sections.items.type,'object','MCP array items must expose a homogeneous object schema');
   assert.equal(tools.some(t=>t.name==='publish_edition'),role==='publisher');
-  for(const name of ['read_source_text_batch','read_source_pages','read_clip_pages','create_import_clips','import_source_url','read_import_status','read_source_text','read_source_page','create_import_clip','read_clip_page','prepare_clip_upload','read_draft','save_draft','create_clip','prepare_pdf_upload','restore_revision'])assert(tools.some(t=>t.name===name));
+  for(const name of ['read_articles','update_articles','read_source_text_batch','read_source_pages','read_clip_pages','create_import_clips','import_source_url','read_import_status','read_source_text','read_source_page','create_import_clip','read_clip_page','prepare_clip_upload','read_draft','save_draft','create_clip','prepare_pdf_upload','restore_revision'])assert(tools.some(t=>t.name===name));
   const response=await client.callTool({name:'read_editorial_instructions',arguments:{}});
   assert(!response.isError);
   const {connectionPermissions:p,scheduledPublicationAllowed}=JSON.parse(response.content[0].text);
@@ -64,5 +64,18 @@ test('Summary MCP exposes required editorial flag, five Summary sections and the
  const sections=p.executiveSummary.anyOf.find(x=>x.type==='object').properties.sections;assert.equal(sections.minItems,5);assert.equal(sections.maxItems,5);assert.equal(sections.items.properties.title.enum.length,5);
  const {mcpSummaryEditionSchema,editionSchema}=await import('../lib/schema.js');const base={date:'2026-09-23',title:'Test',intro:'Test',articles:[{id:'12345678-1234-4234-8234-123456789012',category:'Prima squadra',title:'Test',summary:'Test',outlet:'Test',isEditorial:false}]};assert(mcpSummaryEditionSchema.safeParse(base).success);delete base.articles[0].isEditorial;assert(!mcpSummaryEditionSchema.safeParse(base).success);assert(editionSchema.safeParse(base).success);
  base.articles[0].isEditorial=true;base.articles[0].category='Prima squadra maschile';assert(!mcpSummaryEditionSchema.safeParse(base).success);
+ }finally{await client.close();await server.close();}
+});
+
+
+test('MCP targeted read and update expose compact results and preserve unspecified fields',async()=>{
+ const {randomUUID}=await import('node:crypto');const {saveDraft}=await import('../lib/editor-service.js');
+ const ctx={role:'editor',store:new MemoryStore(),user:{id:'editor'}},id=randomUUID(),articleId=randomUUID();
+ const d=await saveDraft(ctx,id,0,{date:'2026-09-25',title:'Rassegna',intro:'Intro',articles:[{id:articleId,title:'Titolo',summary:'Sintesi',category:'Prima squadra',outlet:'Testata',author:'Firma',rating:5}]});
+ const server=createEditorialMcp(ctx),client=new Client({name:'patch-test',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();
+ try{await server.connect(a);await client.connect(b);
+ const read=await client.callTool({name:'read_articles',arguments:{id,articleIds:[articleId]}});assert(!read.isError);assert.equal(JSON.parse(read.content[0].text).version,d.version);
+ const update=await client.callTool({name:'update_articles',arguments:{id,version:d.version,corrections:[{id:articleId,changes:{summary:'Sintesi corretta'}}]}});assert(!update.isError);
+ const result=JSON.parse(update.content[0].text);assert.equal(result.articles[0].author,'Firma');assert.equal(result.articles[0].rating,5);assert.equal(result.articles[0].summary,'Sintesi corretta');assert(!result.body);
  }finally{await client.close();await server.close();}
 });

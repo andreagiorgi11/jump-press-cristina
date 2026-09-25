@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {PDFDocument} from 'pdf-lib';
 import {MemoryStore} from './helpers.mjs';
-import {saveDraft,publicBody} from '../lib/editor-service.js';
+import {saveDraft,publicBody,updateArticles,getDraft} from '../lib/editor-service.js';
 import {titleMatches} from '../lib/automatic-clips.js';
 import {claimRun,updateRun} from '../lib/automation-runs.js';
 const date='2026-09-22';
@@ -106,4 +106,21 @@ test('a transient source read error is retried instead of leaving "source unavai
  const x=await setup(),read=x.ctx.blobs.readText;let calls=0;x.ctx.blobs.readText=async p=>{if(++calls===1)throw Object.assign(Error('Testo estratto non leggibile.'),{status:503});return read(p);};
  const d=await saveDraft(x.ctx,x.id,0,x.body);
  assert.equal(calls,2);assert.equal(d.automaticClips.sourceUnavailable,false);assert.equal(d.body.articles[0].synthesisCheck.status,'verified');
+});
+
+
+test('targeted corrections preserve order and untouched warnings and never reread original PDF',async()=>{
+ const x=await setup();x.body.articles.push({...structuredClone(x.body.articles[0]),id:randomUUID(),title:'Titolo non riconosciuto',pages:[3]});
+ const d=await saveDraft(x.ctx,x.id,0,x.body),untouched=structuredClone(d.body.articles[1]),clip=d.body.articles[0].clipId;
+ x.ctx.blobs.readOriginal=async()=>{throw Error('Must not rebuild PDFs');};
+ const result=await updateArticles(x.ctx,x.id,d.version,[{id:d.body.articles[0].id,changes:{summary:'Sintesi corretta.'}}]);
+ const after=await getDraft(x.ctx,x.id);
+ assert.deepEqual(after.body.articles.map(a=>a.id),d.body.articles.map(a=>a.id));assert.deepEqual(after.body.articles[1],untouched);
+ assert.equal(result.articles.length,1);assert.equal(result.articles[0].clipId,clip);assert.equal(result.articles[0].factCheck,null);
+ assert.equal(result.articles[0].synthesisCheck.status,'attention');
+ await assert.rejects(updateArticles(x.ctx,x.id,d.version,[{id:d.body.articles[0].id,changes:{title:'Obsoleto'}}]),e=>e.status===409);
+ await assert.rejects(updateArticles(x.ctx,x.id,after.version,[{id:randomUUID(),changes:{title:'Assente'}}]),e=>e.status===404);
+ await assert.rejects(updateArticles({...x.ctx,role:'reader'},x.id,after.version,[{id:d.body.articles[0].id,changes:{title:'Vietato'}}]),e=>e.status===403);
+ await assert.rejects(updateArticles(x.ctx,x.id,after.version,[{id:d.body.articles[0].id,changes:{clipId:randomUUID()}}]));
+ assert.equal((await getDraft(x.ctx,x.id)).version,after.version);
 });
