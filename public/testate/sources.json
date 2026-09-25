@@ -9,5 +9,16 @@
   "piemonte-liguria": "https://www.ilgiornaledelpiemonteedellaliguria.it/image/32",
   "repubblica": "https://www.repstatic.it/cless/main/nazionale/2016-v1/img/home/larepubblica.png",
   "repubblica-pdf": "https://www.repstatic.it/cless/main/nazionale/2016-v1/img/home/larepubblica.png",
-  "sole-24-ore": "https://i2.res.24o.it/img2015/Logo_Il_Sole_24_Ore.png"
+  "sole-24-ore": "https://i2.res.24o.it/img2015/Logo_Il_Sole_24_Ore.png",
+  "libero": "https://asset.liberoquotidiano.it/_next/static/media/default.4c2ec6e4.svg (ricolorato in nero)",
+  "avvenire": "https://commons.wikimedia.org/wiki/File:Logo_Avvenire.svg",
+  "espresso": "https://commons.wikimedia.org/wiki/File:L%27Espresso.svg",
+  "equipe": "https://commons.wikimedia.org/wiki/File:L%27%C3%89quipe_wordmark.svg",
+  "cronacaqui": "https://torinocronaca.cdn.m33cloud.com/images/CRQ-Logo-image.png",
+  "sportweek": "https://commons.wikimedia.org/wiki/File:SportWeek_2017_logo.jpg",
+  "domani": "https://commons.wikimedia.org/wiki/File:Domani_-_logo_(Italy,_2020).svg",
+  "standard": "https://commons.wikimedia.org/wiki/File:DER_STANDARD_LOGO_schwarz.svg",
+  "faz": "https://commons.wikimedia.org/wiki/File:Frankfurter_Allgemeine_Logo_2019.svg",
+  "corriere-sera-pdf": "public/testate/corriere-sera.svg (PNG per il PDF)",
+  "giornale-pdf": "public/testate/giornale.svg (PNG per il PDF)"
 }

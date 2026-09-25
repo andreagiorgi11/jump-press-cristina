@@ -1,0 +1,8 @@
+{
+  "name": "jump-press-files",
+  "private": true,
+  "type": "module",
+  "description": "Archivio privato dei PDF di Jump Press sul server AG Studio",
+  "scripts": {"start": "node server.mjs"},
+  "dependencies": {"pdf-lib": "^1.17.1"}
+}

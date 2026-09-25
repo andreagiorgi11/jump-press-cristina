@@ -1,0 +1,24 @@
+[Unit]
+Description=Jump Press - archivio PDF privato
+After=network.target
+
+[Service]
+Type=simple
+User=jumppress
+Group=jumppress
+WorkingDirectory=/opt/jump-press-files/app
+EnvironmentFile=/opt/jump-press-files/.env
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node /opt/jump-press-files/app/server.mjs
+Restart=always
+RestartSec=3
+# The service writes only inside its data folder.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/opt/jump-press-files/data
+MemoryMax=1200M
+
+[Install]
+WantedBy=multi-user.target

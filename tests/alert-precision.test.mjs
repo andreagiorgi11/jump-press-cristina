@@ -65,3 +65,20 @@ test('multiple matching pages stay explicit and editorial doubts remain independ
  assert.equal(changed.sourceStatus,'incomplete');assert.deepEqual(synthesisLabels(changed),['Riscontro fonte incompleto']);
  assert.deepEqual(synthesisLabels({status:'attention',note:'Vecchio controllo'}),['Verifica della sintesi non documentata']);
 });
+
+test('garbled headline type passes only with a literal quote on the same first page',()=>{
+ const body='Il centrocampista ha firmato il rinnovo fino al 2031 con un nuovo ingaggio.';
+ const evidence=[{page:1,quote:'ha firmato il rinnovo fino al 2031'}];
+ // Extraction lost the first letter, cut the last word or garbled letters of the headline.
+ for(const [title,head] of [['Juve tutta nuova, mercato in campo più delle altre big','uve tutta nuova\nMercato in campo\npiù deve altre big'],['Visite mediche: Neto atteso oggi','Visite mediche:\nNeto atteso o'],['Cagliari blindato: è la miglior difesa della Serie A','Cagliari bjJndato:è la miglior difesa della Serie A'],['Rossi, il punto fermo mette la firma','I puntofe\nmette la']]){
+  assert(!titleMatches(title,head+'\n'+body));
+  const a={title,pages:[1],factCheck:{status:'verified',evidence}};
+  const r=verifyArticle(a,[{page:1,text:head+'\n'+body}]);
+  assert.equal(r.pdf.status,'matched');assert.match(r.pdf.note,/solo in parte/);
+  // Without the quote on that page, or on the wrong page, the doubt stays.
+  assert.equal(verifyArticle({title,pages:[1]},[{page:1,text:head+'\n'+body}]).pdf.status,'attention');
+  assert.equal(verifyArticle({...a,pages:[1,2],factCheck:{status:'verified',evidence:[{page:2,quote:evidence[0].quote}]}},[{page:1,text:head},{page:2,text:body}]).pdf.status,'attention');
+ }
+ // A quote on the page does not rescue an unrelated headline.
+ assert.equal(verifyArticle({title:'Spalletti prepara la trasferta di Cagliari',pages:[1],factCheck:{status:'verified',evidence}},[{page:1,text:'Inter, vertice di mercato\n'+body}]).pdf.status,'attention');
+});

@@ -1,19 +1,5 @@
-const logos={
- 'Il Sole 24 Ore':'sole-24-ore.png',
- 'La Repubblica':'repubblica.png',
- 'Corriere dello Sport':'corriere-sport.svg',
- 'Corriere dello Sport Stadio':'corriere-sport.svg',
- 'Corriere dello Sport-Stadio':'corriere-sport.svg',
- 'Il Giornale':'giornale.svg',
- 'La Gazzetta dello Sport':'gazzetta.svg',
- 'Tuttosport':'tuttosport.svg',
- 'Corriere della Sera':'corriere-sera.svg',
- 'Il Biellese':'biellese.png',
- 'La Stampa':'stampa.svg',
- 'Il Giornale del Piemonte e della Liguria':'piemonte-liguria.png'
-};
+import {outletLogo} from '../../lib/outlet-logos';
 export default function OutletWordmark({name}){
- const localStampa=name.startsWith('La Stampa ');
- const logo=(/^(il\s+)?sole\s*24\s*ore$/i.test(name.trim())?logos['Il Sole 24 Ore']:logos[name])||(localStampa?logos['La Stampa']:null);
- return <b className="outlet-wordmark">{logo?<><img src={'/testate/'+logo} alt={name} loading="lazy"/>{localStampa&&<small>{name.replace(/^La Stampa\s*[–—-]?\s*/, '')}</small>}</>:name}</b>;
+ const logo=outletLogo(name);
+ return <b className="outlet-wordmark">{logo?<><img src={'/testate/'+logo.file} alt={name} loading="lazy"/>{logo.edition&&<small>{logo.edition}</small>}</>:name}</b>;
 }
