@@ -1,4 +1,5 @@
  'use client';
+import ArticleSourcePreview from './ArticleSourcePreview';
 import {isEditorial,showAuthor} from '../../lib/article-author';
 import {summaryCategory,articleSections,NATIONAL_TEAM} from '../../lib/summary-sections';
 import {outletOptions} from '../../lib/outlet-options';
@@ -7,12 +8,16 @@ import {parseKeyPoint,formatKeyPoint} from '../../lib/key-point-signals';
 import {useEffect,useState,useRef,useId} from 'react';
 export default function RevisionEditor({draft,selection,onSaved,onClose}){
  const [body,setBody]=useState(()=>structuredClone(draft.body)),[busy,setBusy]=useState(false),[error,setError]=useState('');
- const dialog=useRef(null),locked=useRef(false),titleId=useId();
+ const [desktop,setDesktop]=useState(false);
+ useEffect(()=>{const query=window.matchMedia('(min-width: 1100px)');const update=()=>setDesktop(query.matches);update();query.addEventListener('change',update);return()=>query.removeEventListener('change',update);},[]);
+ const dialog=useRef(null),locked=useRef(false),backdropPress=useRef(false),titleId=useId();
  const initial=useRef(JSON.stringify(draft.body)),version=useRef(draft.version);
  const dirty=JSON.stringify(body)!==initial.current;
  useEffect(()=>{dialog.current.showModal();},[]);
  useEffect(()=>{if(!dirty)return;const warn=e=>{e.preventDefault();e.returnValue='';};window.addEventListener('beforeunload',warn);return()=>window.removeEventListener('beforeunload',warn);},[dirty]);
  function cancel(){if(busy)return;if(dirty&&!window.confirm('Scartare le modifiche non salvate?'))return;dialog.current.close();onClose();}
+ function outsideDialog(e){const box=e.currentTarget.getBoundingClientRect();return e.target===e.currentTarget&&(e.clientX<box.left||e.clientX>box.right||e.clientY<box.top||e.clientY>box.bottom);}
+ function backdropClick(e){const startedOutside=backdropPress.current;backdropPress.current=false;if(startedOutside&&outsideDialog(e)&&!dirty&&!busy)cancel();}
  function article(key,value){setBody(b=>({...b,articles:b.articles.map(a=>a.id===selection.articleId?{...a,[key]:value}:a)}));}
  async function save(e,next=body){e?.preventDefault();if(locked.current)return;locked.current=true;setBusy(true);setError('');try{
  const r=await fetch('/api/editor',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'save',id:draft.id,version:version.current,body:selection.section==='tone'?{...next,tones:next.tones.map(t=>t.trim()).filter(Boolean)}:next})});const data=await r.json();if(!r.ok)throw Error(data.error||'Salvataggio non riuscito.');onSaved(data);dialog.current.close();onClose();
@@ -24,7 +29,7 @@ export default function RevisionEditor({draft,selection,onSaved,onClose}){
  const outlets=outletOptions(body,draft.assets);
  const summaryView=process.env.NEXT_PUBLIC_JUMP_APPROVAL_LIVE==='1'||body.editorialModel==='summary-v1';
  const sectionIds=a?sectionArticleIds(body,a.id,summaryView):[];
- return <dialog ref={dialog} className={"section-edit-dialog"+(selection.section==='article'?' article-edit-dialog':'')} aria-labelledby={titleId} onCancel={e=>{e.preventDefault();cancel();}}><form onSubmit={save}><div className="section-edit-heading"><small>MODIFICA BOZZA</small><h2 id={titleId}>{selection.section==='article'?'Modifica articolo':selection.label.charAt(0).toUpperCase()+selection.label.slice(1)}</h2><p>Salva la correzione in bozza. La pubblicazione resta un passaggio separato.</p></div><fieldset disabled={busy}>
+ return <dialog ref={dialog} className={"section-edit-dialog"+(selection.section==='article'?' article-edit-dialog'+(desktop?' article-edit-split':''):'')} aria-labelledby={titleId} onPointerDown={e=>{backdropPress.current=outsideDialog(e);}} onPointerCancel={()=>{backdropPress.current=false;}} onClick={backdropClick} onCancel={e=>{e.preventDefault();cancel();}}><form onSubmit={save}><div className="section-edit-heading"><small>MODIFICA BOZZA</small><h2 id={titleId}>{selection.section==='article'?'Modifica articolo':selection.label.charAt(0).toUpperCase()+selection.label.slice(1)}</h2><p>Salva la correzione in bozza. La pubblicazione resta un passaggio separato.</p></div><fieldset disabled={busy}>
  {selection.section==='intro'&&<label>Introduzione<textarea autoFocus rows={7} maxLength={6000} value={body.intro} onChange={e=>setBody({...body,intro:e.target.value})}/></label>}
  {selection.section==='keyPoints'&&<><p>Seleziona i punti rilevanti della giornata, fino a cinque, senza quote per positivi e negativi.</p>{body.keyPoints.map((point,i)=>{const signal=parseKeyPoint(point);const update=(kind,text)=>setBody(b=>({...b,keyPoints:b.keyPoints.map((v,n)=>n===i?formatKeyPoint(kind,text):v)}));return <div key={i}><label>Valutazione del punto {i+1}<select value={signal.kind} onChange={e=>update(e.target.value,signal.text)}><option value="neutro">Non classificato</option><option value="positivo">Positivo</option><option value="negativo">Negativo</option></select></label><label>Punto chiave {i+1}<textarea autoFocus={i===0} required rows={3} maxLength={signal.kind==='neutro'?1000:990} value={signal.text} onChange={e=>update(signal.kind,e.target.value)}/></label><button type="button" onClick={()=>setBody(b=>({...b,keyPoints:b.keyPoints.filter((_,n)=>n!==i)}))}>Rimuovi punto {i+1}</button></div>;})}{body.keyPoints.length<5&&<button type="button" onClick={()=>setBody(b=>({...b,keyPoints:[...b.keyPoints,'Positivo: ']}))}>Aggiungi punto chiave</button>}</>}
  {selection.section==='tone'&&<><label>Toni prevalenti (uno per riga)<textarea autoFocus rows={3} value={body.tones.join('\n')} onChange={e=>setBody({...body,tones:e.target.value.split('\n')})}/></label><label>Analisi del tono<textarea rows={6} maxLength={3000} value={body.toneSummary||''} onChange={e=>setBody({...body,toneSummary:e.target.value})}/></label></>}
@@ -34,5 +39,5 @@ export default function RevisionEditor({draft,selection,onSaved,onClose}){
  <div className="article-title-heading"><label htmlFor={titleId+'-title'}>Titolo</label><label className="article-check-option"><input type="checkbox" checked={isEditorial(a)} onChange={e=>article('isEditorial',e.target.checked)}/><span>Editoriale</span></label></div><textarea id={titleId+'-title'} className="article-title-input" autoFocus rows={2} value={a.title} required maxLength={400} onChange={e=>article('title',e.target.value)}/>
  <label className="article-summary-field">Sintesi<textarea required rows={5} maxLength={6000} value={a.summary} onChange={e=>article('summary',e.target.value)}/></label>
  </div>}
- {error&&<p role="alert" className="section-edit-error">{error}</p>}<div className="section-edit-actions">{selection.section==='article'&&a&&body.articles.length>1&&<button type="button" className="section-edit-delete" onClick={remove}>Elimina articolo</button>}<button type="button" onClick={cancel}>Annulla</button><button type="submit" disabled={!dirty}>{busy?'Salvataggio…':'Salva in bozza'}</button></div></fieldset></form></dialog>;
+ {error&&<p role="alert" className="section-edit-error">{error}</p>}<div className="section-edit-actions">{selection.section==='article'&&a&&body.articles.length>1&&<button type="button" className="section-edit-delete" onClick={remove}>Elimina articolo</button>}<button type="button" onClick={cancel}>Annulla</button><button type="submit" disabled={!dirty}>{busy?'Salvataggio…':'Salva in bozza'}</button></div></fieldset></form>{desktop&&selection.section==='article'&&a&&<ArticleSourcePreview clipId={a.clipId} title={draft.body.articles.find(item=>item.id===a.id)?.title||a.title} pages={a.pages}/>}</dialog>;
 }

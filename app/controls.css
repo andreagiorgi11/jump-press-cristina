@@ -287,3 +287,27 @@
 .article-edit-dialog label.article-check-option{box-sizing:border-box;height:26px;padding:4px 8px}
 /* Delete sits apart on the left, quiet until hovered: a destructive action, confirmed before saving. */
 .section-edit-actions .section-edit-delete{margin-right:auto;background:transparent;border:1px solid #e3c5c5;color:#9b2c2c;font-weight:700}.section-edit-actions .section-edit-delete:hover{background:#fbeeee;border-color:#c98b8b}
+
+/* Desktop review: independent scrolling keeps source and editing available together. */
+@media(min-width:1100px){
+ .section-edit-dialog.article-edit-split[open]{display:grid;grid-template-columns:minmax(420px,.85fr) minmax(0,1.15fr);width:min(1600px,calc(100vw - 40px));max-width:none;height:92dvh;max-height:92dvh;overflow:hidden}
+ .article-edit-split>form{min-width:0;overflow:auto;height:100%}
+ .article-edit-split .article-edit-fields{padding:20px 24px 6px}
+ .article-edit-split .article-placement-row,.article-edit-split .article-source-row{gap:14px}
+ .article-edit-split .article-summary-field textarea{min-height:210px;resize:vertical}
+ .article-edit-split .section-edit-actions{padding:14px 24px;flex-wrap:wrap}
+ .article-edit-split .section-edit-actions button{min-width:0}
+}
+.article-source-preview{min-width:0;min-height:0;display:flex;flex-direction:column;background:#e6e7e9;border-left:1px solid #d6d9dc}
+.article-source-preview>header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;background:#24272c;color:#fff}
+.article-source-preview>header strong{display:block;font-size:16px}
+.article-source-preview>header small{display:block;margin-top:5px;color:#c9cdd1;font-size:12px}
+.article-source-preview>header>span{font-size:11px;color:#d7ff00}
+.article-source-pages{flex:1;min-height:0;overflow:auto;padding:16px;color:#30343a}
+.article-source-pages .clip-page-stack{display:flex;flex-direction:column;gap:16px;width:100%}
+.article-source-pages .clip-page-sheet{background:#fff;box-shadow:0 3px 12px #0002;flex-shrink:0;width:100%}
+.article-source-pages canvas{display:block;width:100%;height:auto}
+.article-source-preview>nav{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;background:#f7f8fa;border-top:1px solid #d6d9dc;font-size:12px}
+.article-source-preview button{padding:7px 10px;border:1px solid #cbd0d5;border-radius:7px;background:#fff;cursor:pointer;min-height:36px;color:#222}
+.article-source-preview button:disabled{opacity:.4;cursor:default}
+.article-source-status{padding:18px;color:#9b2230;font-size:14px;line-height:1.5}
