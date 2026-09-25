@@ -1,3 +1,10 @@
+## 2026-09-25 — archivio PDF su server AG Studio, falsi «PDF da verificare», editoriali, loghi
+
+Causa del blocco dei PDF: archivio Vercel Blob (piano Hobby di Cristina) sospeso fino al 25/10/26 per traffico in uscita 10,4/10 GB. Ogni lettura di pagina o ritaglio scaricava l’intero originale (90–180 MB). Nuovo servizio `jump-press-files` su Hetzner (https://jpfiles.agprojects.dev, porta interna 3320, dati in /opt/jump-press-files/data): pagine e ritagli tagliati con qpdf accanto al file; al sito arrivano solo le pagine richieste. Accesso con chiave condivisa (JUMP_FILES_URL/JUMP_FILES_SECRET) o link firmati a scadenza. I file dal 17 al 24/09 restano su Vercel, non migrati per scelta di Andrea.
+Rassegna del 25/09: originale riscaricato da Ecostampa (SHA-256 identico), testo e 25 ritagli rigenerati sul server, bozza risalvata: 0 avvisi PDF.
+Controllo titoli: un titolo storpiato dall’estrazione del testo è accettato solo con un estratto letterale dell’articolo sulla stessa prima pagina e almeno due parole del titolo. Editoriali: etichetta «Editoriale di …» resa da sito e PDF, rimossa dalle sintesi al salvataggio. Loghi: riconoscimento unico delle testate e nove nuove testate.
+Verifiche: 142 test superati, incluso il servizio d’archivio avviato davvero (chiave, link firmati, percorsi, caricamenti).
+
 ## 2026-09-25 — automatismo senza blocchi da stato dichiarato dal modello
 
 Causa del blocco del 25/09: GPT ha dichiarato nextPage=271 senza aver letto le pagine, poi ha tentato di arretrarlo e ha ricevuto 409 (cursore non arretrabile), che il protocollo tratta come arresto. Registro del giorno azzerato a mano alle 07:52 (cursore rimosso, status failed/retryable) senza toccare fonte o bozze.
