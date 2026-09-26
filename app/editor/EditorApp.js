@@ -16,6 +16,10 @@ export default function EditorApp({ready}){
  const [role,setRole]=useState(''),[notice,setNotice]=useState('');
  const [user,setUser]=useState(false),[current,setCurrent]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[loading,setLoading]=useState(ready);
  useEffect(()=>{let active=true;if(!ready)return;async function load(){try{const wanted=new URLSearchParams(location.search).get('draft');const r=await fetch('/api/editor?open='+encodeURIComponent(wanted||'latest'),{cache:'no-store'});const data=await r.json();if(!r.ok)throw Object.assign(new Error(data.error||'Lettura non riuscita'),{status:r.status});if(!active)return;setUser(true);setRole(data.role);if(data.draft)setCurrent(data.draft);}catch(e){if(active&&e.status!==401)setError(e.message);}finally{if(active)setLoading(false);}}load();return()=>{active=false;};},[ready]);
+ useEffect(()=>{
+  window.dispatchEvent(new CustomEvent('jump-clip-context',{detail:{key:current?current.id+':'+current.version:'',links:current?.previewLinks||{}}}));
+  return()=>window.dispatchEvent(new CustomEvent('jump-clip-context',{detail:{key:'',links:{}}}));
+ },[current]);
  async function login(e){e.preventDefault();setBusy(true);setError('');const fields=new FormData(e.currentTarget);try{const query=new URLSearchParams(location.search);const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:fields.get('username'),password:fields.get('password'),returnTo:query.get('returnTo')||location.pathname+location.search})});const data=await r.json();if(!r.ok)throw Error(data.error||'Accesso non riuscito');location.assign(data.returnTo);}catch(e){setError(e.message);}finally{setBusy(false);}}
  function showAsset(assetId){setError('');window.dispatchEvent(new CustomEvent('jump-open-clip',{detail:{clipId:assetId}}));}
  async function mutate(action,row){const r=await fetch('/api/editor',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,id:row.id,version:row.version})});const data=await r.json();if(!r.ok)throw Error(data.error||'Operazione non riuscita');return data;}

@@ -588,7 +588,7 @@ body:has(.summary-content){background:var(--paper)}
  .jump-clip-dialog{max-height:calc(100dvh - 16px);border:1px solid #2b3034;border-radius:14px}
  .jump-clip-dialog .jump-clip-pages{padding:8px}
 }
-.jump-clip-dialog::backdrop{background:rgba(11,13,15,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.jump-clip-dialog::backdrop{background:rgba(11,13,15,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .jump-clip-dialog .jump-clip-pages{background:#23282c}
 
 /* Editorial warning stays in the Summary viewer, outside the exported PDF. */
@@ -596,3 +596,11 @@ body:has(.summary-content){background:var(--paper)}
 .summary-review-warning p{margin:5px 0 0}
 .summary-sidebar .summary-nav-item .summary-pdf-problem::before{content:"⚠";width:auto;height:auto;border-radius:0;background:transparent;box-shadow:none;color:#d58a00;font-size:16px}
 .summary-sidebar.is-open .summary-nav-item .summary-pdf-problem::before{box-shadow:none}
+
+/* Stable paper placeholder until the clip reader is ready. */
+.jump-clip-dialog.is-loading .jump-clip-pages{height:var(--clip-loading-height);min-height:160px;display:grid;place-items:center;background:#f5f4f0;margin:12px;border-radius:3px;padding:20px;box-sizing:border-box}
+.jump-clip-dialog.is-loading .jump-clip-navigation,.jump-clip-dialog.has-error .jump-clip-navigation{display:none}
+.jump-clip-dialog .clip-loading-status{display:flex;flex-direction:column;align-items:center;gap:16px;margin:0;color:#596064;font:500 14px Arial,sans-serif;text-align:center}
+.jump-clip-dialog.is-loading .clip-loading-status::before{content:"";width:24px;height:24px;border:2px solid #d7dcd0;border-top-color:#65724b;border-radius:50%;animation:clip-loading-spin .85s linear infinite}
+@keyframes clip-loading-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.jump-clip-dialog.is-loading .clip-loading-status::before{animation:none}}
