@@ -121,7 +121,7 @@ test('Long Summary continues on two branded pages with every highlight preserved
  const before=JSON.stringify(s),pages=await inspectSummary(s);assert.equal(pages.length,2);
  const text=pages.flat().map(x=>x.str).join(' ');
  for(let i=0;i<4;i++)for(let n=0;n<5;n++)assert(text.includes('Fine '+i+'-'+n));
- for(const page of pages){assert(page.some(x=>x.str==='JUMP PRESS'));assert(page.some(x=>x.str==='SUMMARY'));assert(page.filter(x=>x.str.trim()&&x.transform[0]>=8).every(x=>x.transform[5]>=24));}
+ for(const page of pages){assert(!page.some(x=>x.str==='JUMP PRESS'));assert(page.some(x=>x.str.includes('23 SETTEMBRE 2026')));assert(!page.some(x=>x.str==='SUMMARY'&&x.transform[5]<48));assert(page.filter(x=>x.str.trim()&&x.transform[0]>=8).every(x=>x.transform[5]>=24));}
  const highlight=pages.flat().find(x=>x.str==='Argomento 0-0');assert.equal(highlight.transform[0],8.5);
  assert.equal(JSON.stringify(s),before);
 });

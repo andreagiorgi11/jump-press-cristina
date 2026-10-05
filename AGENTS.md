@@ -1,5 +1,7 @@
 # Jump Press — istruzioni per gli agenti
 
+- Avvio corrente dal 05/10/2026: questa cartella Dropbox contiene i sorgenti del deployment attivo `dpl_6ZkvaLZmPQuuD1wtNdmgUezydBTY`, verificati tramite SHA-1. Usare `npm run dev` oppure `avvia-reale.bat`, porta 3019. Non riavviare la precedente versione 3015 né le vecchie anteprime statiche. La worktree `jump-press-summary` conserva lavoro di sviluppo separato e non è la copia da mostrare ad Andrea come produzione.
+
 Leggere README.md per architettura, avvio, configurazione e incidenti. Progetto corrente: repository di Cristina guerricristina-creator/jump-press-rassegna-stampa; verificare i remote prima di push e non aggirare upstream con push disabilitato.
 
 - La richiesta corrente esclude Supabase: usare GitHub privato per i JSON, il servizio privato jump-press-files su Hetzner per i PDF e login con nome utente e password; GitHub resta soltanto archivio server. I PDF storici del 17–24/09 non sono stati migrati dal vecchio Blob.

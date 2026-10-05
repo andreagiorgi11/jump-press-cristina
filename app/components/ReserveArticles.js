@@ -11,11 +11,10 @@ export default function ReserveArticles({body,onEdit,onClip}){
    <div className="reserve-list">{articles.map((a,index)=><article key={a.id} className="reserve-card" aria-labelledby={'riserva-'+a.id}>
     <div className="reserve-card-top"><div className="reserve-tags"><span className="reserve-category">{a.category}</span>{a.isEditorial&&<span className="reserve-editorial">Editoriale</span>}</div><span className="reserve-number" aria-label={'Alternativa '+(index+1)}>{String(index+1).padStart(2,'0')}</span></div>
     <p className="reserve-meta"><span className="reserve-outlet">{a.outlet}</span>{a.author&&<span className="reserve-author">{a.author}</span>}</p>
-    <h3 id={'riserva-'+a.id}>{a.title}</h3><p className="reserve-summary">{a.summary}</p>
-    {a.reserveReason&&<div className="reserve-reason"><span>Perché considerarlo</span><p>{a.reserveReason}</p></div>}
+    <h3 id={'riserva-'+a.id}>{a.clipId?<button className="reserve-title-link" type="button" onClick={()=>onClip(a.clipId)} title="Apri il ritaglio originale">{a.title}</button>:a.title}</h3><p className="reserve-summary">{a.summary}</p>
+    <div className="reserve-review-row">{a.reserveReason&&<div className="reserve-reason"><span>Perché considerarlo</span><p>{a.reserveReason}</p></div>}<div className="reserve-actions">{onEdit&&<button className="reserve-select-button" type="button" onClick={()=>onEdit({section:'article',articleId:a.id,reserved:true})}>Rivedi e seleziona <span aria-hidden="true">↗</span></button>}</div></div>
     {(!a.clipId||a.pdfCheck?.status==='attention'||a.pdfCheck?.status==='pending')&&<p className="reserve-warning">PDF da verificare</p>}
     {visibleSynthesisLabels(a.synthesisCheck).map(label=><p key={label} className="reserve-warning">{label}</p>)}
-    <div className="reserve-actions">{a.clipId&&<button className="reserve-source-button" type="button" onClick={()=>onClip(a.clipId)}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6M9 16h6"/></svg>Leggi ritaglio</button>}{onEdit&&<button className="reserve-select-button" type="button" onClick={()=>onEdit({section:'article',articleId:a.id,reserved:true})}>Rivedi e seleziona <span aria-hidden="true">↗</span></button>}</div>
    </article>)}</div>
   </details>
  </section>;

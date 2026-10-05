@@ -1,24 +1,16 @@
 # Jump Press — GitHub e Vercel
 
-## Persone di interesse — popup locale del 1 ottobre 2026
+## Avvio locale corrente - 5 ottobre 2026
 
+La cartella Dropbox principale è allineata ai 649 file sorgente del deployment online `dpl_6ZkvaLZmPQuuD1wtNdmgUezydBTY` (hash verificati). Le sole differenze aggiunte per l'avvio sono launcher e documentazione locale. Eseguire `npm run dev`, `avvia-rassegna.bat` o `avvia-reale.bat`: tutti usano http://127.0.0.1:3019 con layout approvazione e dati reali. Anche il vecchio collegamento `avvia-summary.bat` ora avvia questo ambiente. Non avviare la porta 3015. Le sezioni storiche sottostanti non cambiano questa indicazione.
 
+La configurazione privata è in `.local/real.env`, letta una sola volta dal launcher; non creare `.env.local` nella radice, perché Next espanderebbe di nuovo i dollari delle impronte password ereditate, invalidando gli accessi. Account e password restano invariati. Salvataggi e pubblicazioni sono reali. La worktree Codex `jump-press-summary` conserva separatamente le modifiche di sviluppo. Non usarla come copia identica alla produzione. Nessun deploy online eseguito durante questo riallineamento.
 
-Rilasciato il 1 ottobre 2026 su `jump-press-approvazione.vercel.app`: deployment `dpl_HTQN5vVPaj2jDXc6nFmJ64sUPW4s`, basato su `dpl_CEN8sFML6fuwn1mPBsWAgUzsxX39`. Verificati 204 test, build Press/News, apertura dalla sidebar online e caricamento di 4 giornalisti e 18 soggetti. Il rilascio include solo i tre componenti aggiornati e i due nuovi file del popup; MCP e dati invariati. La frase seguente sullo stato locale descrive la prima fase di approvazione.
-
-
-
-La voce nella sidebar apre un dialogo sopra la rassegna, senza cambiare pagina. Due schede separano giornalisti e persone/organizzazioni; la ricerca filtra nomi e ruoli. Si possono modificare, aggiungere e rimuovere voci; il footer resta visibile durante lo scorrimento. Escape, chiusura e ricaricamento proteggono le modifiche non salvate; conflitti ed errori conservano i dati e le modifiche. Il percorso `/editor/persone` rimane accessibile e apre lo stesso popup. API, permessi, archivio e strumenti MCP invariati. Modifica solo locale, senza rilascio online; il server locale usa i dati reali.
-
-
+Il manifest dei sorgenti verificati è in `.local/production-source-manifest.json`. Le dipendenze `node_modules` sono una junction verso quelle della worktree `jump-press-summary`, con identico `package-lock.json`, perché Dropbox bloccava la reinstallazione con EBUSY. Non rimuovere quella directory di dipendenze senza prima sostituire la junction con un'installazione completa. Le cache precedenti sono disattivate nei percorsi ignorati `.next-retired-*` e `.node_modules-retired-*`; le vecchie anteprime statiche sono in `Documents/Codex/2026-09-18/lavori/work/_archivio-jump-20261005`.
 
 ## Registro attività — implementazione del 29 settembre 2026
 
-
-
 La misura server dell'automatismo e la pagina privata `/editor/attivita` sono descritte in [docs/activity-observation.md](docs/activity-observation.md). Non aggiungono strumenti o passaggi GPT. I registri privati distinguono richieste, lavoro in background e intervalli non osservabili; non sono una misura dei crediti. Per raccogliere dati serve il rilascio del codice: il collaudo locale non attiva la produzione.
-
-
 
 Il progetto usa GitHub privato per i contenuti JSON, Vercel per il sito e Hetzner per l’archivio PDF. Non richiede Supabase, SQL o un provider separato per gli account.
 
@@ -104,12 +96,6 @@ Gli access token durano un'ora; i refresh token ruotano a ogni uso, entro 30 gio
 Il client deve supportare registrazione dinamica di client pubblici con PKCE. Se il particolare account/client non la supporta, il collaudo lo deve rilevare: non è stato provato con le credenziali di Cristina.
 
 ## Flusso editoriale
-
-### Ricevuta MCP del salvataggio — 29 settembre 2026
-
-`save_draft` restituisce una ricevuta compatta (id, versione finale, conteggi, avvisi, URL editor e `verification`) invece della bozza completa. Il server rilegge la bozza da un nuovo snapshot Git dopo il salvataggio e la preparazione dei ritagli. `verification.status=verified` certifica esclusivamente l'uguaglianza del body persistito con quello effettivo prodotto dal salvataggio: include articoli, riserve, cappello e Summary dopo default, campi ereditati e pulizia già prevista. Non certifica l'accuratezza editoriale e non verifica nuovamente i byte dei PDF. Non vengono normalizzati i dati riletti per nascondere differenze.
-
-Una versione diversa/cancellata produce `version_conflict`; dati assenti, invalidi, differenti o non leggibili producono rispettivamente `missing`, `invalid`, `mismatch`, `unavailable`. Il salvataggio già riuscito non viene ritentato: `saved=true` indica la risposta positiva della scrittura, mentre l'esito della rilettura resta separato. Se non verificato, `warnings=null` non equivale a zero avvisi: usare `read_draft` prima di altre modifiche. Le differenze riportano solo percorsi di campo, massimo 100, senza duplicare testi privati. La versione è verificata al momento dello snapshot, non bloccata contro future modifiche. Il sito continua a ricevere la bozza completa e `read_draft` rimane disponibile. Test: `node --test tests/save-verification.test.mjs tests/mcp.test.mjs tests/automatic-clips.test.mjs tests/automation-runs.test.mjs tests/summary-workflow.test.mjs`.
 
 Nel layout Approvazione, aprire la home con una sessione web valida di editor/publisher reindirizza sul server a `/editor`, prima di leggere la rassegna pubblica. Una sessione assente, scaduta o revocata lascia la home pubblica; un errore di configurazione non viene mascherato da logout. L'Anteprima lettore resta dentro l'editor e non attraversa la home. Le edizioni storiche `/edizioni/data` restano consultabili: per gli editor collegati REDAZIONE contiene Apri editor e Istruzioni, mentre i comandi di pubblicazione compaiono soltanto nella bozza aperta. Esci resta nel fondo della barra; i lettori anonimi vedono Accesso editor.
 
@@ -428,8 +414,9 @@ Ordine: backup verificato → predisporre nuova infrastruttura senza spegnere l'
 
 Incidente: verificare ultimo stato valido e integrità JSON/PDF; distinguere Ecostampa, GitHub, file server, SMTP, Gmail e GPT; conservare upload e bozze; retry limitati per rifiuti certi; recupero reversibile dal backup; confermare lettura reale/SMTP e avvio nel registro; aprire ticket al provider responsabile. Rollback del codice: sospendere prima il trigger manuale, conservare pointer e PDF; non riattivare Ecostampa sulla stessa data senza revisione amministrativa. Backup server del 02/10 prima del rilascio disponibile, credenziali escluse dai deliverable.
 
-Rilascio 02/10/2026: produzione `dpl_3pjcyCyh5dUMzPPdW7aWLV5PQop9`; SMTP TLS/autenticazione verificati; 218 test isolati e build Press/News superati. Trigger «Jump Press — recupero manuale» `6abf626d23308191b7e082dc9c8aae2b` ATTIVO, filtri verificati nell’interfaccia; catalogo MCP aggiornato e schema importId confermato in nuova chat. Attivazione via Riprendi dopo errore del tool pianificatore. Nessuna notifica reale o fonte di prova inviata; consegna Gmail e avvio GPT da confermare sul primo caricamento reale.
-
 La voce Rassegna manuale nella sidebar apre un popup: selezione multipla incrementale, riordino e rimozione prima dell’invio, pulsante Invia rassegna. Gli altri strumenti restano visibili; Anteprima lettore è rimossa dalla redazione in layout approvazione. Il popup conserva le selezioni mentre è chiuso e impedisce la chiusura durante l’invio. Nessuna scrittura o mail prima di Invia rassegna.
 
 Caricamento manuale tramite MCP interattivo: prepare_manual_source autorizza sezioni private; PUT autenticato dei PDF, finalize_manual_source e read_manual_source, quindi notify_manual_source con INVIA_RASSEGNA su richiesta esplicita. Usa gli stessi controlli del popup e non richiede permessi file locali dell’estensione Chrome. Nessuna nuova credenziale o modifica delle autorizzazioni OAuth. I tool di scrittura sono esclusi per producer e vietati durante un run automatico. Non mostrare né conservare URL firmati nella chat o nei documenti.
+
+### Proporzioni testate approvate — 5 ottobre 2026
+Le 36 proporzioni definitive sono salvate in `public/testate/proporzioni-approvate.json`. `lib/outlet-logo-sizes.js` contiene dimensioni base e percentuali condivise da sito, copertina e articoli PDF. La dashboard `/loghi.html` parte dai valori approvati e conserva eventuali nuove prove nel browser: queste richiedono un nuovo import per essere applicate. La scala generale dei contesti può cambiare senza modificare i rapporti tra le testate.

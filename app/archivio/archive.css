@@ -1,0 +1,57 @@
+/* Archive in the site layout: same sidebar and dark masthead as the edition, editions as cards by month. */
+.archive-page .edition-view>header{padding-bottom:34px}
+.archive-page .edition-view>header .lead{max-width:640px}
+.archive-page .archive-alert{margin:0 0 18px;padding:14px 18px;border-radius:14px;background:#fff4f4;border:1px solid #f0c9cc;color:#7a1f28;font-size:14px}
+.archive-page .archive-list{position:relative;display:grid;gap:30px}
+.archive-page .archive-filters{margin:0}
+.archive-page .archive-filters button[aria-pressed="true"]{background:#151515;border-color:#151515}
+.archive-page .archive-filters button:focus-visible{outline-color:#ff2850}
+
+.archive-month{border:1px solid #dedddb;border-radius:18px;background:#fff;overflow:hidden}
+.archive-month-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0;padding:22px 28px;background:#f1f1f1;border-bottom:1px solid #dedede;font:700 24px/1.1 JuventusFans,Arial,Helvetica,sans-serif;color:#151515;text-transform:capitalize;position:relative}
+.archive-month-heading::before{content:"";position:absolute;left:28px;top:50%;width:4px;height:26px;margin-top:-13px;background:#dfff2f}
+.archive-month-heading{padding-left:46px}
+.archive-month-heading small{flex:none;padding:4px 10px;border:1px solid #dedede;border-radius:99px;background:#fafafa;color:#555;font:700 11px/1.3 Arial,Helvetica,sans-serif;text-transform:none;letter-spacing:0}
+
+.archive-cards{list-style:none;margin:0;padding:0}
+.archive-cards .archive-entry{position:relative;border-top:1px solid #ececec}
+.archive-cards .archive-entry:first-child{border-top:0}
+.archive-card{display:grid;grid-template-columns:76px minmax(0,1fr);color:#151515;text-decoration:none;transition:background .15s}
+.archive-card:hover{background:#fafafa}
+.archive-card:focus-visible{outline:2px solid #ff2850;outline-offset:-2px}
+.archive-card-day{display:flex;flex-direction:column;align-items:center;gap:2px;padding-top:26px;background:#151515;color:#fff;border-bottom:4px solid #dfff2f;font-family:Arial,Helvetica,sans-serif}
+.archive-card-day small{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#bdbdbd}
+.archive-card-day b{font-size:30px;line-height:1;letter-spacing:-.5px}
+.is-draft .archive-card-day{background:#5b5b5b;border-bottom-color:#c9c9c9}
+.archive-card-body{display:flex;flex-direction:column;gap:10px;padding:24px 30px 26px;min-width:0}
+.archive-card-meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#707070}
+.archive-badge{padding:3px 8px;border-radius:99px;background:#eef6c9;color:#3b4a00;font-size:10px;letter-spacing:.8px}
+.archive-badge.is-draft{background:#ffe4e8;color:#a3142e}
+.summary-content .archive-card-title{font:700 27px/1.15 JuventusFans,Arial,Helvetica,sans-serif;color:#151515}
+.summary-content .archive-card-title em{font-style:normal;color:#777}
+.archive-card-intro{font-size:15.5px;line-height:1.6;color:#3a3a3a;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.archive-card-tags{display:flex;flex-wrap:wrap;gap:6px}
+.archive-card-tags>span{padding:4px 10px;border-radius:99px;background:#f3f3f3;color:#444;font-size:12px;font-weight:600}
+.archive-card-tags>.archive-card-count{background:#151515;color:#fff}
+.archive-card-action{margin-top:2px;font-size:14px;font-weight:700;color:#151515}
+.archive-card:hover .archive-card-action{text-decoration:underline;text-underline-offset:3px}
+.archive-cards .archive-entry:has(.archive-delete) .archive-card-body,.archive-cards .archive-entry:has(.archive-edit-icon) .archive-card-body{padding-right:96px}
+.archive-empty{padding:28px;border:1px solid #dedddb;border-radius:18px;background:#fff;color:#555}
+
+@media(max-width:700px){
+ .archive-page .edition-view>header{padding-bottom:22px}
+ .archive-month-heading{padding:18px 18px 18px 34px;font-size:21px}
+ .archive-month-heading::before{left:18px;height:22px;margin-top:-11px}
+ .archive-card{grid-template-columns:54px minmax(0,1fr)}
+ .archive-card-day{padding-top:20px}
+ .archive-card-day b{font-size:24px}
+ .archive-card-day small{font-size:10px;letter-spacing:1px}
+ .archive-card-body{padding:18px 18px 20px;gap:8px}
+ .summary-content .archive-card-title{font-size:23px}
+ .archive-card-intro{font-size:15px}
+ .archive-cards .archive-entry:has(.archive-delete) .archive-card-body,.archive-cards .archive-entry:has(.archive-edit-icon) .archive-card-body{padding-right:18px;padding-bottom:64px}
+}
+
+/* Cestino: a quieter pill after the filters, same height, not a filter (never "selected"). */
+.archive-page .archive-filters .archive-trash-button{background:transparent;border-color:#ffffff40;color:#e3e3e3}
+.archive-page .archive-filters .archive-trash-button:hover{background:#ffffff14;border-color:#fff;color:#fff}

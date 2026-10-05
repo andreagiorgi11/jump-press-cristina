@@ -21,5 +21,22 @@
   "faz": "https://commons.wikimedia.org/wiki/File:Frankfurter_Allgemeine_Logo_2019.svg",
   "corriere-sera-pdf": "public/testate/corriere-sera.svg (PNG per il PDF)",
   "giornale-pdf": "public/testate/giornale.svg (PNG per il PDF)",
-  "sport": "https://commons.wikimedia.org/wiki/File:Logo_Sport.svg"
+  "sport": "https://commons.wikimedia.org/wiki/File:Logo_Sport.svg",
+  "messaggero": "https://upload.wikimedia.org/wikipedia/commons/3/30/Il_Messaggero.svg",
+  "bild": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Logo_BILD.svg",
+  "lemonde": "https://upload.wikimedia.org/wikipedia/commons/4/43/Le_Monde.svg",
+  "marca": "https://upload.wikimedia.org/wikipedia/commons/1/16/Marca.svg",
+  "guardian": "https://upload.wikimedia.org/wikipedia/commons/7/75/The_Guardian_2018.svg",
+  "fatto": "https://en.wikipedia.org/wiki/Il_Fatto_Quotidiano",
+  "mattino": "https://en.wikipedia.org/wiki/Il_Mattino",
+  "ft": "https://en.wikipedia.org/wiki/Financial_Times",
+  "nyt": "https://en.wikipedia.org/wiki/The_New_York_Times",
+  "times": "https://en.wikipedia.org/wiki/The_Times",
+  "as": "https://en.wikipedia.org/wiki/Diario_AS",
+  "welt": "https://en.wikipedia.org/wiki/Die_Welt",
+  "elpais": "https://en.wikipedia.org/wiki/El_Pa%C3%ADs",
+  "handelsblatt": "https://en.wikipedia.org/wiki/Handelsblatt",
+  "lesechos": "https://en.wikipedia.org/wiki/Les_Echos_(France)",
+  "mundo": "https://en.wikipedia.org/wiki/Mundo_Deportivo",
+  "piemonte-liguria-readable": "Versione nera del logo originale bianco: https://www.ilgiornaledelpiemonteedellaliguria.it/image/32"
 }

@@ -1,0 +1,222 @@
+{
+  "version": 1,
+  "globalPercent": 100,
+  "logos": [
+    {
+      "key": "gazzetta-wordmark",
+      "name": "La Gazzetta dello Sport",
+      "percent": 100,
+      "effectivePercent": 100
+    },
+    {
+      "key": "corriere-sport",
+      "name": "Corriere dello Sport",
+      "percent": 75,
+      "effectivePercent": 75
+    },
+    {
+      "key": "tuttosport",
+      "name": "Tuttosport",
+      "percent": 65,
+      "effectivePercent": 65
+    },
+    {
+      "key": "corriere-sera",
+      "name": "Corriere della Sera",
+      "percent": 110,
+      "effectivePercent": 110
+    },
+    {
+      "key": "stampa",
+      "name": "La Stampa",
+      "percent": 70,
+      "effectivePercent": 70
+    },
+    {
+      "key": "repubblica",
+      "name": "La Repubblica",
+      "percent": 65,
+      "effectivePercent": 65
+    },
+    {
+      "key": "sole-24-ore",
+      "name": "Il Sole 24 Ore",
+      "percent": 95,
+      "effectivePercent": 95
+    },
+    {
+      "key": "giornale",
+      "name": "Il Giornale",
+      "percent": 70,
+      "effectivePercent": 70
+    },
+    {
+      "key": "libero",
+      "name": "Libero",
+      "percent": 65,
+      "effectivePercent": 65
+    },
+    {
+      "key": "avvenire",
+      "name": "Avvenire",
+      "percent": 75,
+      "effectivePercent": 75
+    },
+    {
+      "key": "piemonte-liguria",
+      "name": "Il Giornale del Piemonte e della Liguria",
+      "percent": 90,
+      "effectivePercent": 90
+    },
+    {
+      "key": "biellese",
+      "name": "Il Biellese",
+      "percent": 65,
+      "effectivePercent": 65
+    },
+    {
+      "key": "cronacaqui",
+      "name": "CronacaQui",
+      "percent": 75,
+      "effectivePercent": 75
+    },
+    {
+      "key": "espresso",
+      "name": "L’Espresso",
+      "percent": 70,
+      "effectivePercent": 70
+    },
+    {
+      "key": "equipe",
+      "name": "L’Équipe",
+      "percent": 65,
+      "effectivePercent": 65
+    },
+    {
+      "key": "sport",
+      "name": "Sport",
+      "percent": 65,
+      "effectivePercent": 65
+    },
+    {
+      "key": "sportweek",
+      "name": "SportWeek",
+      "percent": 75,
+      "effectivePercent": 75
+    },
+    {
+      "key": "domani",
+      "name": "Domani",
+      "percent": 65,
+      "effectivePercent": 65
+    },
+    {
+      "key": "standard",
+      "name": "Der Standard",
+      "percent": 85,
+      "effectivePercent": 85
+    },
+    {
+      "key": "faz",
+      "name": "Frankfurter Allgemeine",
+      "percent": 95,
+      "effectivePercent": 95
+    },
+    {
+      "key": "fatto",
+      "name": "Il Fatto Quotidiano",
+      "percent": 100,
+      "effectivePercent": 100
+    },
+    {
+      "key": "messaggero",
+      "name": "Il Messaggero",
+      "percent": 85,
+      "effectivePercent": 85
+    },
+    {
+      "key": "mattino",
+      "name": "Il Mattino",
+      "percent": 85,
+      "effectivePercent": 85
+    },
+    {
+      "key": "as",
+      "name": "AS",
+      "percent": 70,
+      "effectivePercent": 70
+    },
+    {
+      "key": "bild",
+      "name": "Bild",
+      "percent": 95,
+      "effectivePercent": 95
+    },
+    {
+      "key": "welt",
+      "name": "Die Welt",
+      "percent": 90,
+      "effectivePercent": 90
+    },
+    {
+      "key": "elpais",
+      "name": "El País",
+      "percent": 65,
+      "effectivePercent": 65
+    },
+    {
+      "key": "ft",
+      "name": "Financial Times",
+      "percent": 95,
+      "effectivePercent": 95
+    },
+    {
+      "key": "handelsblatt",
+      "name": "Handelsblatt",
+      "percent": 80,
+      "effectivePercent": 80
+    },
+    {
+      "key": "lemonde",
+      "name": "Le Monde",
+      "percent": 80,
+      "effectivePercent": 80
+    },
+    {
+      "key": "lesechos",
+      "name": "Les Echos",
+      "percent": 80,
+      "effectivePercent": 80
+    },
+    {
+      "key": "marca",
+      "name": "Marca",
+      "percent": 90,
+      "effectivePercent": 90
+    },
+    {
+      "key": "mundo",
+      "name": "Mundo Deportivo",
+      "percent": 95,
+      "effectivePercent": 95
+    },
+    {
+      "key": "guardian",
+      "name": "The Guardian",
+      "percent": 95,
+      "effectivePercent": 95
+    },
+    {
+      "key": "nyt",
+      "name": "The New York Times",
+      "percent": 90,
+      "effectivePercent": 90
+    },
+    {
+      "key": "times",
+      "name": "The Times",
+      "percent": 85,
+      "effectivePercent": 85
+    }
+  ]
+}

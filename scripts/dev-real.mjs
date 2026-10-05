@@ -7,7 +7,8 @@ process.chdir(fileURLToPath(new URL('..',import.meta.url)));
 // Dropbox copy below. Everything saved or confirmed here is saved or published for real.
 const envFile=process.env.JUMP_REAL_ENV_FILE||'C:/Users/Andrea/Dropbox/Andrea/AG Studio/Clienti e collaborazioni/Cristina Guerri/Progetti/CG creator/jump-press-rassegna-stampa/.local/real.env';
 if(!existsSync(envFile))throw Error('Credenziali reali non trovate: impostare JUMP_REAL_ENV_FILE.');
-for(const file of ['.env','.env.local','.env.development','.env.development.local'])if(existsSync(file))throw Error('Rimuovere '+file+': la configurazione reale si legge soltanto da JUMP_REAL_ENV_FILE.');
+// Next would expand inherited dollar signs again if it also found this dotenv file.
+for(const file of ['.env','.env.local','.env.development','.env.development.local'])if(existsSync(file))throw Error('Spostare '+file+' fuori dai file caricati da Next (usare .local/real.env): la doppia lettura invalida le credenziali.');
 const bs=String.fromCharCode(92),env={...process.env};
 for(const line of readFileSync(envFile,'utf8').split(/\r?\n/)){
  const m=line.match(/^([A-Z0-9_]+)=(.*)$/);if(!m)continue;

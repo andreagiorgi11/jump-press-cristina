@@ -35,6 +35,7 @@ test('outlet spellings resolve to one masthead with the local edition',async()=>
  const {outletLogo}=await import('../lib/outlet-logos.js');
  const cases={'il Giornale':['giornale.svg',''],'La Repubblica - Ed. Torino':['repubblica.png','Torino'],'Corriere dello Sport Stadio - Ed. Campania':['corriere-sport.svg','Campania'],'Corriere Torino':['corriere-sera.svg','Torino'],'Libero Quotidiano':['libero.png',''],'L’Équipe':['equipe.png',''],'Torino CronacaQui':['cronacaqui.png',''],'La Stampa – Cronaca di Torino':['stampa.svg','Torino'],'Frankfurter Allgemeine Zeitung':['faz.png','']};
  for(const [name,[file,edition]] of Object.entries(cases))assert.deepEqual([outletLogo(name).file,outletLogo(name).edition],[file,edition],name);
- assert.equal(outletLogo('Il Fatto Quotidiano'),null);
+ assert.equal(outletLogo('Il Fatto Quotidiano').key,'fatto');
+ assert.equal(outletLogo('Testata sconosciuta'),null);
  const {existsSync}=await import('node:fs');for(const name of Object.keys(cases))assert(existsSync('public/testate/'+outletLogo(name).file),name);
 });

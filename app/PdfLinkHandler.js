@@ -105,7 +105,7 @@ export default function PdfLinkHandler(){
      cachedPdfs.delete(cacheKey);cachedPdfs.set(cacheKey,{bytes:bytes.slice(),at:Date.now()});
      while(cachedPdfs.size>6)cachedPdfs.delete(cachedPdfs.keys().next().value);
     }).catch(()=>{});
-   }catch(error){if(!state.closed){dialog.classList.remove('is-loading');dialog.classList.add('has-error');area.setAttribute('aria-busy','false');status.textContent='Ritaglio non disponibile. Chiudi e riprova tra poco.';area.replaceChildren(status);}}
+   }catch(error){if(!state.closed){dialog.classList.remove('is-loading');dialog.classList.add('has-error');area.setAttribute('aria-busy','false');status.textContent=error?.status===404||/Missing/.test(error?.name||'')?'Il ritaglio originale di questo articolo non è più disponibile. La sintesi resta consultabile nella rassegna.':'Ritaglio non disponibile. Chiudi e riprova tra poco.';area.replaceChildren(status);}}
   };
   const onClick=e=>{
    const a=e.target.closest?.('a[href]');if(!a||e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;

@@ -1,7 +1,6 @@
 import {cookies} from 'next/headers';
 import {requireEditor} from '../lib/server-client';
 import './globals.css';
-import EditorAccess from './components/EditorAccess';
 import './controls.css';
 import './summary/edition-print.css';
 import './summary/juventus-brand.css';
@@ -19,4 +18,4 @@ export default async function RootLayout({children}){
  if(process.env.JUMP_SITE!=='news'&&(await cookies()).has('jump_session')){
   try{editorRole=(await requireEditor()).role;}catch(error){if(![401,403].includes(error.status))throw error;}
  }
- return <html lang="it"><body><SiteEnhancements editorRole={editorRole}/>{children}<EditorAccess/></body></html>}
+ return <html lang="it"><body><SiteEnhancements editorRole={editorRole}/>{children}</body></html>}

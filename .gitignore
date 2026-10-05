@@ -1,5 +1,7 @@
 node_modules/
+.node_modules-retired-*/
 .next/
+.next-retired-*/
 .next-news/
 .env*
 !.env.example

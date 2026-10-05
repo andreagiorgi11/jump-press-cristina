@@ -144,7 +144,7 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 .summary-content .edition-jump-nav a{border-color:#dfff2f}
 /* Discreet studio credit. */
 .summary-sidebar .summary-sidebar-signature{font-size:7px;letter-spacing:.7px;line-height:1.4}
-.pdf-section-picker{width:min(500px,calc(100vw - 28px));max-height:calc(100dvh - 32px);overflow:auto;border:1px solid #ddd;border-radius:16px;padding:24px;background:#fff;color:#151515;font-family:Arial,sans-serif;box-shadow:0 24px 80px #0004}
+.pdf-section-picker{width:min(500px,calc(100vw - 28px));max-height:calc(100dvh - 32px);overflow:auto;border:1px solid #ddd;border-radius:16px;padding:24px;background:#fff;color:#151515;font-family:JumpRoboto,Arial,sans-serif;box-shadow:0 24px 80px #0004}
 .pdf-section-picker::backdrop{background:#0009;backdrop-filter:blur(3px)}
 .pdf-section-picker header{display:flex;justify-content:space-between;gap:16px;color:#151515;padding:0}.pdf-section-picker header small{font-size:10px;letter-spacing:1.4px}.pdf-section-picker h2{font-size:25px;margin:8px 0 0}.pdf-section-picker button{cursor:pointer;min-height:44px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#151515;padding:10px 14px}.pdf-section-picker header button{align-self:start;font-size:24px;min-width:44px;padding:0}.pdf-section-picker p{font-size:14px;line-height:1.5;color:#555}.pdf-section-picker label{display:flex;align-items:center;gap:12px;min-height:48px;font-size:14px;cursor:pointer}.pdf-section-picker label span{background:none;padding:0;font-weight:400}.pdf-section-picker input{width:18px;height:18px;accent-color:#151515;flex-shrink:0}.pdf-section-picker .pdf-pick-all{border-bottom:2px solid #dfff2f;padding:4px 0 12px;margin-bottom:16px}.pdf-section-picker fieldset{border:0;padding:0;margin:0}.pdf-section-picker legend{font-size:11px;color:#777;text-transform:uppercase;letter-spacing:1px}.pdf-section-picker .pdf-picker-note{font-size:12px;min-height:36px}.pdf-section-picker footer{display:flex;justify-content:flex-end;gap:10px;margin:16px 0 0;padding:0}.pdf-section-picker footer button:last-child{background:#151515;color:#fff;border-color:#151515;font-weight:700}.pdf-section-picker button:disabled{opacity:.4;cursor:not-allowed}
 .pdf-section-picker .pdf-include-clips{align-items:flex-start;border-top:1px solid #e5e5e5;padding-top:16px;margin-top:12px}.pdf-section-picker .pdf-include-clips input{margin-top:2px}.pdf-section-picker .pdf-include-clips small{display:block;font-size:12px;line-height:1.45;color:#666;margin-top:5px;font-weight:400}
@@ -162,14 +162,14 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 
 /* PDF navigation: compact index overlay, controls remain outside the header. */
 .summary-pdf-continuous>nav .pdf-index-toggle,.summary-pdf-continuous>nav .pdf-fit-button{font-size:12px;padding:0 10px;width:auto}
-.pdf-outline-panel{position:absolute;z-index:5;top:76px;bottom:110px;left:12px;width:min(340px,calc(100% - 24px));overflow:auto;box-sizing:border-box;padding:18px;background:#fff;color:#151515;border:1px solid #ddd;border-radius:12px;box-shadow:0 12px 35px #0004;text-align:left;font:13px/1.45 Arial}
+.pdf-outline-panel{position:absolute;z-index:5;top:76px;bottom:110px;left:12px;width:min(340px,calc(100% - 24px));overflow:auto;box-sizing:border-box;padding:18px;background:#fff;color:#151515;border:1px solid #ddd;border-radius:12px;box-shadow:0 12px 35px #0004;text-align:left;font:13px/1.45 JumpRoboto,Arial}
 .pdf-outline-panel>div{display:flex;align-items:center;justify-content:space-between}.pdf-outline-panel ul{list-style:none;padding:0;margin:10px 0}.pdf-outline-panel li{margin:5px 0}.pdf-outline-panel li button{display:block;text-align:left;width:100%;padding:10px;background:#fff;border:0;font:inherit;color:#151515}.pdf-outline-panel li button:hover{background:#f2f2f2}.pdf-outline-panel details{padding-left:14px}.pdf-outline-panel summary{cursor:pointer;padding:8px;font-size:12px;color:#555}
 .clip-page-stack{width:100%;margin:0 auto;display:flex;flex-direction:column;gap:16px}.clip-page-sheet{flex-shrink:0;width:100%;background:#fff;overflow:hidden}.jump-clip-pages .clip-page-sheet canvas{display:block;width:100%;height:100%;max-width:none;margin:0}
 .jump-clip-dialog .jump-clip-pages{display:block;padding:16px 16px 125px}.jump-clip-dialog .jump-clip-navigation{background:rgba(21,21,21,.78);color:white;border-color:#ffffff30;backdrop-filter:blur(12px)}.jump-clip-dialog .jump-clip-navigation button{background:transparent;border-color:#ffffff38;color:white}.jump-clip-dialog .jump-clip-navigation button:hover:not(:disabled){background:#ffffff25}
 @media(max-width:600px){.summary-pdf-continuous>nav{width:270px;flex-wrap:wrap;justify-content:center}.summary-pdf-continuous>nav .pdf-index-toggle{order:1;width:120px}.summary-pdf-continuous>nav .pdf-fit-button{order:2;width:120px}.summary-pdf-continuous .summary-pdf-paper{padding-bottom:125px}.pdf-outline-panel{top:65px;bottom:125px}.jump-clip-dialog .jump-clip-pages{padding:10px 10px 130px}}
 @media(max-width:600px){.summary-pdf-continuous .pdf-outline-panel{top:125px}} .jump-clip-dialog .jump-clip-zoom{color:#fff}
 
-.pdf-index-search{display:block;margin:16px 0 12px;font-size:12px;color:#555}.pdf-index-search input{display:block;box-sizing:border-box;width:100%;margin-top:7px;padding:12px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#151515;font:14px Arial;min-height:44px}.summary-pdf-sheet .pdf-internal-link{position:absolute;min-width:0;min-height:0;border:0;border-radius:0;background:transparent;padding:0;cursor:pointer}.summary-pdf-sheet .pdf-internal-link:hover{background:#dfff2f22}.summary-pdf-sheet .pdf-internal-link:focus-visible{outline:2px solid #151515;background:#dfff2f33}
+.pdf-index-search{display:block;margin:16px 0 12px;font-size:12px;color:#555}.pdf-index-search input{display:block;box-sizing:border-box;width:100%;margin-top:7px;padding:12px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#151515;font:14px JumpRoboto,Arial;min-height:44px}.summary-pdf-sheet .pdf-internal-link{position:absolute;min-width:0;min-height:0;border:0;border-radius:0;background:transparent;padding:0;cursor:pointer}.summary-pdf-sheet .pdf-internal-link:hover{background:#dfff2f22}.summary-pdf-sheet .pdf-internal-link:focus-visible{outline:2px solid #151515;background:#dfff2f33}
 
 .summary-pdf-continuous>nav .pdf-page-input{box-sizing:border-box;width:36px;min-height:40px;padding:4px 2px;text-align:center;border:1px solid #ffffff60;border-radius:6px;background:#ffffff15;color:#fff;font:inherit}.summary-pdf-continuous>nav .pdf-page-input:focus{outline:2px solid #dfff2f;outline-offset:1px}@media(max-width:600px){.summary-pdf-continuous>nav .pdf-page-input{width:30px;min-height:44px}}
 @media(max-width:600px){.summary-pdf-continuous>nav{width:280px;gap:2px}}
@@ -325,14 +325,14 @@ body:has(.summary-content){--juve-font:JumpRoboto,Arial,Helvetica,sans-serif}
 .pdf-clips-row{display:flex;align-items:center;gap:8px;border-top:1px solid #e5e5e5;margin-top:12px;padding-top:10px}
 .pdf-clips-row label{min-width:0}
 .pdf-clips-info{position:relative;display:inline-flex;flex-shrink:0}
-.pdf-section-picker .pdf-info-button{display:grid;place-items:center;min-height:28px;width:28px;padding:0;border:1px solid #c4c9c2;border-radius:50%;background:#f5f6f3;color:#62695e;font:600 13px/1 Georgia,serif}
+.pdf-section-picker .pdf-info-button{display:grid;place-items:center;min-height:28px;width:28px;padding:0;border:1px solid #c4c9c2;border-radius:50%;background:#f5f6f3;color:#62695e;font:600 13px/1 JumpRoboto,Arial,Helvetica,sans-serif}
 .pdf-info-button:focus-visible{outline:2px solid #151515;outline-offset:2px}
 .pdf-clips-info [role="tooltip"]{position:absolute;z-index:2;bottom:calc(100% + 9px);right:-8px;width:min(265px,calc(100vw - 100px));box-sizing:border-box;padding:12px 14px;border-radius:7px;background:#20231e;color:#fff;font:12px/1.5 JumpRoboto,Arial;box-shadow:0 5px 20px #0002}
 .pdf-clips-info [role="tooltip"]::after{content:"";position:absolute;right:16px;top:100%;border:6px solid transparent;border-top-color:#20231e}
 .pdf-clips-info [role="tooltip"]::before{content:"";position:absolute;top:100%;left:0;right:0;height:10px}
 
 /* Small visible symbols with a comfortable, transparent click target. */
-.pdf-section-picker .pdf-info-button{position:relative;width:28px;height:28px;min-height:28px;border:0;background:transparent;font:500 10px/1 Georgia,serif;color:#7c837a}
+.pdf-section-picker .pdf-info-button{position:relative;width:28px;height:28px;min-height:28px;border:0;background:transparent;font:500 10px/1 JumpRoboto,Arial,Helvetica,sans-serif;color:#7c837a}
 .pdf-section-picker .pdf-info-button::before{content:"";position:absolute;width:14px;height:14px;border:1px solid #bfc5bb;border-radius:50%;pointer-events:none}
 .pdf-section-picker .pdf-info-button:hover{color:#171919;background:transparent}
 .pdf-section-picker header button{width:32px;min-width:32px;height:32px;min-height:32px;border:0;background:transparent;padding:0;font-size:20px;font-weight:400;line-height:1;color:#757c74}
@@ -458,8 +458,8 @@ body:has(.summary-content){background:var(--paper)}
 .sidebar-editor-section .sidebar-editor-message{background:#1f2a22;color:#cfe8c4}
 .sidebar-editor-section .sidebar-editor-message.is-error{background:#3a1c22;color:#f5b3c0}
 .sidebar-editor-confirm.is-list-item{margin:8px 0 0}
-.sidebar-editor-confirm.is-list-item .confirm-draft{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:46px;margin:0;padding:11px 10px 11px 12px;border:0;border-left:4px solid #dfff2f;white-space:nowrap;border-radius:0 9px 9px 0;background:#23282c;color:#fff;font:700 13px/1.3 Arial,Helvetica,sans-serif;text-align:left;text-decoration:none;box-shadow:none;cursor:pointer;transition:background .15s,color .15s}
-.sidebar-editor-confirm.is-list-item .confirm-draft::after{content:"Pubblica";flex:none;padding:3px 8px;border-radius:99px;background:#dfff2f;color:#151515;font:700 10px/1.3 Arial,sans-serif}
+.sidebar-editor-confirm.is-list-item .confirm-draft{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:46px;margin:0;padding:11px 10px 11px 12px;border:0;border-left:4px solid #dfff2f;white-space:nowrap;border-radius:0 9px 9px 0;background:#23282c;color:#fff;font:700 13px/1.3 JumpRoboto,Arial,Helvetica,sans-serif;text-align:left;text-decoration:none;box-shadow:none;cursor:pointer;transition:background .15s,color .15s}
+.sidebar-editor-confirm.is-list-item .confirm-draft::after{content:"Pubblica";flex:none;padding:3px 8px;border-radius:99px;background:#dfff2f;color:#151515;font:700 10px/1.3 JumpRoboto,Arial,sans-serif}
 .sidebar-editor-confirm.is-list-item .confirm-draft:hover,.sidebar-editor-confirm.is-list-item .confirm-draft:focus-visible{background:#dfff2f;color:#151515}
 .sidebar-editor-confirm.is-list-item .confirm-draft:hover::after,.sidebar-editor-confirm.is-list-item .confirm-draft:focus-visible::after{background:#151515;color:#dfff2f}
 .sidebar-editor-confirm.is-list-item .confirm-draft:disabled{opacity:.55;cursor:progress}
@@ -470,15 +470,15 @@ body:has(.summary-content){background:var(--paper)}
 .login-dialog form{display:flex;flex-direction:column;gap:14px;padding:26px 24px 22px}
 .login-dialog header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:4px}
 .login-dialog-mark{display:block;height:30px;width:auto;margin-bottom:14px;filter:brightness(0) invert(1)}
-.login-dialog header small{display:block;font:700 10px/1.3 Arial,sans-serif;letter-spacing:1.6px;color:#dfff2f}
+.login-dialog header small{display:block;font:700 10px/1.3 JumpRoboto,Arial,sans-serif;letter-spacing:1.6px;color:#dfff2f}
 .login-dialog h2{margin:8px 0 0;color:#fff;font:700 28px/1.1 JuventusFans,Arial,sans-serif;letter-spacing:-.2px}
 .login-dialog-close{width:34px;height:34px;border:1px solid #33383c;border-radius:50%;background:#1c2024;color:#b9bdc3;font-size:20px;line-height:1;cursor:pointer}
 .login-dialog-close:hover{color:#fff;border-color:#4a5055}
-.login-dialog label{display:flex;flex-direction:column;gap:7px;font:700 11px/1.3 Arial,sans-serif;letter-spacing:.3px;color:#b9bdc3}
+.login-dialog label{display:flex;flex-direction:column;gap:7px;font:700 11px/1.3 JumpRoboto,Arial,sans-serif;letter-spacing:.3px;color:#b9bdc3}
 .login-dialog input{height:46px;padding:0 14px;border:1px solid #33383c;border-radius:12px;background:#1f2327;color:#fff;font-size:15px;transition:border-color .15s}
 .login-dialog input:focus{outline:none;border-color:#dfff2f;box-shadow:0 0 0 3px rgba(223,255,47,.15)}
 .login-dialog-error{margin:0;padding:10px 12px;border-radius:10px;background:#3a1c22;color:#f5b3c0;font-size:13px}
-.login-dialog-submit{height:48px;margin-top:4px;border:0;border-radius:999px;background:#dfff2f;color:#151515;font:700 14px Arial,sans-serif;cursor:pointer}
+.login-dialog-submit{height:48px;margin-top:4px;border:0;border-radius:999px;background:#dfff2f;color:#151515;font:700 14px JumpRoboto,Arial,sans-serif;cursor:pointer}
 .login-dialog-submit:hover{background:#eaff6a}
 .login-dialog-submit:disabled{opacity:.6;cursor:progress}
 .login-dialog-hint{margin:0;font-size:11px;color:#8d9296;text-align:center}
@@ -490,29 +490,29 @@ body:has(.summary-content){background:var(--paper)}
 .edition-picker-toggle{display:grid;place-items:center;width:24px;height:24px;padding:0;border:1px solid transparent;border-radius:50%;background:transparent;color:#8d9296;cursor:pointer}
 .edition-picker-toggle:hover,.edition-picker-toggle[aria-expanded=true]{color:#dfff2f;border-color:#3a3f43}
 .edition-picker-menu{position:absolute;z-index:8200;top:calc(100% + 8px);left:-8px;width:min(300px,calc(100vw - 32px));max-height:340px;overflow-y:auto;padding:6px;border:1px solid #33383c;border-radius:12px;background:#15181b;box-shadow:0 16px 40px rgba(0,0,0,.45)}
-.edition-picker-menu a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border-radius:8px;color:#e8eaeb;font:500 13px/1.3 Arial,sans-serif;text-decoration:none;text-transform:none;letter-spacing:0}
+.edition-picker-menu a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border-radius:8px;color:#e8eaeb;font:500 13px/1.3 JumpRoboto,Arial,sans-serif;text-decoration:none;text-transform:none;letter-spacing:0}
 .edition-picker-menu a:hover{background:#23282c}
 .edition-picker-menu a.is-current{color:#dfff2f;font-weight:700}
-.summary-content .edition-date-line .edition-picker-menu small{flex:none;margin:0;padding:2px 7px;border-radius:99px;background:#3a3312;color:#f2d26b;font:700 9px/1.4 Arial,sans-serif;letter-spacing:.6px;text-transform:uppercase}
+.summary-content .edition-date-line .edition-picker-menu small{flex:none;margin:0;padding:2px 7px;border-radius:99px;background:#3a3312;color:#f2d26b;font:700 9px/1.4 JumpRoboto,Arial,sans-serif;letter-spacing:.6px;text-transform:uppercase}
 .edition-picker-menu .edition-picker-all{margin-top:4px;border-top:1px solid #2b3034;border-radius:0 0 8px 8px;color:#b9bdc3;text-transform:none}
 .edition-picker-note{margin:0;padding:10px;color:#b9bdc3;font-size:12px}
 @media print{.edition-picker{display:none}}
 
 /* Summary problem under "Scarica PDF": a readable red line instead of a warning triangle. */
 .summary-nav-text{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
-.summary-sidebar .summary-nav-item .summary-pdf-problem{display:inline-flex;align-items:center;gap:6px;margin:0;font:700 11px/1.2 Arial,sans-serif;color:#b0122e}
+.summary-sidebar .summary-nav-item .summary-pdf-problem{display:inline-flex;align-items:center;gap:6px;margin:0;font:700 11px/1.2 JumpRoboto,Arial,sans-serif;color:#b0122e}
 .summary-sidebar .summary-nav-item .summary-pdf-problem::before{content:"";width:7px;height:7px;border-radius:50%;background:#e5243f;box-shadow:0 0 0 3px #fbe1e6}
 
 /* Publish confirmation: dark, like the header and the editors' zone; no brand strip, no version number. */
 .publish-dialog{background:#15181b;color:#fff;border:1px solid #2b3034;border-radius:18px;padding:26px 24px 22px;box-shadow:0 24px 60px rgba(0,0,0,.45)}
 .publish-dialog::backdrop{background:rgba(11,13,15,.72);backdrop-filter:blur(3px)}
 .publish-dialog .publish-dialog-brand{display:none}
-.publish-dialog .publish-dialog-label{margin:0 0 10px;color:#dfff2f;font:700 10px/1.3 Arial,sans-serif;letter-spacing:1.6px}
+.publish-dialog .publish-dialog-label{margin:0 0 10px;color:#dfff2f;font:700 10px/1.3 JumpRoboto,Arial,sans-serif;letter-spacing:1.6px}
 .publish-dialog h2{margin:0 0 10px;color:#fff;font:700 28px/1.1 JuventusFans,Arial,sans-serif;letter-spacing:-.2px}
 .publish-dialog p{color:#b9bdc3;font-size:14px}
 .publish-dialog .publish-dialog-error{color:#f5b3c0;background:#3a1c22;border-radius:8px;padding:10px 12px;font-size:13px}
 .publish-dialog .publish-dialog-actions{margin-top:22px}
-.publish-dialog .publish-cancel,.publish-dialog .publish-approve{border-radius:999px;padding:11px 18px;font:700 13px/1 Arial,sans-serif;cursor:pointer;box-shadow:none}
+.publish-dialog .publish-cancel,.publish-dialog .publish-approve{border-radius:999px;padding:11px 18px;font:700 13px/1 JumpRoboto,Arial,sans-serif;cursor:pointer;box-shadow:none}
 .publish-dialog .publish-cancel{background:transparent;color:#e8eaeb;border:1px solid #4a5055}
 .publish-dialog .publish-cancel:hover{border-color:#8d9296}
 .publish-dialog .publish-approve{background:#dfff2f;color:#151515;border:1px solid #dfff2f}
@@ -539,6 +539,7 @@ body:has(.summary-content){background:var(--paper)}
  .summary-sidebar.is-open .sidebar-editor-section{margin:20px 0 0;padding:18px 0 0;background:transparent;border-top:1px solid #2b3034}
  .summary-sidebar.is-open .summary-editor-access{color:#b9bdc3}
  .summary-sidebar.is-open .summary-sidebar-brand img{filter:brightness(0) invert(1)}
+ .summary-sidebar.is-open .summary-sidebar-cross{color:#bfc3c6}
  .summary-sidebar.is-open .summary-sidebar-brand,.summary-sidebar.is-open .summary-sidebar-signature{color:#8d9296}
  body:has(.summary-sidebar.is-open) .mobile-confirm-bar{display:none}
 }
@@ -546,11 +547,11 @@ body:has(.summary-content){background:var(--paper)}
 /* Clip viewer (24/09/2026): pages as large as possible, title + Chiudi on a slim dark bar, floating − / + only. */
 .jump-clip-dialog{position:fixed;height:calc(100dvh - 32px);max-height:none;max-width:none;border:1px solid #2b3034;border-radius:16px;background:#15181b}
 .jump-clip-bar{flex-shrink:0;padding:10px 12px 10px 18px;background:#15181b;letter-spacing:0}
-.jump-clip-bar strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;font:700 14px/1.3 Arial,sans-serif}
-.jump-clip-bar button{flex:none;background:#dfff2f;color:#151515;font:700 12px/1 Arial,sans-serif;padding:10px 14px}
+.jump-clip-bar strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;font:700 14px/1.3 JumpRoboto,Arial,sans-serif}
+.jump-clip-bar button{flex:none;background:#dfff2f;color:#151515;font:700 12px/1 JumpRoboto,Arial,sans-serif;padding:10px 14px}
 .jump-clip-pages{padding:12px 12px 80px;background:#2a2e32}
 .jump-clip-navigation{position:absolute;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);gap:6px;padding:6px;border-radius:999px;background:rgba(21,24,27,.92);box-shadow:0 8px 24px rgba(0,0,0,.35)}
-.jump-clip-navigation button{min-width:44px;min-height:44px;border:1px solid #3a3f43;border-radius:50%;background:#23282c;color:#fff;font:700 20px/1 Arial,sans-serif}
+.jump-clip-navigation button{min-width:44px;min-height:44px;border:1px solid #3a3f43;border-radius:50%;background:#23282c;color:#fff;font:700 20px/1 JumpRoboto,Arial,sans-serif}
 .jump-clip-navigation button:hover:not(:disabled){background:#dfff2f;border-color:#dfff2f;color:#151515}
 @media(max-width:600px){
 }
@@ -592,7 +593,7 @@ body:has(.summary-content){background:var(--paper)}
 .jump-clip-dialog .jump-clip-pages{background:#23282c}
 
 /* Editorial warning stays in the Summary viewer, outside the exported PDF. */
-.summary-review-warning{flex-shrink:0;padding:12px 20px;background:#fff0f2;color:#a10f29;border-bottom:1px solid #eab5bf;font:14px/1.4 Arial,sans-serif;max-height:35dvh;overflow:auto}
+.summary-review-warning{flex-shrink:0;padding:12px 20px;background:#fff0f2;color:#a10f29;border-bottom:1px solid #eab5bf;font:14px/1.4 JumpRoboto,Arial,sans-serif;max-height:35dvh;overflow:auto}
 .summary-review-warning p{margin:5px 0 0}
 .summary-sidebar .summary-nav-item .summary-pdf-problem::before{content:"⚠";width:auto;height:auto;border-radius:0;background:transparent;box-shadow:none;color:#d58a00;font-size:16px}
 .summary-sidebar.is-open .summary-nav-item .summary-pdf-problem::before{box-shadow:none}
@@ -600,10 +601,91 @@ body:has(.summary-content){background:var(--paper)}
 /* Stable paper placeholder until the clip reader is ready. */
 .jump-clip-dialog.is-loading .jump-clip-pages{height:var(--clip-loading-height);min-height:160px;display:grid;place-items:center;background:#f5f4f0;margin:12px;border-radius:3px;padding:20px;box-sizing:border-box}
 .jump-clip-dialog.is-loading .jump-clip-navigation,.jump-clip-dialog.has-error .jump-clip-navigation{display:none}
-.jump-clip-dialog .clip-loading-status{display:flex;flex-direction:column;align-items:center;gap:16px;margin:0;color:#596064;font:500 14px Arial,sans-serif;text-align:center}
+.jump-clip-dialog .clip-loading-status{display:flex;flex-direction:column;align-items:center;gap:16px;margin:0;color:#596064;font:500 14px JumpRoboto,Arial,sans-serif;text-align:center}
 .jump-clip-dialog.is-loading .clip-loading-status::before{content:"";width:24px;height:24px;border:2px solid #d7dcd0;border-top-color:#65724b;border-radius:50%;animation:clip-loading-spin .85s linear infinite}
 @keyframes clip-loading-spin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.jump-clip-dialog.is-loading .clip-loading-status::before{animation:none}}
 
 /* Compact editorial navigation; all tools remain visible. */
 .summary-sidebar .sidebar-editor-section{margin-top:14px;padding-top:10px;padding-bottom:10px}.sidebar-editor-section .summary-nav-label{margin-bottom:7px}.summary-sidebar .sidebar-editor-section .summary-nav-item{min-height:34px;padding:7px 10px 7px 12px;gap:9px;font-size:12px}.summary-sidebar .sidebar-editor-section .summary-nav-item svg{width:17px;height:17px;flex:none}.sidebar-editor-confirm.is-list-item{margin-top:5px}.sidebar-editor-confirm.is-list-item .confirm-draft{min-height:36px;padding-top:8px;padding-bottom:8px;font-size:12px}.sidebar-editor-section .revision-entry{margin:5px 0}.sidebar-editor-section .revision-withdraw{min-height:34px;font-size:12px}@media(max-width:900px){.summary-sidebar.is-open .sidebar-editor-section{margin-top:12px;padding-top:10px}.summary-sidebar .sidebar-editor-section .summary-nav-item{min-height:42px}}
+
+/* Editorial section navigation: readable labels, one restrained active accent. */
+.summary-content .edition-jump-nav{display:block;margin:30px 0 0;padding:0;border:0}
+.summary-content .edition-jump-nav>span{display:block;margin:0 0 7px;font:600 10px/1.4 JumpRoboto,Arial,sans-serif;letter-spacing:1.8px;text-transform:uppercase;color:#aaaeb1}
+.summary-content .edition-section-links{display:flex;align-items:stretch;gap:26px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:#555 transparent;border-bottom:1px solid #444;overscroll-behavior-inline:contain}
+.summary-content .edition-jump-nav a{position:relative;display:flex;flex:none;align-items:center;justify-content:center;min-height:48px;margin:0;padding:10px 0 13px;border:0;border-radius:0;background:transparent;color:#bfc1c3;font:500 19px/1.2 JuventusFans,Arial,sans-serif;letter-spacing:.15px;white-space:nowrap;text-decoration:none;transition:color .15s}
+.summary-content .edition-jump-nav a::after{position:absolute;content:"";left:0;right:0;bottom:0;height:3px;background:#dfff2f;transform:scaleX(0);transition:transform .15s}
+.summary-content .edition-jump-nav a[aria-current="location"]{color:#fff}
+.summary-content .edition-jump-nav a[aria-current="location"]::after{transform:scaleX(1)}
+.summary-content .edition-jump-nav a:hover,.summary-content .edition-jump-nav a:focus-visible{background:transparent;color:#fff;border-color:transparent}
+.summary-content .edition-jump-nav a:hover::after{transform:scaleX(1)}
+.summary-content .edition-jump-nav a:focus-visible{outline:2px solid #dfff2f;outline-offset:-3px}
+@media(max-width:700px){.summary-content .edition-section-links{gap:24px}.summary-content .edition-jump-nav a{font-size:18px;min-height:46px}}
+@media(prefers-reduced-motion:reduce){.summary-content .edition-jump-nav a,.summary-content .edition-jump-nav a::after{transition:none}}
+
+/* Shared typography for utility headings and reading navigation. */
+body dialog h2{font-family:JuventusFans,Arial,Helvetica,sans-serif}
+.summary-content .reading-navigation a,.summary-content .reading-navigation a span{font-family:JuventusFans,Arial,Helvetica,sans-serif;font-size:17px;font-weight:500}
+
+/* Inline filter label and a consistent arrow independent of native hover chrome. */
+.sectiontitle .article-filter{flex-direction:row;align-items:center;gap:12px;font:500 13px/1.4 JumpRoboto,Arial,sans-serif}
+.article-filter>span{flex:none}
+.article-filter select{appearance:none;-webkit-appearance:none;min-height:44px;border:1px solid #d5d7d8;border-radius:8px;background-color:#fff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23565b60' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;background-size:16px;padding:10px 40px 10px 14px;font:400 14px/1.4 JumpRoboto,Arial,sans-serif;color:#20252b;transition:border-color .15s,background-color .15s}
+.article-filter select:hover{border-color:#8b9195;background-color:#f7f8f8}
+.article-filter select:focus-visible{outline:2px solid #596300;outline-offset:3px}
+@media(max-width:600px){.sectiontitle .article-filter select{flex:1;min-width:0;width:auto;font-size:16px}}
+
+.summary-sidebar .summary-sidebar-signature{display:flex;flex-direction:row;justify-content:center;align-items:baseline;gap:6px}
+.summary-sidebar .summary-sidebar-signature .summary-ag-logo{display:block;width:13px;height:13px;object-fit:contain;filter:brightness(0)}
+
+.summary-sidebar a.summary-sidebar-signature{text-decoration:none}.summary-sidebar a.summary-sidebar-signature:hover>span{text-decoration:underline;text-underline-offset:3px}.summary-sidebar a.summary-sidebar-signature:focus-visible{outline:2px solid #171919;outline-offset:4px}
+
+.summary-sidebar .summary-sidebar-cross{display:block;width:9px;height:9px;flex:none}
+
+/* Titles of the reading block in the Juventus typeface (same as the other headings). */
+.summary-content .combined-analysis h2,.summary-content .jump-frontpages-list>b{font-family:JuventusFans,Arial,Helvetica,sans-serif;font-weight:700;font-size:26px;line-height:1.15;letter-spacing:0}
+@media(max-width:600px){.summary-content .combined-analysis h2,.summary-content .jump-frontpages-list>b{font-size:23px}}
+
+/* Same hairline under the three block titles; the first signal group no longer draws its own top line. */
+.summary-content .combined-columns{margin-top:0}
+.summary-content .combined-distribution>h2,.summary-content .day-summary-heading{box-sizing:border-box;padding-bottom:16px;border-bottom:1px solid #d5d5d5;margin:0 0 22px}
+.summary-content .day-summary-heading>h2{margin:0}
+.summary-content .combined-points .signal-group:first-of-type h4{border-top:0;padding-top:0}
+.summary-content .approval-frontpages>b{margin-bottom:16px}
+.summary-content .combined-distribution>h2,.summary-content .day-summary-heading>h2{text-align:center}
+
+/* "Pubblica bozza": plain label; a discreet amber triangle right after it when something needs a look. */
+.sidebar-editor-confirm.is-list-item .confirm-draft{justify-content:flex-start}
+.sidebar-editor-confirm.is-list-item .confirm-draft::after{content:none}
+.confirm-draft .confirm-warning{flex:none;margin-left:-2px;color:#f2b84b;vertical-align:-2px}
+.sidebar-editor-confirm.is-list-item .confirm-draft:hover .confirm-warning,.sidebar-editor-confirm.is-list-item .confirm-draft:focus-visible .confirm-warning{color:#8a5a00}
+.mobile-confirm-bar .confirm-draft .confirm-warning{color:#8a5a00}
+
+/* Pubblica bozza: own icon, lighter grey tile, no yellow edge. The icon shows only in the sidebar. */
+.confirm-draft .confirm-icon{display:none}
+.sidebar-editor-confirm.is-list-item .confirm-icon{display:block;flex:none;color:#dfff2f}
+.summary-sidebar .sidebar-editor-confirm.is-list-item .confirm-draft{gap:9px;padding:7px 10px 7px 12px;min-height:42px;border-left:0;border-radius:9px;background:#2d3338;font-size:12px}
+.summary-sidebar .sidebar-editor-confirm.is-list-item .confirm-draft svg.confirm-icon{width:17px;height:17px}
+.sidebar-editor-confirm.is-list-item .confirm-draft:hover,.sidebar-editor-confirm.is-list-item .confirm-draft:focus-visible{background:#dfff2f;color:#151515}
+.sidebar-editor-confirm.is-list-item .confirm-draft:hover .confirm-icon,.sidebar-editor-confirm.is-list-item .confirm-draft:focus-visible .confirm-icon{color:#151515}
+
+/* Scarica PDF: discreet triangle after the label when the Summary needs a look (no more red line of text). */
+.summary-sidebar .summary-nav-text{display:inline-flex;flex-direction:row;align-items:center;gap:7px}
+.summary-sidebar .summary-nav-item .pdf-warning{margin:0;color:#d58a00;vertical-align:baseline}
+.summary-sidebar.is-open .summary-nav-item .pdf-warning{color:#f2b84b}
+.summary-sidebar.is-open .summary-nav-item .pdf-warning path:nth-child(2){stroke:#151515}.summary-sidebar.is-open .summary-nav-item .pdf-warning circle{fill:#151515}
+
+/* Archive page: commands that need an open edition stay in place, dimmed and not clickable. */
+.summary-sidebar .summary-nav-item.is-inactive,.summary-sidebar .summary-nav-item.is-inactive:hover{opacity:.42;cursor:not-allowed;background:transparent;box-shadow:none}
+.summary-sidebar .summary-nav-item.is-inactive svg{color:inherit}
+.sidebar-editor-confirm.is-inactive .confirm-draft,.sidebar-editor-confirm.is-inactive .confirm-draft:hover{opacity:.42;cursor:not-allowed;background:#2d3338;color:#fff}
+.sidebar-editor-confirm.is-inactive .confirm-icon,.sidebar-editor-confirm.is-inactive .confirm-draft:hover .confirm-icon{color:#aab0b5}
+
+
+/* Copertura odierna: four plain numbers; the sub-line says where the articles come from. */
+.coverage-grid dt small{display:block;margin-top:2px;font-size:11px;color:#8a9194}
+/* Mobile menu: the AG Studio pictogram turns white on the dark background. */
+.summary-sidebar.is-open .summary-sidebar-signature .summary-ag-logo{filter:brightness(0) invert(1);opacity:.75}
+.summary-sidebar.is-open .summary-sidebar-signature{color:#aab0b4}
+.coverage-grid>div{flex-direction:column;justify-content:flex-start}
+.coverage-grid>div>dd{order:-1}

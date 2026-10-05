@@ -1,7 +1,7 @@
 import {requireEditor} from '../../../lib/server-client';
 import {store,readIndex} from '../../../lib/github-store';
 import {contentConfigured} from '../../../lib/config';
-import {legacyEditionDates} from '../../../lib/archive-dates';
+import {listedLegacyEditionDates as legacyEditionDates} from '../../../lib/archive-dates';
 export const runtime='nodejs';
 export const dynamic='force-dynamic';
 const headers={'Cache-Control':'private, no-store'};

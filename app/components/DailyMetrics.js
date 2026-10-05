@@ -70,7 +70,6 @@ function addInsights(main,sectionTitle,articleEls,{id,bullets,tones,toneText}){
   section.id=id;
   section.className='ranking jump-insights';
   section.innerHTML=`
-    <small>LETTURA DELLA RASSEGNA</small>
     <h2>Temi, parole e tono di oggi</h2>
     <div class="jump-insight-grid">
       <div class="jump-insight-card"><b>3 punti chiave</b><ul>${bullets.map(x=>`<li><strong>${x[0]}:</strong> ${x[1]}</li>`).join('')}</ul></div>

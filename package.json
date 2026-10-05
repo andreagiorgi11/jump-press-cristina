@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "next build",
-    "dev": "node scripts/dev.mjs press",
+    "dev": "node scripts/dev-real.mjs",
     "dev:news": "node scripts/dev.mjs news",
     "build:news": "node scripts/build-news.mjs",
     "clips:legacy": "node scripts/generate-static-clips-20260913.mjs",

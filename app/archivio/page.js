@@ -1,10 +1,12 @@
 import ArchiveEntries from '../components/ArchiveEntries';
+import ExportPage from '../summary/ExportPage';
+import './archive.css';
 import {configured} from '../../lib/config';
 import {requireEditor} from '../../lib/server-client';
 import {listDrafts} from '../../lib/editor-service';
 import {incident} from '../../lib/errors';
-import {publishedEditions} from '../../lib/published';
-import {legacyEditionDates as legacy} from '../../lib/archive-dates';
+import {publishedEditions,publishedPreviews} from '../../lib/published';
+import {listedLegacyEditionDates as legacy} from '../../lib/archive-dates';
 export const dynamic='force-dynamic';
 export const metadata={title:'Archivio | JUMP PRESS Juventus'};
 export default async function Archivio(){
@@ -17,5 +19,9 @@ export default async function Archivio(){
  }
  const dates=[...new Set([...(result.rows||[]).map(r=>r.edition_date),...legacy])].sort().reverse();
  const entries=[...dates.map(date=>({date,href:(result.rows||[]).some(r=>r.edition_date===date)?'/edizioni/'+date:'/archivio/'+date,key:date,editVersion:drafts.find(d=>d.id===(result.rows||[]).find(r=>r.edition_date===date)?.draft_id)?.version,editId:canDelete?(result.rows||[]).find(r=>r.edition_date===date)?.draft_id:null})),...drafts.filter(d=>!(result.rows||[]).some(r=>r.draft_id===d.id&&r.version===d.version)).map(d=>({date:d.body.date,href:d.localPreview?'/anteprima-locale':'/editor?draft='+encodeURIComponent(d.id),key:d.id,draft:true,version:d.version,canDelete:canDelete&&!d.localPreview&&!result.unavailable&&!(result.rows||[]).some(r=>r.draft_id===d.id)}))].sort((a,b)=>b.date.localeCompare(a.date)||Number(!!b.draft)-Number(!!a.draft));
- return <main><div className="top"><div className="brand"><i>JUMP</i> PRESS</div><div className="edition">JUVENTUS · ARCHIVIO</div></div><section className="brief"><small>ARCHIVIO RASSEGNE</small><h2>Tutte le edizioni</h2><p>{drafts.length?'Consulta le edizioni pubblicate e riapri le bozze della redazione.':'Consulta le rassegne pubblicate.'}</p>{result.unavailable&&<p role="alert">Archivio online temporaneamente non disponibile. Qui sotto restano consultabili le edizioni storiche già incluse nel sito; l’elenco potrebbe essere incompleto.</p>}{draftsUnavailable&&<p role="alert">Le bozze non sono disponibili al momento. Le edizioni pubblicate restano consultabili; riprova per recuperare le bozze.</p>}<ArchiveEntries entries={entries} editor={canDelete} unavailable={draftsUnavailable||result.unavailable}/></section></main>;
+ const previews=await publishedPreviews((result.rows||[]).map(r=>r.edition_date).sort().reverse());
+ for(const entry of entries)if(!entry.draft&&previews[entry.date])entry.preview=previews[entry.date];
+ return <><ExportPage archive live/><div className="summary-content"><main className="summary-edition archive-page"><div className="edition-view"><header><div className="edition-date-line"><small>JUVENTUS · ARCHIVIO</small></div><h1>Archivio <em>rassegne</em></h1></header>
+ {result.unavailable&&<p className="archive-alert" role="alert">Archivio online temporaneamente non disponibile. L’elenco potrebbe essere incompleto.</p>}{draftsUnavailable&&<p className="archive-alert" role="alert">Le bozze non sono disponibili al momento. Le edizioni pubblicate restano consultabili; riprova per recuperare le bozze.</p>}
+ <section className="archive-list" aria-label="Edizioni"><ArchiveEntries entries={entries} editor={canDelete} unavailable={draftsUnavailable||result.unavailable}/></section></div></main></div></>;
 }

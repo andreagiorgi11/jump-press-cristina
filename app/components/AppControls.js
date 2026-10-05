@@ -21,7 +21,8 @@ export default function AppControls({onConfirm,confirmBusy=false,confirmDate,con
  };
 
  if(onArchiveIndex&&!editorActions){
-  return <div className="appcontrols"><Link className="backbutton" href="/">← <span>Indietro</span></Link></div>;
+  // The archive index has the site sidebar (Rassegna di oggi / Archivio): no separate back button.
+  return null;
  }
 
  if(inArchive&&!editorActions){

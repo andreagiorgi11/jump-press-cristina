@@ -16,7 +16,7 @@ export default function ArticleFilter(){
     let record=records.find(r=>r.list===list);
     if(!record){
      const control=document.createElement('label');control.className='article-filter';
-     const label=document.createElement('span');label.textContent='Filtra per tema';
+     const label=document.createElement('span');label.textContent='Filtra';
      const select=document.createElement('select');select.setAttribute('aria-label','Filtra articoli per tema');
      control.append(label,select);heading.append(control);heading.classList.add('has-article-filter');
      record={list,heading,control,select,signature:''};records.push(record);
