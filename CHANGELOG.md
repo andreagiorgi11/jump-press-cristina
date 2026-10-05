@@ -1,3 +1,21 @@
+## 2026-10-05 — Archivio rifatto, sidebar uniforme e rifiniture grafiche (sessione Claude)
+
+Rilasciato in produzione il 5 ottobre alle 19:29 (Europe/Rome), `dpl_Eo4Msm8qGUYWHQKaFzFST1ejkx6f`, sopra il rilascio grafico della stessa mattina. Rollback: `dpl_4m91or6wdw8Uv2AXWDGu454DH4iT`.
+
+Archivio: pagina nello stile del sito (sidebar, intestazione scura, edizioni per mese con data, sommario, numero di articoli e sezioni), Cestino accanto ai filtri, edizioni storiche (agosto, 13 e 15 settembre) tolte dall'elenco e dal menu date ma ancora raggiungibili dal loro indirizzo (`lib/archive-dates.js`, `listedLegacyEditionDates`). Ritagli mancanti (edizione del 18/09, file rimasti sul vecchio archivio): messaggio leggibile nel popup e nella pagina del ritaglio, PDF con ritagli completato con pagina finale «Ritagli non disponibili». Nessun recupero dei file vecchi, deciso da Andrea.
+
+Sito e PDF: «Juventus in prima pagina», «I temi della giornata» e «La giornata in sintesi» in JuventusFans, stessa misura, centrati e con linea sotto il titolo; loghi della copertina PDF centrati; tolta l'etichetta «Lettura della rassegna». Copertura odierna con quattro numeri (pagine analizzate, prime pagine controllate, con la Juventus, articoli selezionati). Date leggibili nel piè di pagina, nell'intestazione delle pagine PDF e nel Cestino. Logo AG Studio visibile nel menu mobile. Tolto il link «Accesso editor» in fondo alle pagine.
+
+Sidebar da editor identica in ogni pagina: stesse voci, quelle non attive sono spente; icone diverse per ogni voce; «Pubblica bozza» (con triangolo di avviso se cappello o Summary sono da ricontrollare) e, a rassegna pubblicata, «Modifica rassegna» nello stesso posto; triangolo anche su «Scarica PDF» se il Summary è da ricontrollare; tolti «Seconda scelta», «Apri editor», il riquadro verde del cappello e il menu «Editor» flottante dell'Archivio.
+
+Non inclusa la verifica del salvataggio MCP (`lib/save-verification.js`), mai distribuita e presente sul ramo `feature/juventus-summary`. Verifiche: build Press e News riuscite, 235 test isolati superati; con login (sidebar Redazione, Pubblica bozza, Modifica rassegna, Cestino) non verificato.
+
+## 2026-10-05 — rilascio grafica sito e PDF
+
+Rilasciate le modifiche approvate: Jump × Juventus con variante C, proporzioni condivise dei loghi, tipografia e sezioni coerenti tra sito e PDF, revisione delle seconde scelte e firma AG Studio. Deployment `dpl_4m91or6wdw8Uv2AXWDGu454DH4iT`, alias jump-press-approvazione.vercel.app. Rollback codice: `dpl_6ZkvaLZmPQuuD1wtNdmgUezydBTY`. Nessuna bozza pubblicata dal rilascio.
+
+Verifiche: build Press e News e build Vercel riuscite; suite 234/235 al primo passaggio, aspettativa obsoleta sul logo Il Fatto corretta e suite interessata 4/4; audit dipendenze produzione senza vulnerabilità. Online: home 200, API editor anonima 401, prototipi locali 404, rassegna e summary del 30 settembre generati e controllati visivamente.
+
 ## 2026-10-02 — Fonte manuale via MCP interattivo
 
 Caricamento manuale attraverso il collegamento autenticato esistente: stessi controlli di data, ruolo e duplicati del popup; preparazione privata, estrazione e invio SMTP separati. Nessuna pubblicazione.
