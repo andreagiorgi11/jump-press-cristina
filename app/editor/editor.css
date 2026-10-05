@@ -19,3 +19,6 @@
 .editor-page summary{cursor:pointer;font-weight:800}
 @media(max-width:700px){.editor-shell .editor-main.editor-page{padding:18px 14px 25px}.editor-page .editor-toolbar{align-items:flex-start}.editor-page .editor-header{align-items:flex-start}}
 .editor-page .editor-header .editor-nav-link{color:#243c2a}
+
+.reserve-selection{border-top:1px solid #ccc;padding-top:12px}.reserve-selection p{font-size:13px}.reserve-selection select{max-width:100%;text-overflow:ellipsis}.reserve-selection button{padding:10px 14px;border:1px solid #555;background:white;color:#191919;font:inherit;cursor:pointer}
+.interest-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:14px;align-items:end;border-bottom:1px solid #e1e5df;padding:0 0 16px;margin-bottom:8px}.interest-row label{min-width:0;margin-bottom:0}.interest-row input{font-weight:400}.interest-remove{margin-bottom:0}.interest-rows{margin-bottom:20px}@media(max-width:700px){.interest-row{grid-template-columns:1fr;gap:0;padding-bottom:20px}.interest-row .interest-remove{justify-self:start;margin-top:12px}}

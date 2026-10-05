@@ -1,0 +1,40 @@
+.reserve-choice{max-width:1120px;margin:40px auto 100px;padding:32px;background:#eeefea;color:#191d1a;border:1px solid #dce0d6;border-radius:24px;font-family:Arial,Helvetica,sans-serif;scroll-margin-top:24px}
+.reserve-choice .reserve-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;cursor:pointer;list-style:none}
+.reserve-choice .reserve-heading::-webkit-details-marker{display:none}
+.reserve-choice .reserve-heading-copy{display:grid;gap:10px}
+.reserve-choice .reserve-eyebrow{font-size:10px;font-weight:700;letter-spacing:1.8px;color:#626d5c}
+.reserve-choice .reserve-title{display:flex;align-items:center;gap:12px;font-size:30px;font-weight:750;letter-spacing:-1px;line-height:1.15}
+.reserve-choice .reserve-count{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 9px;border-radius:50px;background:#dfff2f;color:#243014;font-size:14px;letter-spacing:0}
+.reserve-choice .reserve-chevron{width:24px;height:24px;flex-shrink:0;transition:transform .15s}
+.reserve-choice details:not([open]) .reserve-chevron{transform:rotate(-90deg)}
+.reserve-choice .reserve-description{max-width:600px;margin:14px 0 28px;font-size:14px;line-height:1.6;color:#636b60}
+.reserve-choice .reserve-list{display:grid;gap:20px}
+.reserve-choice .reserve-card{margin:0;padding:28px;background:#fff;border:1px solid #dde1d8;border-radius:16px;box-shadow:0 3px 10px #24331e04;min-width:0}
+.reserve-choice .reserve-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.reserve-choice .reserve-tags{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.reserve-choice .reserve-category,.reserve-choice .reserve-editorial{font-size:11px;font-weight:700;line-height:1.4;padding:5px 9px;border-radius:5px;background:#edf0e8;color:#46513e}
+.reserve-choice .reserve-editorial{background:#f5eee3;color:#82613b}
+.reserve-choice .reserve-number{font:500 21px/1 Arial;color:#798273;font-variant-numeric:tabular-nums;letter-spacing:-1px}
+.reserve-choice .reserve-meta{display:flex;flex-wrap:wrap;gap:6px 12px;margin:0 0 10px;font-size:12px;line-height:1.5;color:#697062}
+.reserve-choice .reserve-outlet{font-weight:700;color:#424b3a}
+.reserve-choice .reserve-author{border-left:1px solid #d8ddd2;padding-left:12px}
+.reserve-choice .reserve-card h3{font-size:23px;line-height:1.3;letter-spacing:-.45px;color:#172018;margin:0 0 16px;overflow-wrap:anywhere}
+.reserve-choice .reserve-summary{font-size:15px;line-height:1.75;color:#454d40;margin:0}
+.reserve-choice .reserve-reason{padding:14px 16px;margin:22px 0 0;background:#f6f8f1;border-left:3px solid #c5df59;border-radius:0 8px 8px 0;font-style:normal}
+.reserve-choice .reserve-reason>span{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#586849}
+.reserve-choice .reserve-reason p{margin:6px 0 0;font-size:13px;line-height:1.6;color:#525d47}
+.reserve-choice .reserve-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid #edf0e8;padding-top:18px;margin-top:22px}
+.reserve-choice .reserve-actions button{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;padding:11px 16px;border-radius:8px;font:700 12px/1.4 Arial;cursor:pointer;transition:background .15s,border-color .15s;box-shadow:none}
+.reserve-choice .reserve-source-button{background:white;color:#4f5947;border:1px solid #dbe0d3}
+.reserve-choice .reserve-source-button:hover{background:#f4f6ef;border-color:#b8c2ad}
+.reserve-choice .reserve-source-button svg{width:17px;height:17px;flex-shrink:0}
+.reserve-choice .reserve-select-button{background:#202a1d;color:white;border:1px solid #202a1d;margin-left:auto}
+.reserve-choice .reserve-select-button:hover{background:#39462f;border-color:#39462f}
+.reserve-choice .reserve-select-button span{font-size:17px;color:#dfff2f}
+.reserve-choice :is(button,summary):focus-visible{outline:3px solid #708b38;outline-offset:4px}
+.reserve-choice .reserve-warning{font-size:12px;line-height:1.5;color:#8b5917;background:#fff7e8;border:1px solid #eddbb9;padding:9px 12px;border-radius:6px;margin:12px 0 0}
+.reserve-choice .reserve-review{padding:16px;background:#fff7e8;color:#80561c;border:1px solid #eddbb9;border-radius:10px;font-size:14px;line-height:1.6}
+.reserve-choice .reserve-review button{border:0;background:transparent;color:inherit;text-decoration:underline;font:700 14px Arial;cursor:pointer;padding:8px}
+.reserve-choice .reserve-empty{padding:28px;border:1px dashed #c6cebd;border-radius:12px;font-size:14px;line-height:1.6;color:#65705d}
+@media(max-width:700px){.reserve-choice{margin:24px 0 90px;padding:20px 14px;border-radius:18px}.reserve-choice .reserve-title{font-size:26px}.reserve-choice .reserve-description{font-size:13px;margin-bottom:20px}.reserve-choice .reserve-card{padding:20px 16px;border-radius:12px}.reserve-choice .reserve-card h3{font-size:21px}.reserve-choice .reserve-card-top{margin-bottom:16px}.reserve-choice .reserve-actions{gap:10px}.reserve-choice .reserve-actions button{width:100%;margin-left:0}.reserve-choice .reserve-select-button{order:-1}.reserve-choice .reserve-reason{padding:12px}.reserve-choice .reserve-meta{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.reserve-choice .reserve-chevron,.reserve-choice .reserve-actions button{transition:none}}

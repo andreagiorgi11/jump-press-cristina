@@ -8,6 +8,10 @@ import {extractSourceText,renderSourcePage} from '../lib/source-pdf.js';
 import {importPdf,getImport,readImportText,createImportClip,purgeOriginals} from '../lib/source-service.js';
 import {saveDraft,publishDraft,publicClip,withdrawDraft} from '../lib/editor-service.js';
 import {newEdition} from '../lib/schema.js';
+import {claimRun,readRun,updateRun} from '../lib/automation-runs.js';
+import {Client} from '@modelcontextprotocol/sdk/client/index.js';
+import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory.js';
+import {createEditorialMcp} from '../lib/mcp-server.js';
 const url='https://rassegna.dominiocliente.it/Areas/Rassegna/Elab/CheckedDownload.aspx?nome_file=PP_RAS_1626482_20260917_16377886.pdf';
 async function fixture(){
  const doc=await PDFDocument.create(),font=await doc.embedFont(StandardFonts.Helvetica);
@@ -69,6 +73,58 @@ test('concurrent imports reserve one job and deferred calls expose progress',asy
  assert.equal(results.filter(x=>x.status==='fulfilled').length,1);assert.equal(work.length,1);
  const id=results.find(x=>x.status==='fulfilled').value.importId;assert.equal((await getImport(ctx,id)).status,'processing');
  await work[0]();assert.equal((await getImport(ctx,id)).status,'ready');
+});
+
+test('one automation can await a late PDF for an hour without spending recovery attempts or creating drafts',async()=>{
+ const ctx=await fixture(),good=ctx.downloadSource,date='2026-09-17';
+ let time=Date.parse('2026-09-17T07:28:00+02:00'),calls=0;
+ ctx.now=()=>time;
+ const job=await claimRun(ctx,{date,url,requestId:randomUUID()}),worker={...ctx,automation:job.run};
+ ctx.downloadSource=worker.downloadSource=async(...args)=>{
+  if(++calls<=30)throw Object.assign(Error('PDF non ancora disponibile'),{status:422,sourceNotReady:true});
+  return good(...args);
+ };
+ for(let n=0;n<30;n++){
+  await assert.rejects(importPdf(worker,{url,date}),e=>e.sourceNotReady===true);
+  const state=await readRun(ctx,date);
+  assert.equal(state.generation,1);assert.equal(state.attemptsRemaining,2);assert.equal(state.status,'running');
+  assert.equal(ctx.store.files['index.json'].drafts.length,0);
+  assert.equal((await claimRun(ctx,{date,url,requestId:randomUUID()})).reason,'in_progress');
+  time+=120000;
+ }
+ const ready=await importPdf(worker,{url,date});assert.equal(ready.status,'ready');assert.equal(calls,31);
+ assert.equal((await importPdf(worker,{url,date})).importId,ready.importId);assert.equal(calls,31);
+ // The cutoff concerns source discovery: an imported source remains usable after 08:30.
+ time=Date.parse('2026-09-17T08:35:00+02:00');
+ await updateRun(ctx,{run:job.run,phase:'reading',checkpoint:{importId:ready.importId}});
+ assert.match((await readImportText(worker,ready.importId,1,1)).pages[0].text,/Juventus/);
+ assert.equal((await readRun(ctx,date)).generation,1);
+ assert.equal(ctx.store.files['index.json'].drafts.length,0);
+});
+
+test('MCP deferred import exposes PDF readiness and safely retries in the same run',async()=>{
+ const ctx=await fixture(),good=ctx.downloadSource,date='2026-09-17',pending=[];let calls=0;
+ ctx.defer=fn=>pending.push(fn);
+ ctx.downloadSource=async(...args)=>{if(++calls<=4)throw Object.assign(Error('PDF non pronto'),{status:422,sourceNotReady:true});return good(...args);};
+ const server=createEditorialMcp(ctx),client=new Client({name:'readiness-test',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();
+ await server.connect(a);await client.connect(b);
+ const call=async(name,args)=>{const r=await client.callTool({name,arguments:args});assert(!r.isError);return JSON.parse(r.content[0].text);};
+ try{
+  const job=await call('claim_automation_run',{date,url,requestId:randomUUID()});
+  let finalId;
+  for(let n=0;n<5;n++){
+   const result=await call('import_source_url',{url,date,retry:false,run:job.run});
+   assert.equal(result.status,'processing');assert.equal(pending.length,1);
+   const reused=await call('import_source_url',{url,date,retry:false,run:job.run});
+   assert.equal(reused.importId,result.importId);assert.equal(pending.length,1);
+   await pending.shift()();
+   const status=await call('read_import_status',{importId:result.importId,run:job.run});
+   assert.equal(status.status,n<4?'failed':'ready');if(n<4)assert.equal(status.sourceNotReady,true);
+   assert.equal((await readRun(ctx,date)).generation,1);finalId=result.importId;
+  }
+  assert.equal((await call('import_source_url',{url,date,retry:false,run:job.run})).importId,finalId);
+  assert.equal(calls,5);assert.equal(pending.length,0);assert.equal(ctx.store.files['index.json'].drafts.length,0);
+ }finally{await client.close();await server.close();}
 });
 
 test('batch text preserves whole pages and reports exact continuation',async()=>{

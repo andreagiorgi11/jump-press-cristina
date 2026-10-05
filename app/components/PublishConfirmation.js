@@ -1,6 +1,6 @@
  'use client';
 import {useRef,useState} from 'react';
-export default function PublishConfirmation({onConfirm,disabled=false,date,version,isRevision=false,summaryStale=false}){
+export default function PublishConfirmation({onConfirm,disabled=false,date,version,isRevision=false,summaryStale=false,introStale=false}){
  const dialog=useRef(null),cancel=useRef(null),locked=useRef(false);
  const [pending,setPending]=useState(false),[error,setError]=useState(''),[tested,setTested]=useState(false);
  function open(){setError('');setTested(false);dialog.current.showModal();cancel.current?.focus();}
@@ -10,6 +10,7 @@ export default function PublishConfirmation({onConfirm,disabled=false,date,versi
  <p className="publish-dialog-label">{tested?'ANTEPRIMA LOCALE':'CONFERMA PUBBLICAZIONE'}</p>
  <h2 id="publish-title">{tested?'Prova completata':(isRevision?'Ripubblicare la rassegna corretta':'Pubblicare la rassegna')+(date?' del '+date.slice(8,10)+'/'+date.slice(5,7):'')+'?'}</h2>
  <p id="publish-description">{tested?'Nessun contenuto è stato pubblicato.':isRevision?<>La rassegna corretta sarà visibile sul sito per questa data. Controlla tutte le correzioni prima di confermare. I messaggi, PDF o testi già inviati all’esterno non vengono aggiornati né richiamati.</>:<>Diventerà visibile ai lettori della Juventus.</>}</p>
+ {!tested&&introStale&&<p className="publish-dialog-error" role="note">Attenzione: il cappello non è stato ricontrollato dopo il cambio della selezione. Verrà pubblicato così com’è.</p>}
  {!tested&&summaryStale&&<p className="publish-dialog-error" role="note">Attenzione: il Summary non è stato ricontrollato dopo le ultime modifiche alla rassegna. Verrà pubblicato così com’è.</p>}
  {error&&<p className="publish-dialog-error" role="alert">{error}</p>}
  <div className="publish-dialog-actions"><button ref={cancel} type="button" className="publish-cancel" disabled={pending} onClick={()=>dialog.current.close()}>{tested?'Chiudi':'Annulla'}</button>{!tested&&<button type="button" className="publish-approve" disabled={pending} onClick={approve}>{pending?'Pubblicazione…':'Conferma e pubblica'}</button>}</div>

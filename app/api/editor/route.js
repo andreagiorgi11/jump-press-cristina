@@ -7,6 +7,8 @@ export const maxDuration=300;
 const id=z.string().uuid();
 export async function GET(request){try{
  const {db,role}=await requireEditor(request);
+ const publicationId=new URL(request.url).searchParams.get('publication');
+ if(publicationId)return Response.json(await service.getPublicationState(db,id.parse(publicationId)),{headers:{'Cache-Control':'private, no-store'}});
  if(new URL(request.url).searchParams.get('view')==='trash')return Response.json({drafts:await service.listTrash(db)},{headers:{'Cache-Control':'private, no-store'}});
  const draftId=new URL(request.url).searchParams.get('id'),openId=new URL(request.url).searchParams.get('open');
  // Editor start-up in one round trip: draft list and the draft to open (a given id, or the latest).
@@ -23,7 +25,7 @@ export async function POST(request){try{
  case 'withdraw':result=await service.withdrawDraft(db,id.parse(x.id),z.number().int().positive().parse(x.version),z.literal('RITIRA_E_MODIFICA').parse(x.confirmation));break;
  case 'delete':result=await service.deleteDraft(db,id.parse(x.id),z.number().int().positive().parse(x.version));break;
  case 'recover':result=await service.recoverDraft(db,id.parse(x.id),z.number().int().positive().parse(x.version));break;
- case 'save':result=await service.saveDraft(db,id.parse(x.id),z.number().int().nonnegative().parse(x.version),x.body,{summaryConfirmed:x.summaryConfirmed===true});break;
+ case 'save':result=await service.saveDraft(db,id.parse(x.id),z.number().int().nonnegative().parse(x.version),x.body,{summaryConfirmed:x.summaryConfirmed===true,introConfirmed:x.introConfirmed===true});break;
  case 'publish':result=await service.publishDraft(db,id.parse(x.id),z.number().int().positive().parse(x.version),z.literal('PUBBLICA').parse(x.confirmation));break;
  case 'restore':result=await service.restoreDraft(db,id.parse(x.id),z.number().int().positive().parse(x.version),z.number().int().positive().parse(x.revision));break;
  case 'upload':result=await service.registerSource(db,id.parse(draftId),z.string().min(1).max(200).parse(x.name));break;

@@ -311,3 +311,22 @@
 .article-source-preview button{padding:7px 10px;border:1px solid #cbd0d5;border-radius:7px;background:#fff;cursor:pointer;min-height:36px;color:#222}
 .article-source-preview button:disabled{opacity:.4;cursor:default}
 .article-source-status{padding:18px;color:#9b2230;font-size:14px;line-height:1.5}
+.article-source-switch{display:flex;gap:4px;flex-shrink:0}
+.article-source-switch button{font-size:12px;background:transparent;color:#fff;border-color:#747981}
+.article-source-switch button[aria-pressed="true"]{background:#d7ff00;border-color:#d7ff00;color:#171919}
+.article-source-preview>header{flex-wrap:wrap}
+@media(max-width:1099px){.article-source-preview{height:70dvh;min-height:380px;border-left:0;border-top:1px solid #d6d9dc}.article-source-preview>header{padding:14px}.article-source-preview>nav{gap:6px}}
+
+.article-source-preview .pdf-page-input{width:64px;min-width:0;padding:6px;border:1px solid #ccd1d8;border-radius:6px;background:#fff;color:#17212d;text-align:center;font:inherit}
+.article-source-preview nav{flex-wrap:wrap;gap:8px}
+.reserve-edit-dialog .reserve-dialog-footer{position:sticky;bottom:0;z-index:4;min-width:0;margin:0;padding:0;border:0;background:#fff}
+.reserve-edit-dialog .reserve-dialog-footer .section-edit-actions{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:16px 24px;box-shadow:0 -4px 18px #20241808}
+.reserve-edit-dialog .section-edit-actions button.reserve-save-only{background:#fff;border:1px solid #cbd2c2;color:#35422c}
+.reserve-edit-dialog .section-edit-actions button.reserve-save-add{display:inline-flex;align-items:center;justify-content:center;gap:14px;background:#d7ff00;border:1px solid #c9e725;color:#202a12;font-weight:700}
+.reserve-edit-dialog .reserve-save-add span{font-size:18px}
+.reserve-edit-dialog .section-edit-actions button:disabled{opacity:.45;cursor:not-allowed}
+.reserve-edit-dialog .reserve-selection{padding:18px;margin:20px 0 12px;background:#f5f7ef;border:1px solid #e1e6d6;border-radius:10px}
+.reserve-edit-dialog .reserve-selection label{margin-top:0}
+.reserve-edit-dialog .reserve-selection p{margin-bottom:0;color:#68725e;line-height:1.5;font-size:12px}
+@media(min-width:1100px){.article-edit-split.reserve-edit-dialog[open]{grid-template-rows:minmax(0,1fr) auto}.reserve-edit-dialog .reserve-dialog-footer{grid-column:1 / -1}.reserve-edit-dialog>form{min-height:0}}
+@media(max-width:700px){.reserve-edit-dialog .reserve-dialog-footer .section-edit-actions{padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px}.reserve-edit-dialog .section-edit-actions button{width:100%;min-width:0;margin:0}.reserve-edit-dialog .reserve-selection{padding:14px}}

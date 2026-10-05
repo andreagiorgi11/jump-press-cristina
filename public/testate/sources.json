@@ -20,5 +20,6 @@
   "standard": "https://commons.wikimedia.org/wiki/File:DER_STANDARD_LOGO_schwarz.svg",
   "faz": "https://commons.wikimedia.org/wiki/File:Frankfurter_Allgemeine_Logo_2019.svg",
   "corriere-sera-pdf": "public/testate/corriere-sera.svg (PNG per il PDF)",
-  "giornale-pdf": "public/testate/giornale.svg (PNG per il PDF)"
+  "giornale-pdf": "public/testate/giornale.svg (PNG per il PDF)",
+  "sport": "https://commons.wikimedia.org/wiki/File:Logo_Sport.svg"
 }

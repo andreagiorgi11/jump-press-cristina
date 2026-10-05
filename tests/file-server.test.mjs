@@ -21,6 +21,7 @@ async function withServer(fn){
 
 test('file server stores privately, cuts only requested pages and serves signed links',async()=>{
  await withServer(async base=>{
+  assert.equal((await fetch(base+'/notify-source',{method:'POST',body:'{}'})).status,401);
   const {blobs,usesFileServer,readSourcePages}=await import('../lib/blob-store.js');assert(usesFileServer());
   const id=randomUUID(),original='jump/imports/'+id+'/original.pdf',source=await samplePdf(12);
   await blobs.writeOriginal(original,source);
@@ -43,10 +44,29 @@ test('file server stores privately, cuts only requested pages and serves signed 
   assert.equal((await fetch(link.replace(/exp=\d+/,'exp='+(Date.now()-1000)))).status,403);
   assert.notEqual((await fetch(base+'/s/../../etc/passwd?exp=9999999999999&sig=x')).status,200);
   assert.equal((await fetch(base+'/s/jump/..%2F..%2Fetc%2Fpasswd?exp=9999999999999&sig=x')).status,400);
+  // Large originals support byte seeking, including suffix/open-ended ranges, without weakening signatures.
+  const originalLink=await blobs.link(original,60);
+  for(const [range,start,end] of [['bytes=0-63',0,63],['bytes=100-',100,source.length-1],['bytes=-32',source.length-32,source.length-1],['bytes=0-999999',0,source.length-1]]){
+   const part=await fetch(originalLink,{headers:{Range:range}});assert.equal(part.status,206);
+   assert.equal(part.headers.get('content-range'),`bytes ${start}-${end}/${source.length}`);
+   assert.equal(Number(part.headers.get('content-length')),end-start+1);
+   assert.equal(part.headers.get('accept-ranges'),'bytes');
+   assert.match(part.headers.get('access-control-expose-headers'),/Content-Range/);
+   assert.deepEqual(new Uint8Array(await part.arrayBuffer()),source.slice(start,end+1));
+  }
+  for(const range of ['bytes=999999-','bytes=50-10','bytes=-0']){
+   const part=await fetch(originalLink,{headers:{Range:range}});assert.equal(part.status,416);assert.equal(part.headers.get('content-range'),'bytes */'+source.length);assert.equal((await part.arrayBuffer()).byteLength,0);
+  }
+  for(const range of ['bytes=0-1,4-5','bad=0-10','bytes=wat'])assert.equal((await fetch(originalLink,{headers:{Range:range}})).status,200);
+  const head=await fetch(originalLink,{method:'HEAD',headers:{Range:'bytes=0-63'}});assert.equal(head.status,200);assert.equal(Number(head.headers.get('content-length')),source.length);assert.equal((await head.arrayBuffer()).byteLength,0);
+  assert.equal((await fetch(originalLink.replace(/exp=\d+/,'exp='+(Date.now()-1000)),{headers:{Range:'bytes=0-63'}})).status,403);
+  assert.equal((await fetch(base+'/o/'+original,{headers:{Range:'bytes=0-63'}})).status,401);
+  assert.equal((await fetch(originalLink.replace(original,dest),{method:'HEAD'})).status,403);
+  const preflight=await fetch(originalLink,{method:'OPTIONS'});assert.match(preflight.headers.get('access-control-allow-headers'),/Range/);
   // Signed client uploads accept only a PDF within the limit, once.
   const upload=await blobs.uploadLink('jump/'+randomUUID()+'/upload.pdf');
   assert.equal((await fetch(upload,{method:'PUT',body:'not a pdf'})).status,400);
-  assert.equal((await fetch(upload,{method:'PUT',body:await samplePdf(1)})).status,200);
+  const uploaded=await fetch(upload,{method:'PUT',body:await samplePdf(1)});assert.equal(uploaded.status,200);assert.equal(uploaded.headers.get('access-control-allow-origin'),'*');
   assert.equal((await fetch(upload,{method:'PUT',body:await samplePdf(1)})).status,409);
   // Inventory for the storage indicator; deleting the original keeps the clip.
   const listed=(await blobs.list()).blobs.map(b=>b.pathname);assert(listed.includes(original)&&listed.includes(dest));

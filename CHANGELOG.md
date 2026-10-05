@@ -1,3 +1,31 @@
+## 2026-10-02 — Fonte manuale via MCP interattivo
+
+Caricamento manuale attraverso il collegamento autenticato esistente: stessi controlli di data, ruolo e duplicati del popup; preparazione privata, estrazione e invio SMTP separati. Nessuna pubblicazione.
+
+## 2026-10-02 — Popup rassegna manuale e sidebar
+
+Rassegna manuale dalla sidebar con più PDF, riordino e Invia rassegna. Tutti gli strumenti restano visibili, Anteprima lettore rimossa, spazi redazione compatti. Sidebar disponibile anche prima della prima bozza. Sezioni fino a 1000, entro limiti di pagine e dimensioni; verificati 219 test isolati.
+
+## 2026-10-02 — Fonte manuale e notifiche SMTP
+
+Upload privato sezioni, fonte unita per MCP, recupero dopo importazione Ecostampa fallita e notifica tramite SMTP Aruba esistente. Nessun Resend. Protezione duplicati e nessuna pubblicazione automatica. Checklist di passaggio al cliente nel README. Rilasciato sul dominio operativo: dpl_3pjcyCyh5dUMzPPdW7aWLV5PQop9, da snapshot verificato della precedente produzione (nessuna altra modifica locale inclusa). 218 test isolati, build Press/News e verifiche mirate successivi superati; SMTP TLS/autenticazione verificati senza inviare email. Trigger manuale attivo, filtri verificati nell’interfaccia e schema importId confermato dopo aggiornamento catalogo. Nessuna fonte manuale o bozza di prova scritta in produzione.
+
+## 2026-10-01 — Persone di interesse in popup (locale)
+
+Successivamente approvato e rilasciato online: `dpl_HTQN5vVPaj2jDXc6nFmJ64sUPW4s`. Popup verificato dalla sidebar sul dominio di produzione, 4 giornalisti e 18 persone/organizzazioni caricati; nessun errore browser. Nessun salvataggio di dati di prova in produzione.
+
+Dialogo dalla sidebar con due schede, ricerca per nome/ruolo, iniziali, righe modificabili e comandi fissi in basso. Chiusura da tastiera, ripristino del focus e conferma prima di scartare modifiche. Stessi contenuti e API; nessun deploy o modifica MCP. Il vecchio indirizzo apre lo stesso popup.
+
+## 2026-09-29 — registrazione server dell'automatismo (locale, non distribuita)
+
+Cronologia MCP e operazioni server, letture e immagini ripetute, tempi e attività in background, senza nuovi passaggi GPT. Archivio privato separato dai commit delle bozze e pagina autenticata `/editor/attivita` con esportazione JSON. Errori della misura non bloccanti; la pagina conserva l'ultimo report valido. Nessun testo o immagine nei registri, nessuna equivalenza fra caratteri e crediti. Documentazione in `docs/activity-observation.md`.
+
+## 2026-09-29 — ricevuta compatta e verifica del salvataggio MCP (Codex, locale)
+
+`save_draft` restituisce conteggi, versione finale, avvisi e verifica server del body riletto, senza ripetere articoli e storico. La verifica comprende riserve e Summary dopo le trasformazioni già previste. Errori di lettura, differenze e versioni concorrenti non sono successi e non causano un secondo salvataggio automatico. Revisione editoriale e risposta del sito invariate. Nessuna modifica ai dati o alle istruzioni online.
+
+Verifica: 59 test pertinenti superati, incluso trasporto MCP, errore di lettura intenzionale e confronto alterato. Nel test da 27 articoli la risposta è inferiore al 10% del testo inviato; non è una misura dei crediti risparmiati. Ripristino: ricollegare il solo handler MCP `save_draft` a `service.saveDraft` e rimuovere la relativa descrizione della ricevuta; nessuna migrazione dati richiesta. Non distribuito in produzione.
+
 ## 2026-09-25 — Nazionale e rimozione articoli dalla redazione
 
 Categoria Nazionale accettata in bozze e MCP, con sezione autonoma da quattro articoli nel sito e nei PDF; fino a tre articoli confluisce in Altri temi. Il Summary conserva cinque aree e include la Nazionale in Altri temi. L’editor può eliminare un singolo articolo dopo conferma, salvando la revisione.
@@ -176,3 +204,12 @@ Interfaccia editor e archivio, correzioni per sezione, anteprima lettore, catego
 - Barrette rimosse da Approvazione e PDF. Nessuna pubblicazione automatica.
 - Rollback codice: deployment precedente dpl_4jCCMptniAn68vjcUNYM8jckaV2r; ripristinare anche istruzioni Summary v20 conservate nello storico. I nuovi campi devono essere conservati nei dati; il vecchio schema non li accetta in salvataggio, quindi evitare scritture da client vecchi senza migrazione compatibile.
 - Bozza del 22 v8 archiviata in modo recuperabile prima del nuovo collaudo. Originale e ritagli conservati; test automatico completo ancora da eseguire.
+
+
+## 2026-09-28 — Seconda scelta privata
+- Selezione principale invariata; aggiunta `reserveArticles` privata con sintesi, motivazione, verifiche e ritagli pronti.
+- Editor: menu Seconda scelta, revisione, aggiunta, scambio e spostamento; avvisi per cappello e Summary dopo cambio selezione.
+- Snapshot pubblici, PDF e accesso pubblico ai ritagli escludono le riserve. Salvataggi precedenti conservano il campo omesso; conflitti versionati e ripristino esplicito.
+- 190 test superati (5 nuovi su riserve/privacy/scambio/concorrenza), build press e news riuscite. Verifica browser online della sezione, comandi e assenza nell’anteprima lettore, senza modificare bozze reali. Verifica mobile a 390 px riuscita: menu, accesso alla seconda scelta e sezione leggibile senza scorrimento orizzontale.
+- Produzione READY: dpl_G7AUJnBE5jHpc3NcCBYuUPSexAMZ, https://jump-press-approvazione.vercel.app. Istruzioni v37 salvate e rilette, v36 nello storico. Aggiornare il catalogo del collegamento ChatGPT per i nuovi campi.
+- Backup mirato dei file precedenti e patch incrementale nella cartella di lavoro Codex della sessione; nessuna migrazione dei dati esistenti. Rollback sicuro descritto nel README: conservare il supporto ai campi privati già salvati.

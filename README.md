@@ -1,5 +1,25 @@
 # Jump Press — GitHub e Vercel
 
+## Persone di interesse — popup locale del 1 ottobre 2026
+
+
+
+Rilasciato il 1 ottobre 2026 su `jump-press-approvazione.vercel.app`: deployment `dpl_HTQN5vVPaj2jDXc6nFmJ64sUPW4s`, basato su `dpl_CEN8sFML6fuwn1mPBsWAgUzsxX39`. Verificati 204 test, build Press/News, apertura dalla sidebar online e caricamento di 4 giornalisti e 18 soggetti. Il rilascio include solo i tre componenti aggiornati e i due nuovi file del popup; MCP e dati invariati. La frase seguente sullo stato locale descrive la prima fase di approvazione.
+
+
+
+La voce nella sidebar apre un dialogo sopra la rassegna, senza cambiare pagina. Due schede separano giornalisti e persone/organizzazioni; la ricerca filtra nomi e ruoli. Si possono modificare, aggiungere e rimuovere voci; il footer resta visibile durante lo scorrimento. Escape, chiusura e ricaricamento proteggono le modifiche non salvate; conflitti ed errori conservano i dati e le modifiche. Il percorso `/editor/persone` rimane accessibile e apre lo stesso popup. API, permessi, archivio e strumenti MCP invariati. Modifica solo locale, senza rilascio online; il server locale usa i dati reali.
+
+
+
+## Registro attività — implementazione del 29 settembre 2026
+
+
+
+La misura server dell'automatismo e la pagina privata `/editor/attivita` sono descritte in [docs/activity-observation.md](docs/activity-observation.md). Non aggiungono strumenti o passaggi GPT. I registri privati distinguono richieste, lavoro in background e intervalli non osservabili; non sono una misura dei crediti. Per raccogliere dati serve il rilascio del codice: il collaudo locale non attiva la produzione.
+
+
+
 Il progetto usa GitHub privato per i contenuti JSON, Vercel per il sito e Hetzner per l’archivio PDF. Non richiede Supabase, SQL o un provider separato per gli account.
 
 ## Stato corrente — 25 settembre 2026
@@ -84,6 +104,12 @@ Gli access token durano un'ora; i refresh token ruotano a ogni uso, entro 30 gio
 Il client deve supportare registrazione dinamica di client pubblici con PKCE. Se il particolare account/client non la supporta, il collaudo lo deve rilevare: non è stato provato con le credenziali di Cristina.
 
 ## Flusso editoriale
+
+### Ricevuta MCP del salvataggio — 29 settembre 2026
+
+`save_draft` restituisce una ricevuta compatta (id, versione finale, conteggi, avvisi, URL editor e `verification`) invece della bozza completa. Il server rilegge la bozza da un nuovo snapshot Git dopo il salvataggio e la preparazione dei ritagli. `verification.status=verified` certifica esclusivamente l'uguaglianza del body persistito con quello effettivo prodotto dal salvataggio: include articoli, riserve, cappello e Summary dopo default, campi ereditati e pulizia già prevista. Non certifica l'accuratezza editoriale e non verifica nuovamente i byte dei PDF. Non vengono normalizzati i dati riletti per nascondere differenze.
+
+Una versione diversa/cancellata produce `version_conflict`; dati assenti, invalidi, differenti o non leggibili producono rispettivamente `missing`, `invalid`, `mismatch`, `unavailable`. Il salvataggio già riuscito non viene ritentato: `saved=true` indica la risposta positiva della scrittura, mentre l'esito della rilettura resta separato. Se non verificato, `warnings=null` non equivale a zero avvisi: usare `read_draft` prima di altre modifiche. Le differenze riportano solo percorsi di campo, massimo 100, senza duplicare testi privati. La versione è verificata al momento dello snapshot, non bloccata contro future modifiche. Il sito continua a ricevere la bozza completa e `read_draft` rimane disponibile. Test: `node --test tests/save-verification.test.mjs tests/mcp.test.mjs tests/automatic-clips.test.mjs tests/automation-runs.test.mjs tests/summary-workflow.test.mjs`.
 
 Nel layout Approvazione, aprire la home con una sessione web valida di editor/publisher reindirizza sul server a `/editor`, prima di leggere la rassegna pubblica. Una sessione assente, scaduta o revocata lascia la home pubblica; un errore di configurazione non viene mascherato da logout. L'Anteprima lettore resta dentro l'editor e non attraversa la home. Le edizioni storiche `/edizioni/data` restano consultabili: per gli editor collegati REDAZIONE contiene Apri editor e Istruzioni, mentre i comandi di pubblicazione compaiono soltanto nella bozza aperta. Esci resta nel fondo della barra; i lettori anonimi vedono Accesso editor.
 
@@ -347,3 +373,63 @@ La Copertura odierna mostra agli editor l’inventario del Blob privato (tutte l
 Finestra di caricamento con foglio stabile, zoom nascosto durante attesa/errore e sfondo meno sfocato. Lettore preparato in anticipo; precaricamento su intenzione (hover/focus di 180 ms) anche per i ritagli privati. Cache soltanto in memoria, cinque minuti, massimo sei PDF da 8 MB; accesso privato ricontrollato a ogni apertura. Nessuna modifica a dati o automatismi. Verifica: apertura/chiusura, zoom e riapertura da editor con normale sessione; stato di attesa su rete lenta. Modifiche locali, non distribuite.
 
 L'apertura della bozza prepara link firmati di cinque minuti solo per i ritagli referenziati della bozza autorizzata. Ogni apertura ricontrolla la sessione; i link prossimi alla scadenza vengono rinnovati tramite il percorso autorizzato esistente. Cambio bozza/versione e uscita invalidano la cache del lettore. Due ritagli vicini alla vista possono essere precaricati (esclusi risparmio dati/2G); massimo due richieste speculative contemporanee, interrotte dopo otto secondi. Il clic attende al massimo 120 ms un precaricamento in corso, poi usa il caricamento progressivo PDF.js. Le pagine successive vengono renderizzate avvicinandosi alla vista, senza ricompressione dei PDF. I link firmati già emessi mantengono la loro validità residua, come prima.
+
+
+## Istruzioni fisse e preferenze della redazione
+
+Le istruzioni di base sono di sola lettura per producer, editor e publisher, anche tramite MCP. Il vecchio strumento `save_editorial_instructions` non è più esposto; il servizio e POST `/api/editor/instructions` rifiutano i vecchi client con 403. La manutenzione delle regole di base rimane amministrativa nel repository privato dei contenuti, con revisione e storico.
+
+La pagina `/editor/istruzioni` e il menu Istruzioni e preferenze separano le regole dal testo modificabile della redazione. Editor e publisher possono salvare preferenze permanenti; producer e richieste con contesto automation non possono. Salvataggi con versione corrente, conferma esplicita e storico immutabile per revisione; il testo vuoto disattiva le preferenze mantenendo lo storico. Preferenze e storico sono in `settings/summary-editorial-preferences.json` / `settings/summary-editorial-preferences-history/` per Summary e nei corrispondenti percorsi senza `summary-` per il profilo precedente. L’assenza del file indica nessuna preferenza; errori e file corrotti interrompono la lettura, non diventano preferenze vuote.
+
+`read_editorial_instructions` conserva il campo `text` completo per i client esistenti e aggiunge `baseText`, `preferences` e `preferencePolicy`. GPT riceve così sempre entrambi i livelli. `read_editorial_preferences` e `save_editorial_preferences` sono i nuovi strumenti; dopo il deploy aggiornare il catalogo del connettore ChatGPT e verificare la rimozione del vecchio strumento e la presenza dei nuovi. Non occorrono nuovi permessi OAuth. Il token SALVA_PREFERENZE è una precondizione tecnica: il server non può attestare da solo una conferma umana avvenuta in chat. Le istruzioni impongono a GPT di proporre il testo e attendere la conferma per le prossime rassegne; le correzioni occasionali restano nella bozza.
+
+Gli automatismi leggono le preferenze ma non devono modificarle. Il controllo con `run` è applicato anche dal server. Come per la pubblicazione, un collegamento interattivo publisher deve rispettare il protocollo `run` quando usato in un’attività programmata.
+
+Verifica: test isolati dei permessi, conferma, conflitti, letture fallite, separazione dei profili e catalogo MCP. Non salvare preferenze dimostrative nel locale collegato ai dati reali. Nessuna migrazione automatica delle regole editoriali esistenti: le nuove preferenze sono archiviate separatamente.
+
+### PDF originale completo riservato alla redazione — 28 settembre 2026
+Nel menu Redazione della rassegna in editor, PDF originale completo apre in una nuova scheda l’originale dell’importazione associata. Il server richiede una sessione editor/publisher, risolve il documento dalla bozza e genera un collegamento privato di cinque minuti. Nessun percorso di archivio è accettato dal browser; niente originale nello snapshot pubblico. Gli originali eliminati restituiscono un messaggio esplicito (410), gli errori del servizio restano distinti dall’assenza. Conservazione invariata: soglia di 24 ore dalla prima pubblicazione, pulizia alla successiva lettura autenticata prevista; originali delle bozze conservati. Test isolati per ruoli, scadenza, assenza, cestino e guasti.
+Il pannello PDF in Modifica articolo offre Ritaglio / PDF completo. L’originale si apre alla prima pagina PDF associata all’articolo; il cambio documento non modifica lo stato del modulo. Su schermi stretti il pannello è sotto i campi. La lettura usa lo stesso accesso editor privato; una fonte eliminata viene segnalata senza impedire le correzioni o il ritorno al ritaglio. Rendering delle sole pagine vicine alla vista per evitare di disegnare tutto il documento.
+
+
+### Seconda scelta privata — 28 settembre 2026
+La selezione principale e i suoi criteri rimangono invariati. `body.reserveArticles` conserva articoli aggiuntivi (normalmente 5–8, fino a 10 se utili, nessuna quota obbligatoria) con le stesse sintesi, firme, fonti, verifiche e ritagli e un `reserveReason` facoltativo. Le liste condividono ID unici. Un campo omesso conserva le riserve precedenti; `[]` le svuota. Le revisioni storiche restano compatibili.
+L’editor mostra Seconda scelta solo alla redazione, fuori dall’anteprima lettore: si possono correggere, aggiungere o scambiare articoli, oppure spostare un principale in riserva. Lo scambio conserva entrambi i pezzi e i loro ritagli. I conteggi, grafici, esportazioni e snapshot pubblici usano soltanto `articles`; i ritagli delle riserve non diventano pubblici. Un originale eliminato non impedisce di riutilizzare i ritagli già preparati.
+Il cambio di selezione segnala `introStale` (server) e il normale Summary da ricontrollare. Si può correggere il cappello o confermarlo dopo revisione (`introConfirmed`); una modifica alla sola riserva non invalida il quadro principale. Le scritture restano versionate e atomiche; i conflitti conservano il lavoro nella finestra. Nessuna migrazione o riscrittura delle rassegne esistenti.
+Ordine di rilascio: prima il codice, poi il blocco Seconda scelta nelle istruzioni online con storico/versione. Aggiornare il catalogo MCP del collegamento ChatGPT per far conoscere `reserveArticles` e `introConfirmed`. Per rollback con dati di riserva già presenti conservare il codice compatibile (non tornare a un server che rifiuta/scarta questi campi); disattivare la generazione nelle istruzioni, lasciando gli articoli privati conservati.
+
+
+## Recupero con fonte manuale e invio SMTP
+
+Quando manca il PDF principale, Redazione → Carica fonte manuale (`/editor/fonte-manuale`): scegli data e sezioni nell'ordine desiderato, poi Carica e avvia rassegna. Il sito carica i documenti privati, li unisce senza cambiare l'ordine, estrae il testo e conserva l'importId per MCP. Massimo 1000 PDF, entro 1000 pagine, 50 MB ciascuno, 200 MB complessivi e 1000 pagine. I PDF devono contenere testo estraibile. Nessuna bozza viene inventata se l'estrazione fallisce. Non si sostituisce una rassegna esistente o una giornata ancora in lavorazione. Le mail Ecostampa delle 08:30 di integrazione sono escluse: non sono una fonte principale alternativa.
+
+La notifica parte dal servizio jump-press-files su Hetzner tramite l'SMTP Aruba già usato da AG Studio: `info@andreagiorgistudio.it` → `cristina@jumpmedia.it`, oggetto `[Jump Press] Fonte manuale pronta — YYYY-MM-DD`. Non serve Resend. Nel server `.env` configurare CONTACT_SMTP_HOST/PORT/USER/PASS e JUMP_MAIL_FROM/TO; credenziali mai nel browser, Git o documenti. Porta TLS 465/587. Il sito Vercel usa solamente l'accesso privato JUMP_FILES_URL/SECRET già configurato. `/notify-source` è autenticato e accetta solo data/importId: destinatario, testo e oggetto sono fissi sul server. Niente allegati o link firmati nella mail.
+
+Accettazione SMTP non equivale a consegna Gmail o avvio GPT. Le ricevute private `.notifications/<importId>.json` impediscono doppi invii; dopo un errore incerto durante DATA non ripetere alla cieca: verificare la casella destinataria prima della risoluzione amministrativa. Un rifiuto certo permette di riprovare, conservando destinatario originale. Dopo risposta persa, Ricontrolla e ripetere la notifica: una ricevuta sent viene riusata. I PDF restano disponibili anche senza email. Per riprendere upload incompleti selezionare gli stessi documenti e ordine; file già trasferiti non sono sovrascritti. Dopo la normale scadenza degli originali pubblicati vengono eliminate anche le sezioni caricate.
+
+Il nuovo automatismo Gmail è dedicato al mittente e all'oggetto sopra. Deve verificare read_import_status ready/data, poi claim_automation_run(date, importId, requestId), senza url né import_source_url. Aggiornare il catalogo MCP prima di abilitarlo; istruzioni e preferenze sono lette normalmente, limitando l'eccezione alla scelta della fonte. Un lavoro Ecostampa fallito nella sola importazione può passare alla fonte manuale, conservando lo storico e bloccando vecchi worker. Un lavoro occupato, completo o con bozza esistente non genera duplicati. Nessuna pubblicazione automatica. L'orario limite 08:30 del flusso principale non vale per questo recupero avviato dalla redazione.
+
+### Passaggio al dominio e all'infrastruttura del cliente
+
+| Elemento | Ora | Da fare al passaggio |
+|---|---|---|
+| Sito e account hosting | progetto Vercel jump-press-approvazione, account AG Studio | Trasferire/ricreare il progetto, collegare dominio e certificato del cliente, verificare ambienti |
+| Origine sito, login e OAuth | JUMP_SITE_URL, origini/callback/client registrati nel repository privato | Aggiornare URL, redirect e cookie; ricollegare MCP ChatGPT con soli permessi necessari |
+| Archivio PDF | jpfiles.agprojects.dev, /opt/jump-press-files/data | Migrare dati privati inclusi text.json, originali, sezioni, ritagli e ricevute; nuovo DNS/TLS, servizio, backup e spazio; aggiornare JUMP_FILES_URL |
+| Accesso file server | JUMP_FILES_SECRET / FILES_SECRET | Generare chiave del cliente su entrambi i servizi, senza inserirla nei documenti; verificare firme e protezione originali |
+| Archivio contenuti | GitHub privato e JUMP_GITHUB_* | Trasferire dati/storico/permessi, usare account e token cliente, aggiornare owner/repo/branch; non confondere repository codice e dati |
+| Mittente SMTP | Aruba, info@andreagiorgistudio.it | Sostituire CONTACT_SMTP_HOST/PORT/USER/PASS e JUMP_MAIL_FROM con casella autorizzata cliente; verificare TLS, autenticazione e SPF/DKIM/DMARC secondo provider |
+| Destinatario e Gmail | cristina@jumpmedia.it | Impostare JUMP_MAIL_TO, collegare la Gmail operativa cliente e aggiornare filtro mittente automatismo; ricreare trigger sul loro account |
+| Automazioni GPT | principale Ecostampa + dedicata fonte manuale | Trasferire prompt, collegamento Approvazione, fuso Europe/Rome, filtri e limiti; mantenere esclusione integrazione08:30 e divieto pubblicazione |
+| Utenti, sessioni, alert | JUMP_EDITOR_USERS, JUMP_SESSION_SECRET, destinatari monitoraggio AG Studio | Creare utenti cliente, ruotare segreti/sessioni, aggiornare alert e responsabilità supporto |
+| Identità ed editorialità | marchi, preferenze, persone, regole | Verificare intestazioni, loghi, contatti, privacy e istruzioni concordate; non sovrascrivere lo storico |
+
+Ordine: backup verificato → predisporre nuova infrastruttura senza spegnere l'attuale → migrare archivi senza rendere pubblici gli originali → configurare dominio/SMTP/MCP/Gmail → prova autorizzata con fonte reale e sola bozza → verifica revisione/pubblicazione esplicita → cambiare DNS → disabilitare vecchi trigger evitando esecuzioni parallele → revocare accessi AG Studio quando il cliente conferma. Non trasferire credenziali riutilizzate da altri siti: usare nuove credenziali del cliente. Le ricevute già inviate conservano il destinatario originale; usare nuovi importId per nuove rassegne.
+
+Incidente: verificare ultimo stato valido e integrità JSON/PDF; distinguere Ecostampa, GitHub, file server, SMTP, Gmail e GPT; conservare upload e bozze; retry limitati per rifiuti certi; recupero reversibile dal backup; confermare lettura reale/SMTP e avvio nel registro; aprire ticket al provider responsabile. Rollback del codice: sospendere prima il trigger manuale, conservare pointer e PDF; non riattivare Ecostampa sulla stessa data senza revisione amministrativa. Backup server del 02/10 prima del rilascio disponibile, credenziali escluse dai deliverable.
+
+Rilascio 02/10/2026: produzione `dpl_3pjcyCyh5dUMzPPdW7aWLV5PQop9`; SMTP TLS/autenticazione verificati; 218 test isolati e build Press/News superati. Trigger «Jump Press — recupero manuale» `6abf626d23308191b7e082dc9c8aae2b` ATTIVO, filtri verificati nell’interfaccia; catalogo MCP aggiornato e schema importId confermato in nuova chat. Attivazione via Riprendi dopo errore del tool pianificatore. Nessuna notifica reale o fonte di prova inviata; consegna Gmail e avvio GPT da confermare sul primo caricamento reale.
+
+La voce Rassegna manuale nella sidebar apre un popup: selezione multipla incrementale, riordino e rimozione prima dell’invio, pulsante Invia rassegna. Gli altri strumenti restano visibili; Anteprima lettore è rimossa dalla redazione in layout approvazione. Il popup conserva le selezioni mentre è chiuso e impedisce la chiusura durante l’invio. Nessuna scrittura o mail prima di Invia rassegna.
+
+Caricamento manuale tramite MCP interattivo: prepare_manual_source autorizza sezioni private; PUT autenticato dei PDF, finalize_manual_source e read_manual_source, quindi notify_manual_source con INVIA_RASSEGNA su richiesta esplicita. Usa gli stessi controlli del popup e non richiede permessi file locali dell’estensione Chrome. Nessuna nuova credenziale o modifica delle autorizzazioni OAuth. I tool di scrittura sono esclusi per producer e vietati durante un run automatico. Non mostrare né conservare URL firmati nella chat o nei documenti.

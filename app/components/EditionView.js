@@ -3,6 +3,7 @@ import DraftChecks from './DraftChecks';
 import ArticleChecks from './ArticleChecks';
 import {Fragment} from 'react';
 import {orderedArticles} from '../../lib/editorial-topics';
+import {orderedSectionArticles} from '../../lib/summary-sections';
 import ReadingNavigation from './ReadingNavigation';
 import SectionLabel from './SectionLabel';
 import EditionRefresh from './EditionRefresh';
@@ -12,7 +13,7 @@ import BackToTop from './BackToTop';
 import OutletWordmark from './OutletWordmark';
 import EditionAnalysis from './EditionAnalysis';
 export default function EditionView({body,preview=false,onClip,privateClips=false,editorStatus=false,onEdit,categoryOrder,compactAnalysis=false,brandLogo,hideBrand=false}){
- body={...body,articles:categoryOrder?[...body.articles].sort((a,b)=>categoryOrder.indexOf(a.category)-categoryOrder.indexOf(b.category)):orderedArticles(body.articles)};
+ body={...body,articles:categoryOrder?orderedSectionArticles(body.articles,categoryOrder):orderedArticles(body.articles)};
  const date=new Intl.DateTimeFormat('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(body.date+'T12:00:00Z')).toUpperCase();
  const categories=[...new Set(body.articles.map(a=>a.category).filter(Boolean))];
  return <div className="edition-view"><BackToTop/><ReadingNavigation articles={body.articles}/><header><div className="top">{!hideBrand&&<a className="brand" href="/">{brandLogo?<span className="jump-brand-lockup"><img className="jump-brand-logo" src={brandLogo} alt="Jump" width="90" height="49"/><span className="jump-brand-descriptor">PRESS</span></span>:<><i>JUMP</i> PRESS</>}</a>}<div className="edition">JUVENTUS · DAILY MEDIA INTELLIGENCE</div></div><div className="edition-date-line"><small>{date}</small><EditionPicker currentDate={body.date}/>{editorStatus&&<EditionRefresh/>}</div>{editorStatus&&<div className={`edition-status ${preview?'is-draft':'is-published'}`}><strong>{preview?'Bozza da verificare':'Pubblicata'}</strong><span>{preview?'Questa versione non è ancora visibile ai lettori.':'Questa versione è visibile ai lettori.'}</span></div>}<h1>Rassegna stampa <em>Juventus</em></h1><div className={onEdit?"editable-section editable-intro":undefined}><SectionEditButton onEdit={onEdit} section="intro" label="introduzione"/><p className="lead">{body.intro}</p></div>{categories.length>1&&<nav className="edition-jump-nav" aria-label="Vai agli articoli per tema" style={{'--jump-count':categories.length}}><span>Vai a</span>{categories.map(category=><a key={category} data-edition-jump="true" href={'#articolo-'+body.articles.find(a=>a.category===category).id}><SectionLabel category={category}/></a>)}</nav>}</header>

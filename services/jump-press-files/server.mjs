@@ -9,6 +9,7 @@ import {dirname,join,relative,sep} from 'node:path';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {pipeline} from 'node:stream/promises';
+import {sendSourceMail} from './source-mail.mjs';
 
 const run=promisify(execFile);
 const ROOT=process.env.FILES_ROOT||'/opt/jump-press-files/data';
@@ -51,11 +52,25 @@ async function receive(req,full,{limit,overwrite=false,pdf=false}){
   await rename(tmp,full);return size;
  }catch(e){await rm(tmp,{force:true});throw e;}
 }
-async function send(res,full,{download=false,name,cors=false}={}){
+async function send(req,res,full,{download=false,name,cors=false}={}){
  const info=await stat(full).catch(()=>null);if(!info?.isFile())throw new HttpError(404,'File non trovato.');
  // Signed links are read by the in-page PDF viewer (fetch): the signature, not the origin, grants access.
- res.writeHead(200,{...(cors?{'Access-Control-Allow-Origin':'*','Access-Control-Expose-Headers':'Content-Length'}:{}),'Content-Type':typeOf(full),'Content-Length':info.size,'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff',...(name?{'Content-Disposition':(download?'attachment':'inline')+'; filename="'+name.replace(/[^\w.\- ]/g,'_')+'"'}:{})});
- await pipeline(createReadStream(full),res);
+ const headers={...(cors?{'Access-Control-Allow-Origin':'*','Access-Control-Expose-Headers':'Content-Length, Content-Range, Accept-Ranges'}:{}),'Content-Type':typeOf(full),'Content-Length':info.size,'Accept-Ranges':'bytes','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff',...(name?{'Content-Disposition':(download?'attachment':'inline')+'; filename="'+name.replace(/[^\w.\- ]/g,'_')+'"'}:{})};
+ // PDF.js can seek without downloading the whole original. HEAD always describes the full file.
+ let range;
+ if(req.method==='GET'&&req.headers.range&&!req.headers['if-range']){
+  const match=/^bytes=(\d*)-(\d*)$/.exec(req.headers.range);
+  if(match&&(match[1]||match[2])){
+   const start=match[1]?Number(match[1]):Math.max(0,info.size-Number(match[2]));
+   const end=match[1]&&match[2]?Math.min(Number(match[2]),info.size-1):info.size-1;
+   if(!Number.isSafeInteger(start)||!Number.isSafeInteger(end)||start>end||start>=info.size){res.writeHead(416,{...headers,'Content-Range':'bytes */'+info.size,'Content-Length':0});return res.end();}
+   range={start,end};headers['Content-Range']=`bytes ${start}-${end}/${info.size}`;headers['Content-Length']=end-start+1;
+  }
+  // Unknown units, malformed or multipart ranges are ignored and receive the full representation.
+ }
+ res.writeHead(range?206:200,headers);
+ if(req.method==='HEAD')return res.end();
+ await pipeline(createReadStream(full,range),res);
 }
 
 // Pages are cut with qpdf (streaming, low memory even on 180 MB sources); pdf-lib only if qpdf is absent.
@@ -90,17 +105,18 @@ async function handle(req,res){
  if(req.method==='GET'&&url.pathname==='/health')return reply(res,200,{ok:true,qpdf:await qpdfAvailable()});
  // Signed links: no secret on the client, bound to operation, path, expiry (and size for uploads).
  if(area==='s'){
+  res.setHeader('Access-Control-Allow-Origin','*');
   const full=resolvePath(path);
-  if(req.method==='GET'){checkSignature('get',path,url);return send(res,full,{name:path.split('/').pop(),cors:true});}
+  if(req.method==='GET'||req.method==='HEAD'){checkSignature('get',path,url);return send(req,res,full,{name:path.split('/').pop(),cors:true});}
   if(req.method==='PUT'){const max=checkSignature('put',path,url);if(!path.endsWith('.pdf'))throw new HttpError(400,'Solo PDF.');const size=await receive(req,full,{limit:Math.min(max||MAX_UPLOAD,MAX_UPLOAD),pdf:true});return reply(res,200,{pathname:path,size});}
-  if(req.method==='OPTIONS'){res.writeHead(204,{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'PUT, GET, HEAD','Access-Control-Allow-Headers':'Content-Type','Access-Control-Max-Age':'600'});return res.end();}
+  if(req.method==='OPTIONS'){res.writeHead(204,{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'PUT, GET, HEAD','Access-Control-Allow-Headers':'Content-Type, Range','Access-Control-Max-Age':'600'});return res.end();}
   throw new HttpError(405,'Metodo non consentito.');
  }
  if(!sameSecret((req.headers.authorization||'').replace(/^Bearer\s+/i,'')))throw new HttpError(401,'Non autorizzato.');
+ if(req.method==='POST'&&url.pathname==='/notify-source')return reply(res,200,await sendSourceMail({root:ROOT,input:await json(req)}));
  if(area==='o'){
   const full=resolvePath(path);
-  if(req.method==='GET')return send(res,full);
-  if(req.method==='HEAD'){const info=await stat(full).catch(()=>null);if(!info?.isFile())throw new HttpError(404,'File non trovato.');res.writeHead(200,{'Content-Type':typeOf(full),'Content-Length':info.size});return res.end();}
+  if(req.method==='GET'||req.method==='HEAD')return send(req,res,full);
   if(req.method==='PUT'){const original=/\/original\.pdf$/.test(path),text=path.endsWith('.json');const size=await receive(req,full,{limit:original?MAX_ORIGINAL:text?MAX_TEXT:MAX_UPLOAD,pdf:path.endsWith('.pdf')});return reply(res,200,{pathname:path,size});}
   if(req.method==='DELETE'){await rm(full,{force:true});return reply(res,200,{deleted:path});}
   throw new HttpError(405,'Metodo non consentito.');

@@ -40,12 +40,13 @@ test('Revoked publication and backend failure are not downloadable empty edition
 test('Summary profile preserves operational rules and versions independently from old site',async()=>{
  const store=new MemoryStore(),ctx={store,role:'editor',user:{id:'test'}};
  const initial=await readInstructions(ctx);
- const base=await saveInstructions(ctx,initial.version,initial.text+'\nUse the primary morning edition, never subsequent updates.');
+ const base={version:2,text:initial.baseText+'\nUse the primary morning edition, never subsequent updates.',updatedAt:'2026-09-27',updatedBy:'administrator'};
+ await store.commit({'settings/editorial-instructions.json':base},await store.begin());
  const next=await readInstructions({...ctx,editorialModel:'summary-v1'});
  assert(next.text.includes('Use the primary morning edition'));
  assert(next.text.includes('CAMPO executiveSummary'));
- await saveInstructions({...ctx,editorialModel:'summary-v1'},next.version,next.text+'\nReviewed profile.');
- assert.equal((await readInstructions(ctx)).text,base.text);
- assert((await readInstructions({...ctx,editorialModel:'summary-v1'})).text.endsWith('Reviewed profile.'));
+ await store.commit({'settings/summary-editorial-instructions.json':{version:2,text:next.baseText+'\nReviewed profile.',updatedAt:'2026-09-27',updatedBy:'administrator'}},await store.begin());
+ assert.equal((await readInstructions(ctx)).baseText,base.text);
+ assert((await readInstructions({...ctx,editorialModel:'summary-v1'})).baseText.endsWith('Reviewed profile.'));
  await assert.rejects(saveInstructions({...ctx,editorialModel:'summary-v1',role:'producer'},next.version,'x'.repeat(120)),e=>e.status===403);
 });

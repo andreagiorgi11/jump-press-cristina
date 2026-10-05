@@ -5,7 +5,7 @@ process.chdir(fileURLToPath(new URL('..',import.meta.url)));
 // Local site on REAL data, configured like the jump-press-approvazione production project.
 // Credentials are read in place (never copied into this repository): JUMP_REAL_ENV_FILE or the
 // Dropbox copy below. Everything saved or confirmed here is saved or published for real.
-const envFile=process.env.JUMP_REAL_ENV_FILE||'C:/Users/Andrea/Dropbox/Andrea/AG Studio/Clienti e collaborazioni/Cristina Guerri/Progetti/CG creator/jump-press-rassegna-stampa/.env.local';
+const envFile=process.env.JUMP_REAL_ENV_FILE||'C:/Users/Andrea/Dropbox/Andrea/AG Studio/Clienti e collaborazioni/Cristina Guerri/Progetti/CG creator/jump-press-rassegna-stampa/.local/real.env';
 if(!existsSync(envFile))throw Error('Credenziali reali non trovate: impostare JUMP_REAL_ENV_FILE.');
 for(const file of ['.env','.env.local','.env.development','.env.development.local'])if(existsSync(file))throw Error('Rimuovere '+file+': la configurazione reale si legge soltanto da JUMP_REAL_ENV_FILE.');
 const bs=String.fromCharCode(92),env={...process.env};

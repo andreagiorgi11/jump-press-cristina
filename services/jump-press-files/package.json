@@ -3,6 +3,11 @@
   "private": true,
   "type": "module",
   "description": "Archivio privato dei PDF di Jump Press sul server AG Studio",
-  "scripts": {"start": "node server.mjs"},
-  "dependencies": {"pdf-lib": "^1.17.1"}
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "nodemailer": "^10.0.13",
+    "pdf-lib": "^1.17.1"
+  }
 }
