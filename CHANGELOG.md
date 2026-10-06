@@ -1,3 +1,9 @@
+## 2026-10-06 — correzione crash promozione dalla seconda scelta
+
+Il pop-up conservava la scelta aperta mentre lo stato locale eliminava il candidato dalla panchina: il render leggeva il titolo di un articolo non più presente. Lo stato modificabile resta ora stabile durante il salvataggio; il recupero chiude la scelta e il pop-up verifica la presenza dell’articolo. Nessuna modifica a dati, API o PDF.
+
+Verifiche: errore precedente riprodotto con il componente reale; 18 test mirati superati (promozione, sostituzione, attesa, errore e recupero salvataggio).
+
 ## 2026-10-05 — Archivio rifatto, sidebar uniforme e rifiniture grafiche (sessione Claude)
 
 Rilasciato in produzione il 5 ottobre alle 19:29 (Europe/Rome), `dpl_Eo4Msm8qGUYWHQKaFzFST1ejkx6f`, sopra il rilascio grafico della stessa mattina. Rollback: `dpl_4m91or6wdw8Uv2AXWDGu454DH4iT`.
