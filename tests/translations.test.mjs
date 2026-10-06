@@ -91,3 +91,48 @@ test('English reader distinguishes unavailable storage from an absent edition',a
  const result=await englishReaderEdition(null,{begin:async()=>{throw Error('offline');}});
  assert.equal(result.unavailable,true);assert.equal(result.row,null);assert.equal(result.translationPending,false);
 });
+import {correctEnglishArticle} from '../lib/translations.js';
+test('English corrections change only article text, update public/PDF source, and send no mail',async()=>{
+ const {ctx,draft,articles,mails}=await fixture();await publishDraft(ctx,draft.id,1,'PUBBLICA');await publishTranslation(ctx,{date:'2026-10-07',sourceVersion:1,translation:english(articles)});
+ const before=structuredClone(ctx.store.files),view=await englishReaderEdition('2026-10-07',ctx.store);
+ const input={date:'2026-10-07',sourceVersion:1,revision:view.row.translationRevision,articleId:articles[0].id,title:'Corrected English title',summary:'Corrected English summary'};
+ const result=await correctEnglishArticle({...ctx,role:'editor'},input);
+ assert.notEqual(result.revision,input.revision);assert.equal(mails.length,1);
+ for(const [path,value] of Object.entries(before))if(path!=='translations/en/2026-10-07.json')assert.deepEqual(ctx.store.files[path],value,path);
+ const after=await translatedEdition('2026-10-07','en',ctx.store);assert.equal(after.row.body.articles[0].title,input.title);assert.equal(after.row.body.articles[0].summary,input.summary);assert.equal(after.row.body.articles[0].outlet,articles[0].outlet);
+ assert.deepEqual(ctx.store.files['translations/en/2026-10-07.json'].content.articles[1],before['translations/en/2026-10-07.json'].content.articles[1]);
+ await assert.rejects(correctEnglishArticle(ctx,input),e=>e.status===409);
+ for(const role of ['producer','reader',undefined])await assert.rejects(correctEnglishArticle({...ctx,role},{...input,revision:result.revision}),e=>e.status===403);
+ for(const extra of [{outlet:'Other'},{category:'Other'},{position:2},{intro:'Changed'}])await assert.rejects(correctEnglishArticle(ctx,{...input,revision:result.revision,...extra}));
+ await assert.rejects(correctEnglishArticle(ctx,{...input,revision:result.revision,title:''}));
+ await assert.rejects(correctEnglishArticle(ctx,{...input,revision:result.revision,articleId:randomUUID()}),e=>e.status===404);
+ await withdrawDraft(ctx,draft.id,1,'RITIRA_E_MODIFICA');await assert.rejects(correctEnglishArticle(ctx,{...input,revision:result.revision}),e=>e.status===409);
+});
+test('English correction cannot overwrite a newer translation or lose a concurrent commit',async()=>{
+ const {ctx,draft,articles}=await fixture();await publishDraft(ctx,draft.id,1,'PUBBLICA');await publishTranslation(ctx,{date:'2026-10-07',sourceVersion:1,translation:english(articles)});
+ const view=await englishReaderEdition('2026-10-07',ctx.store),input={date:'2026-10-07',sourceVersion:1,revision:view.row.translationRevision,articleId:articles[0].id,title:'Correction',summary:'Correction'};
+ const next=english(articles);next.articles[0].title='New translation';await publishTranslation(ctx,{date:input.date,sourceVersion:1,translation:next});
+ await assert.rejects(correctEnglishArticle(ctx,input),e=>e.status===409);
+ input.revision=(await englishReaderEdition(input.date,ctx.store)).row.translationRevision;
+ const commit=ctx.store.commit.bind(ctx.store);ctx.store.commit=async(files,head)=>{await commit({'unrelated.json':{updated:true}},head);return commit(files,head);};
+ await assert.rejects(correctEnglishArticle(ctx,input),e=>e.status===409);
+ assert.equal((await translatedEdition(input.date,'en',ctx.store)).row.body.articles[0].title,'New translation');
+});
+
+test('English reader loads both published bodies concurrently and retains Italian on translation errors',{timeout:2000},async()=>{
+ const {ctx,draft,articles}=await fixture();await publishDraft(ctx,draft.id,1,'PUBBLICA');
+ await publishTranslation(ctx,{date:draft.body.date,sourceVersion:1,translation:english(articles)});
+ const read=ctx.store.read.bind(ctx.store);let release;
+ const started=new Promise(resolve=>{release=resolve;});
+ ctx.store.read=async(path,head)=>{
+  if(path.startsWith('published/'))await started;
+  if(path.startsWith('translations/'))release();
+  return read(path,head);
+ };
+ const result=await englishReaderEdition(draft.body.date,ctx.store);
+ assert.equal(result.unavailable,false);assert.equal(result.row.body.intro,'English lead');
+ ctx.store.read=async(path,head)=>{if(path.startsWith('translations/'))throw Error('Temporary outage');return read(path,head);};
+ const unavailable=await englishReaderEdition(draft.body.date,ctx.store);
+ assert.equal(unavailable.unavailable,true);assert.equal(unavailable.translationPending,true);
+ assert.equal(unavailable.row.body.intro,'Cappello italiano');
+});

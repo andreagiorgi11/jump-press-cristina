@@ -1,3 +1,15 @@
+## 2026-10-06 — Rilascio approvato: revisione, mobile e inglese
+
+Inclusi i miglioramenti locali descritti sotto: pubblicazione e conferme piu rapide, conferme separate di cappello e Summary, avvisi coerenti con lo stato pubblicato, navigazione mobile, correzione dei soli testi inglesi pubblicati e passaggio IT/EN. Regole di traduzione aggiornate sui nomi dei Paesi. Verifiche prima del rilascio: 267 test superati, build Press e News, navigazione nel browser e generazione dei PDF IT/EN e Summary EN. Rilascio attraverso GitHub main e integrazione Vercel; rollback precedente aea5526. Le notifiche delle attivita ChatGPT restano da gestire con Cristina.
+
+## 2026-10-06 — Cambio lingua e controllo prima del rilascio (locale)
+
+Cambio IT/EN tramite navigazione interna, senza ricaricare tutto il documento e senza pre-caricare contenuti che potrebbero diventare obsoleti. Il ritorno italiano forza la lingua anche con preferenza inglese memorizzata. Lettura in parallelo della rassegna italiana e della traduzione allo stesso commit; se la traduzione non risponde rimangono contenuto italiano e avviso esplicito. Verifica: 267 test isolati superati; cambio lingua e navigazione mobile provati nel browser; PDF IT/EN e Summary EN validi, API editor anonima respinta con 401. Nessuna modifica ai dati reali.
+
+## 2026-10-06 — Correzioni dei testi inglesi pubblicati (locale)
+
+Gli editor possono correggere esclusivamente titolo e riassunto degli articoli inglesi gia pubblicati. Il salvataggio aggiorna la traduzione usata da sito e PDF, senza modificare la rassegna italiana o inviare notifiche. Controlli server su ruolo, campi ammessi, pubblicazione e versione; conflitti concorrenti non sovrascrivono le correzioni altrui. Verifica: 265 test isolati superati.
+
 ## 2026-10-06 — Versione inglese (in locale, non ancora online)
 
 Switch IT · EN nella sidebar, pagine `/en`, `/en/edizioni/<data>`, `/en/archivio`, PDF inglesi, testi fissi in `lib/i18n.js`, titolo originale sotto quello tradotto. Traduzioni in `translations/en/` del repository contenuti, valide solo per la versione italiana di origine. Strumenti MCP `read_edition_for_translation` e `publish_translation` (pubblicazione diretta con controllo della struttura). Mail «Rassegna pubblicata» a ogni pubblicazione tramite `jump-press-files` (nuova rotta `/notify-published`, ricevuta per data e versione); esito mostrato alla redazione. Dettagli in `docs/traduzione-inglese.md`. Verifica: 245 test superati, build riuscita, prova locale con traduzione di prova del 30/09 fuori dai dati reali.
@@ -236,3 +248,40 @@ Interfaccia editor e archivio, correzioni per sezione, anteprima lettore, catego
 
 ## 6 ottobre 2026 — Avvisi rassegna e traduzione
 - Avviso della rassegna odierna anche nella home inglese, con la grafica compatta condivisa. Coming soon soltanto per la traduzione della rassegna del giorno; messaggio neutro sulle edizioni passate.
+
+## 6 ottobre 2026 — Regola nomi geografici nella traduzione (locale)
+- Le istruzioni EN distinguono nomi propri da nomi inglesi di Paesi, nazionali e competizioni, con esempi e controllo finale in tutti i campi. Nessuna ritraduzione dei contenuti pubblicati.
+
+## 6 ottobre 2026 — Velocità pubblicazione (locale)
+- Controlli dei PDF con massimo quattro letture contemporanee e verifica unica degli originali condivisi. Associazioni, verifica PDF e scrittura atomica restano obbligatorie; su errore nessuna pubblicazione o mail.
+
+## 6 ottobre 2026 — Sezioni mobili sotto il cappello (locale)
+- Riutilizzate le etichette compatte della barra articoli, distribuite nella larghezza disponibile senza scorrimento orizzontale. Desktop invariato.
+
+## 6 ottobre 2026 — Sezione attiva dopo il salto (locale)
+- Entrambe le navigazioni usano lo scroll-margin effettivo degli articoli con tolleranza di un pixel, evitando che gli arrotondamenti mantengano selezionata la sezione precedente.
+
+## 6 ottobre 2026 — Navigazione mobile degli articoli (locale)
+- Barra sezioni al posto del filtro mobile, sticky sotto il logo con sfumatura. Salti e selezione riferiti alle intestazioni complete; filtro desktop conservato.
+
+- Rifinitura mobile: navigazione bianca integrata, indicatore lime lineare e raccordo senza angoli arrotondati con l’elenco articoli.
+
+## 2026-10-06 — Raccordo mobile tra navigazione e titolo sezione (locale)
+
+Navigazione mobile separata dal titolo della sezione con 16 px di spazio, anche dopo il salto tramite le etichette. Barra bianca fissa durante lo scorrimento. Verificato in anteprima locale il distacco da Prima squadra.
+
+## 2026-10-06 — Conferma esplicita del cappello (locale)
+
+Le rassegne pubblicate non mostrano avvisi di revisione sul PDF anche nella vista editor. Il popup del cappello mostra il triangolo Cappello da ricontrollare e distingue Salva in bozza da Conferma cappello. La conferma salva, rimuove lo stato pendente e lascia aperto il popup con Chiudi; non conferma il Summary PDF. Errori e conflitti conservano le modifiche e lo stato da verificare. Test isolati per avvisi, conferma ed errori; nessuna scrittura sulle bozze reali.
+
+## 2026-10-06 — Conferma cappello senza preparazione PDF (locale)
+
+La conferma che modifica soltanto il cappello e il suo stato conserva i controlli esistenti degli articoli senza riavviare lettura della fonte e ritagli, anche se pendenti. Qualsiasi modifica ad altri contenuti mantiene il percorso completo. Letture iniziali di indice e bozza in parallelo, controllo versione e commit atomico invariati; conferme identiche non creano nuove revisioni.
+
+## 2026-10-06 — Conferma Summary nel PDF (locale)
+
+Nella bozza, anteprima Summary con avviso e pulsante Conferma Summary, abilitato dopo il caricamento del documento. Salva solo la revisione del Summary, mantiene il cappello indipendente e lascia aperta la finestra con conferma riuscita. Il pulsante resta legato alla versione del PDF aperto: conflitti ed errori mantengono la revisione pendente. Nessuna preparazione dei ritagli per la sola conferma. Assente sulla rassegna pubblicata.
+
+## 2026-10-06 — Salvataggio rapido delle conferme (locale)
+
+Conferme di Summary e cappello tramite createCommitOnBranch: una richiesta atomica invece delle quattro REST per il commit. expectedHeadOid conserva il controllo delle modifiche concorrenti. Errori e risposte incerte non producono retry ciechi. Verificati accesso GraphQL e schema in sola lettura; nessuna conferma reale effettuata per i test.

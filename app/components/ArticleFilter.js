@@ -13,7 +13,8 @@ export default function ArticleFilter(){
    records=records.filter(r=>{if(r.list.isConnected)return true;r.control.remove();return false;});
    document.querySelectorAll('.articles').forEach(list=>{
     const articles=[...list.querySelectorAll(':scope > article')];
-    const heading=list.previousElementSibling;
+    const previous=list.previousElementSibling;
+    const heading=previous?.classList.contains('reading-navigation')?previous.previousElementSibling:previous;
     if(!articles.length||!heading?.classList.contains('sectiontitle'))return;
     let record=records.find(r=>r.list===list);
     if(!record){
@@ -35,6 +36,7 @@ export default function ArticleFilter(){
    });
   };
   const apply=record=>{
+   if(window.matchMedia('(max-width:700px)').matches&&record.list.closest('.summary-content'))record.select.value='';
    record.list.querySelectorAll(':scope > .article-group-heading').forEach(h=>{h.hidden=!!record.select.value&&h.dataset.category!==record.select.value;});
    record.list.querySelectorAll(':scope > article').forEach(a=>{a.hidden=!!record.select.value&&(a.dataset.category||a.querySelector('.meta span')?.textContent?.trim())!==record.select.value;});
   };
@@ -46,8 +48,9 @@ export default function ArticleFilter(){
    if(record&&target.hidden){record.select.value='';apply(record);}
   };
   document.addEventListener('click',jumpToCategory);
+  window.addEventListener('resize',prepare);
   prepare();const observer=new MutationObserver(prepare);observer.observe(document.body,{childList:true,subtree:true});
-  return()=>{document.removeEventListener('click',jumpToCategory);observer.disconnect();records.forEach(r=>{r.control.remove();r.heading.classList.remove('has-article-filter');r.list.querySelectorAll('article,.article-group-heading').forEach(a=>{a.hidden=false;});});};
+  return()=>{window.removeEventListener('resize',prepare);document.removeEventListener('click',jumpToCategory);observer.disconnect();records.forEach(r=>{r.control.remove();r.heading.classList.remove('has-article-filter');r.list.querySelectorAll('article,.article-group-heading').forEach(a=>{a.hidden=false;});});};
  },[path]);
  return null;
 }

@@ -9,10 +9,18 @@ export default function ReadingNavigation({articles,lang='it'}){
   let frame=0;
   const update=()=>{
    frame=0;
-   const rows=articles.map(a=>({article:a,node:document.getElementById('articolo-'+a.id)})).filter(r=>r.node&&!r.node.hidden);
+   const mobile=window.matchMedia('(max-width:700px)').matches;
+   const edition=nav.current?.closest('.edition-view');
+   if(mobile&&edition){
+    const top=document.querySelector('.summary-sidebar-heading')?.getBoundingClientRect().bottom||78;
+    edition.style.setProperty('--reader-top',Math.max(0,top)+'px');
+    edition.style.setProperty('--reader-offset',(Math.max(0,top)+(nav.current?.offsetHeight||60)+16)+'px');
+   }
+   const rows=articles.map(a=>({article:a,node:document.getElementById('sezione-'+a.id)||document.getElementById('articolo-'+a.id)})).filter(r=>r.node&&!r.node.hidden);
    if(!rows.length){setVisible(false);return;}
-   const marker=180;
-   setVisible(rows[0].node.getBoundingClientRect().top<marker&&rows[rows.length-1].node.getBoundingClientRect().bottom>marker);
+   // Match the anchor offset; fractional layout pixels must still count as reached.
+   const marker=(parseFloat(getComputedStyle(rows[0].node).scrollMarginTop)||180)+1;
+   setVisible(mobile||(rows[0].node.getBoundingClientRect().top<=marker&&rows[rows.length-1].node.getBoundingClientRect().bottom>marker));
    let current=rows[0];
    for(const row of rows){if(row.node.getBoundingClientRect().top<=marker)current=row;else break;}
    setActive(current.article.category);
@@ -28,5 +36,5 @@ export default function ReadingNavigation({articles,lang='it'}){
   const scroller=nav.current?.querySelector('div');if(scroller)setOverflowing(scroller.scrollWidth-scroller.clientWidth-scroller.scrollLeft>4);
  },[active,visible]);
  if(categories.length<2)return null;
- return <nav ref={nav} className={'reading-navigation'+(overflowing?' is-overflowing':'')} hidden={!visible} aria-label={tr(lang,'Navigazione rapida della rassegna')}><div onScroll={e=>{const s=e.currentTarget;setOverflowing(s.scrollWidth-s.clientWidth-s.scrollLeft>4);}}>{categories.map(category=><a key={category} href={'#articolo-'+articles.find(a=>a.category===category).id} data-edition-jump="true" aria-current={active===category?'location':undefined}><SectionLabel lang={lang} category={category}/></a>)}</div></nav>;
+ return <nav ref={nav} className={'reading-navigation'+(overflowing?' is-overflowing':'')} hidden={!visible} aria-label={tr(lang,'Navigazione rapida della rassegna')}><div onScroll={e=>{const s=e.currentTarget;setOverflowing(s.scrollWidth-s.clientWidth-s.scrollLeft>4);}}>{categories.map(category=><a key={category} href={'#sezione-'+articles.find(a=>a.category===category).id} data-edition-jump="true" aria-current={active===category?'location':undefined}><SectionLabel lang={lang} category={category}/></a>)}</div></nav>;
 }

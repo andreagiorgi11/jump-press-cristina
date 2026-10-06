@@ -63,3 +63,44 @@ test('concurrent changes of different reserve fields merge; moving lists conflic
  const result=reconcileSave(base,local,remote);assert.equal(result.conflicts.length,0);assert.equal(result.body.reserveArticles[0].summary,'Editor correction');assert.equal(result.body.reserveArticles[0].clipId,remote.reserveArticles[0].clipId);
  const moved=promoteReserve(base,base.reserveArticles[0].id);assert(reconcileSave(base,moved,remote).conflicts.length);
 });
+
+test('saving edited intro keeps review pending; explicit intro confirmation leaves Summary pending',async()=>{
+ const x=setup();let d=await saveDraft(x.ctx,x.id,0,x.body);
+ d=await saveDraft(x.ctx,x.id,d.version,promoteReserve(d.body,d.body.reserveArticles[0].id,d.body.articles[0].id));
+ d=await saveDraft(x.ctx,x.id,d.version,{...d.body,intro:'Cappello aggiornato dalla redazione.'});
+ assert.equal(d.body.introStale,true);
+ d=await saveDraft(x.ctx,x.id,d.version,d.body,{introConfirmed:true});
+ assert(!d.body.introStale);assert.equal(d.body.executiveSummaryStale,true);
+});
+test('intro-only confirmation preserves pending PDF checks without accessing source files',async()=>{
+ const x=setup();let d=await saveDraft(x.ctx,x.id,0,x.body);
+ d.body.sourceImportId=randomUUID();d.body.introStale=true;d.body.executiveSummaryStale=true;
+ d.body.articles[0].pdfCheck={status:'pending',note:'Fonte non disponibile'};
+ d.body.articles[0].synthesisCheck={status:'attention',note:'Da verificare'};
+ d.body=editionSchema.parse(d.body);
+ await x.ctx.store.commit({['drafts/'+d.id+'.json']:d},await x.ctx.store.begin());
+ let sourceReads=0;x.ctx.blobs={readOriginal:async()=>{sourceReads++;throw new Error('Unexpected PDF read');}};
+ let importReads=0;const read=x.ctx.store.read.bind(x.ctx.store);
+ x.ctx.store.read=async(p,h)=>{if(p.startsWith('imports/'))importReads++;return read(p,h);};
+ const before=structuredClone(d.body.articles);
+ const saved=await saveDraft(x.ctx,x.id,d.version,{...d.body,intro:'Cappello ricontrollato.'},{introConfirmed:true});
+ assert.equal(sourceReads,0);assert.equal(importReads,0);assert.deepEqual(saved.body.articles,before);assert(!saved.body.introStale);
+ assert.equal(saved.body.executiveSummaryStale,true);
+ const again=await saveDraft(x.ctx,x.id,saved.version,saved.body,{introConfirmed:true});assert.equal(again.version,saved.version);
+ await assert.rejects(saveDraft(x.ctx,x.id,d.version,d.body,{introConfirmed:true}),e=>e.status===409);
+ const changed=structuredClone(saved.body);changed.articles[0].title='Titolo modificato';
+ await saveDraft(x.ctx,x.id,saved.version,changed,{introConfirmed:true});
+ assert(importReads>0,'changing an article must still run source preparation');
+});
+test('Summary confirmation skips source work, preserves intro warning and rejects stale revisions',async()=>{
+ const x=setup();let d=await saveDraft(x.ctx,x.id,0,x.body);
+ d.body.sourceImportId=randomUUID();d.body.introStale=true;d.body.executiveSummaryStale=true;
+ d.body.articles[0].pdfCheck={status:'pending',note:'In attesa'};d.body=editionSchema.parse(d.body);
+ await x.ctx.store.commit({['drafts/'+d.id+'.json']:d},await x.ctx.store.begin());
+ const read=x.ctx.store.read.bind(x.ctx.store);x.ctx.store.read=async(p,h)=>{assert(!p.startsWith('imports/'),'Summary confirmation must not prepare PDFs');return read(p,h);};
+ let reviewCommits=0;x.ctx.store.commitReview=async(...args)=>{reviewCommits++;return x.ctx.store.commit(...args);};
+ const saved=await saveDraft(x.ctx,x.id,d.version,d.body,{summaryConfirmed:true});
+ assert.equal(reviewCommits,1);
+ assert(!saved.body.executiveSummaryStale);assert.equal(saved.body.introStale,true);assert.deepEqual(saved.body.articles,d.body.articles);
+ await assert.rejects(saveDraft(x.ctx,x.id,d.version,d.body,{summaryConfirmed:true}),e=>e.status===409);
+});

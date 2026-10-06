@@ -620,7 +620,7 @@ body:has(.summary-content){background:var(--paper)}
 .summary-content .edition-jump-nav a:hover,.summary-content .edition-jump-nav a:focus-visible{background:transparent;color:#fff;border-color:transparent}
 .summary-content .edition-jump-nav a:hover::after{transform:scaleX(1)}
 .summary-content .edition-jump-nav a:focus-visible{outline:2px solid #dfff2f;outline-offset:-3px}
-@media(max-width:700px){.summary-content .edition-section-links{gap:24px}.summary-content .edition-jump-nav a{font-size:18px;min-height:46px}}
+@media(max-width:700px){.summary-content .edition-section-links{gap:6px;overflow:visible}.summary-content .edition-jump-nav a{flex:1 1 0;min-width:0;font-size:clamp(14px,4vw,18px);min-height:46px;white-space:normal;text-align:center}}
 @media(prefers-reduced-motion:reduce){.summary-content .edition-jump-nav a,.summary-content .edition-jump-nav a::after{transition:none}}
 
 /* Shared typography for utility headings and reading navigation. */
@@ -742,3 +742,36 @@ body dialog h2{font-family:JuventusFans,Arial,Helvetica,sans-serif}
 .summary-edition>.today-notice{margin:0 0 28px}
 @media(max-width:600px){.summary-edition .translation-notice+.translation-notice{margin-top:-22px}}
 @media print{.translation-notice{display:none}}
+
+.summary-content .edition-jump-nav a .section-label-short,.summary-content .edition-jump-nav a .section-label-full{font:inherit;letter-spacing:inherit;color:inherit}
+/* Mobile section navigation stays in the article flow, then docks below the logo. */
+.article-group-heading[id]{scroll-margin-top:145px}
+@media(max-width:700px){
+ .summary-content .sectiontitle .article-filter{display:none}
+ .summary-content .sectiontitle.has-article-filter{padding-right:0}
+ .summary-content .reading-navigation,.summary-content .reading-navigation[hidden]{display:flex;position:sticky;top:var(--reader-top,78px);left:auto;transform:none;width:100%;max-width:none;box-sizing:border-box;margin:0;padding:0 10px;border-radius:0;border:1px solid #dedede;border-bottom:1px solid #dedede;background:#fff;box-shadow:none;backdrop-filter:none;z-index:8000}
+ .summary-content .reading-navigation::after{content:"";position:absolute;top:100%;left:0;right:0;height:12px;background:linear-gradient(#00000012,transparent);pointer-events:none}
+ .summary-content .reading-navigation>div{gap:2px;overflow:visible;mask-image:none!important;-webkit-mask-image:none!important}
+ .summary-content .reading-navigation a{flex:1 1 0;min-width:0;justify-content:center;padding:9px 3px;white-space:normal;text-align:center}
+ .summary-content .reading-navigation a,.summary-content .reading-navigation a span{font-size:clamp(14px,4vw,17px)}
+ .summary-content .article-group-heading[id],.summary-content .edition-view article[id]{scroll-margin-top:var(--reader-offset,140px)}
+ .summary-content .reading-navigation+.articles>.article-group-heading:first-child{margin-top:0}
+}
+
+@media(max-width:700px){
+ .summary-content .reading-navigation{height:60px}
+ .summary-content .reading-navigation>div{height:100%;align-items:stretch;gap:8px}
+ .summary-content .reading-navigation a{position:relative;min-height:0;padding:8px 0;border-radius:0;background:transparent;color:#757575}
+ .summary-content .reading-navigation a:hover,.summary-content .reading-navigation a[aria-current=location]{background:transparent;color:#151515}
+ .summary-content .reading-navigation a[aria-current=location]::after{content:"";position:absolute;bottom:0;left:0;right:0;height:3px;background:#cbea00}
+ .summary-content .edition-view .reading-navigation+.articles{margin-top:16px;border-radius:0;border-top:1px solid #dedede}
+ .summary-content .edition-view .articles>.article-group-heading{border-radius:0;background:#f6f6f6}
+}
+
+.section-edit-heading .intro-review-status{display:flex;align-items:center;gap:8px;color:#986400;font-weight:600}
+.section-edit-heading .intro-review-success{color:#34713a;font-weight:600}
+.section-edit-actions .intro-confirm{background:#dfff2f;color:#151515;border-color:#cbea00}
+
+.summary-review-confirm{margin-top:10px;padding:10px 16px;border:1px solid #cbea00;background:#dfff2f;color:#151515;border-radius:4px;font:600 13px JumpRoboto,Arial,sans-serif;cursor:pointer}
+.summary-review-confirm:disabled{opacity:.5;cursor:default}
+.summary-review-success{flex-shrink:0;padding:12px 20px;background:#f3f8dc;color:#345019;font:600 14px JumpRoboto,Arial,sans-serif}
