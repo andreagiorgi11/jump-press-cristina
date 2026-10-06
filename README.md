@@ -1,10 +1,10 @@
 # Jump Press — GitHub e Vercel
 
-## Avvio locale corrente - 5 ottobre 2026
+## Codice, rilascio e avvio locale - 6 ottobre 2026
 
-La cartella Dropbox principale è allineata ai 649 file sorgente del deployment online `dpl_6ZkvaLZmPQuuD1wtNdmgUezydBTY` (hash verificati). Le sole differenze aggiunte per l'avvio sono launcher e documentazione locale. Eseguire `npm run dev`, `avvia-rassegna.bat` o `avvia-reale.bat`: tutti usano http://127.0.0.1:3019 con layout approvazione e dati reali. Anche il vecchio collegamento `avvia-summary.bat` ora avvia questo ambiente. Non avviare la porta 3015. Le sezioni storiche sottostanti non cambiano questa indicazione.
+Il codice ufficiale è il ramo `main` di `andreagiorgi11/jump-press-cristina`, uguale al sito online; il progetto Vercel `jump-press-approvazione` pubblica da solo ogni push su `main`. Per lavorare: ramo temporaneo, verifica, unione in `main` dopo l'ok di Andrea, cancellazione del ramo. Avvio locale con `avvia-reale.bat` su http://127.0.0.1:3019, layout approvazione e dati reali. Non avviare la porta 3015.
 
-La configurazione privata è in `.local/real.env`, letta una sola volta dal launcher; non creare `.env.local` nella radice, perché Next espanderebbe di nuovo i dollari delle impronte password ereditate, invalidando gli accessi. Account e password restano invariati. Salvataggi e pubblicazioni sono reali. La worktree Codex `jump-press-summary` conserva separatamente le modifiche di sviluppo. Non usarla come copia identica alla produzione. Nessun deploy online eseguito durante questo riallineamento.
+La configurazione privata è in `.local/real.env`, letta una sola volta dal launcher; non creare `.env.local` nella radice, perché Next espanderebbe di nuovo i dollari delle impronte password ereditate, invalidando gli accessi. Account e password restano invariati. Salvataggi e pubblicazioni sono reali. 
 
 Il manifest dei sorgenti verificati è in `.local/production-source-manifest.json`. Le dipendenze `node_modules` sono una junction verso quelle della worktree `jump-press-summary`, con identico `package-lock.json`, perché Dropbox bloccava la reinstallazione con EBUSY. Non rimuovere quella directory di dipendenze senza prima sostituire la junction con un'installazione completa. Le cache precedenti sono disattivate nei percorsi ignorati `.next-retired-*` e `.node_modules-retired-*`; le vecchie anteprime statiche sono in `Documents/Codex/2026-09-18/lavori/work/_archivio-jump-20261005`.
 
@@ -16,7 +16,7 @@ Il progetto usa GitHub privato per i contenuti JSON, Vercel per il sito e Hetzne
 
 ## Stato corrente — 25 settembre 2026
 
-Produzione: https://jump-press-approvazione.vercel.app (team Vercel `andrea-giorgi`). Contenuti: repository privato `andreagiorgi11/jump-press-contenuti`. Codice di rilascio: branch `feature/juventus-summary` del remote `editor-fork`; il push di `upstream` resta disabilitato.
+Produzione: https://jump-press-approvazione.vercel.app (team Vercel `andrea-giorgi`). Contenuti: repository privato `andreagiorgi11/jump-press-contenuti`. Codice ufficiale: branch `main` del remote `editor-fork` (`andreagiorgi11/jump-press-cristina`), collegato a Vercel: ogni push su `main` pubblica in produzione, gli altri rami creano anteprime. Il push di `upstream` resta disabilitato.
 
 PDF e ritagli correnti risiedono su `https://jpfiles.agprojects.dev`, con `JUMP_FILES_URL` e `JUMP_FILES_SECRET`; configurazione in `services/jump-press-files/INSTALLAZIONE.md`. I file storici dal 17 al 24 settembre non sono stati migrati e restano indisponibili sul vecchio Blob. Le sezioni successive che descrivono Blob documentano la configurazione precedente.
 

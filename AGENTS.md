@@ -1,6 +1,6 @@
 # Jump Press — istruzioni per gli agenti
 
-- Avvio corrente dal 05/10/2026: questa cartella Dropbox contiene i sorgenti del deployment attivo `dpl_6ZkvaLZmPQuuD1wtNdmgUezydBTY`, verificati tramite SHA-1. Usare `npm run dev` oppure `avvia-reale.bat`, porta 3019. Non riavviare la precedente versione 3015 né le vecchie anteprime statiche. La worktree `jump-press-summary` conserva lavoro di sviluppo separato e non è la copia da mostrare ad Andrea come produzione.
+- Dal 06/10/2026 il codice ufficiale è il ramo `main` del fork `andreagiorgi11/jump-press-cristina` (remote `editor-fork`) ed è uguale al sito online. Il progetto Vercel `jump-press-approvazione` è collegato a `main`: ogni push su `main` va in produzione da solo, gli altri rami producono solo anteprime. Lavorare su un ramo temporaneo, unirlo a `main` solo dopo l'ok di Andrea, poi cancellarlo. Niente deploy manuali dalla CLI da cartelle locali: hanno già cancellato lavoro altrui. Avvio locale: `avvia-reale.bat`, porta 3019, dati reali.
 
 Leggere README.md per architettura, avvio, configurazione e incidenti. Progetto corrente: repository di Cristina guerricristina-creator/jump-press-rassegna-stampa; verificare i remote prima di push e non aggirare upstream con push disabilitato.
 
