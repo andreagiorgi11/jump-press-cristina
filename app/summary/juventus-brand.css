@@ -706,3 +706,17 @@ body dialog h2{font-family:JuventusFans,Arial,Helvetica,sans-serif}
  .summary-content .edition-view .articles>article>p{margin-top:16px;font-size:15.5px;line-height:1.55}
  .summary-content .edition-view .articles>.article-group-heading{padding:14px 18px;font-size:20px}
 }
+
+/* Switch di lingua IT · EN (6 ottobre 2026): in alto a destra nella sidebar, a sinistra nella barra su telefono. */
+.summary-sidebar .lang-switch{position:absolute;top:10px;right:0;display:flex;gap:2px;z-index:2}
+.summary-sidebar .lang-switch a{padding:5px 7px;border-radius:6px;color:#8a8a8a;font:700 11px/1 JumpRoboto,Arial,Helvetica,sans-serif;letter-spacing:.8px;text-decoration:none}
+.summary-sidebar .lang-switch a.is-current{background:#151515;color:#dfff2f}
+.summary-sidebar .lang-switch a:not(.is-current):hover{background:#f1f1f1;color:#151515}
+.summary-sidebar .lang-switch a:focus-visible{outline:2px solid #ff2850;outline-offset:2px}
+@media(max-width:900px){
+ .summary-sidebar .lang-switch{top:50%;right:auto;left:16px;transform:translateY(-50%)}
+ .summary-sidebar.is-open .lang-switch a:not(.is-current):hover{background:#23282c;color:#fff}
+}
+/* Versione inglese: titolo originale italiano sotto quello tradotto. */
+.summary-content .edition-view .articles>article>.article-original-title{margin:5px 0 0;font:italic 400 13.5px/1.4 JumpRoboto,Arial,Helvetica,sans-serif;color:#7a7a7a}
+.summary-content .article-original-title .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}

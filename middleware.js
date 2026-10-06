@@ -13,6 +13,8 @@ export function middleware(request){
  const site=process.env.NEXT_PUBLIC_JUMP_SITE||'press';
  if(!routeAllowed(pathname,site))return new NextResponse('Pagina non disponibile',{status:404,headers:{'X-Robots-Tag':'noindex, nofollow','Cache-Control':'no-store'}});
  if(site==='news'&&pathname==='/'){const url=request.nextUrl.clone();url.pathname='/news';return NextResponse.redirect(url);}
+ // Readers who chose English land on the English home; ?it=1 forces Italian (also used when nothing is translated yet).
+ if(site==='press'&&pathname==='/'&&request.cookies.get('jp_lang')?.value==='en'&&!searchParams.has('it')){const url=request.nextUrl.clone();url.pathname='/en';url.search='';return NextResponse.redirect(url);}
  if(['/editor','/api/editor','/api/auth','/api/oauth','/oauth','/.well-known','/mcp'].some(prefix=>pathname.startsWith(prefix))){
   const response=NextResponse.next();response.headers.set('Cache-Control','private, no-store');response.headers.set('X-Robots-Tag','noindex, nofollow');response.headers.set('Referrer-Policy','no-referrer');return response;
  }

@@ -42,6 +42,10 @@ Un deploy del codice non pubblica bozze e non cambia le istruzioni editoriali: q
 - Dipendenze: sul PC di Andrea `node_modules` è un collegamento (junction) a `C:\Users\Andrea\.jump-press\node_modules`, fuori da Dropbox per non sincronizzarlo. Su un altro computer: `npm ci`, preferibilmente fuori da Dropbox.
 - Non usare l'ambiente isolato `avvia-summary.bat` né `JUMP_LOCAL_INSTRUCTIONS_PREVIEW`.
 
+## Versione inglese
+
+Dal 6 ottobre 2026 ogni rassegna pubblicata viene tradotta in inglese da un'attività ChatGPT avviata da una mail del sito, e pubblicata senza revisione su `/en`. Flusso, regole, testo dell'attività e passi di messa in produzione: [docs/traduzione-inglese.md](docs/traduzione-inglese.md).
+
 ## Variabili d'ambiente
 
 Elenco in `.env.example` (solo nomi). I valori di produzione stanno solo su Vercel; quelli locali in `.local/real.env`. Principali: `JUMP_CONTENT_REPO`, `JUMP_CONTENT_BRANCH`, `JUMP_GITHUB_TOKEN` (dati), `JUMP_FILES_URL`, `JUMP_FILES_SECRET` (PDF), `JUMP_EDITOR_USERS`, `JUMP_SESSION_SECRET` (accessi), `JUMP_SITE`, `JUMP_APPROVAL_LIVE`, `NEXT_PUBLIC_JUMP_APPROVAL_LIVE`, `JUMP_EDITORIAL_MODEL=summary-v1` (modalità del sito).

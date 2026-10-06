@@ -19,8 +19,9 @@ for(const line of readFileSync(envFile,'utf8').split(/\r?\n/)){
  env[m[1]]=v;
 }
 // Same switches as production: approval layout and summary-v1 instructions profile.
-Object.assign(env,{JUMP_SITE:'press',JUMP_PUBLIC_URL:'http://127.0.0.1:3019',JUMP_APPROVAL_LIVE:'1',NEXT_PUBLIC_JUMP_APPROVAL_LIVE:'1',JUMP_EDITORIAL_MODEL:'summary-v1'});
+const port=process.env.JUMP_DEV_PORT||'3019';
+Object.assign(env,{JUMP_SITE:'press',JUMP_PUBLIC_URL:'http://127.0.0.1:'+port,JUMP_APPROVAL_LIVE:'1',NEXT_PUBLIC_JUMP_APPROVAL_LIVE:'1',JUMP_EDITORIAL_MODEL:'summary-v1'});
 for(const key of ['JUMP_SUMMARY_SANDBOX','JUMP_LOCAL_INSTRUCTIONS_PREVIEW'])delete env[key];
-console.log('Jump Press locale su DATI REALI: http://127.0.0.1:3019 (salvataggi e pubblicazioni sono reali)');
-const child=spawn(process.execPath,['node_modules/next/dist/bin/next','dev','--hostname','127.0.0.1','--port','3019'],{stdio:'inherit',env});
+console.log('Jump Press locale su DATI REALI: http://127.0.0.1:'+port+' (salvataggi e pubblicazioni sono reali)');
+const child=spawn(process.execPath,['node_modules/next/dist/bin/next','dev','--hostname','127.0.0.1','--port',port],{stdio:'inherit',env});
 child.on('exit',code=>process.exit(code??1));

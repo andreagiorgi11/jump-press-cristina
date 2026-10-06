@@ -1,7 +1,8 @@
  'use client';
 import {useEffect,useState,useRef} from 'react';
 import SectionLabel from './SectionLabel';
-export default function ReadingNavigation({articles}){
+import {tr} from '../../lib/i18n';
+export default function ReadingNavigation({articles,lang='it'}){
  const [active,setActive]=useState(''),[visible,setVisible]=useState(false),[overflowing,setOverflowing]=useState(false),nav=useRef(null);
  const categories=[...new Set(articles.map(a=>a.category).filter(Boolean))];
  useEffect(()=>{
@@ -27,5 +28,5 @@ export default function ReadingNavigation({articles}){
   const scroller=nav.current?.querySelector('div');if(scroller)setOverflowing(scroller.scrollWidth-scroller.clientWidth-scroller.scrollLeft>4);
  },[active,visible]);
  if(categories.length<2)return null;
- return <nav ref={nav} className={'reading-navigation'+(overflowing?' is-overflowing':'')} hidden={!visible} aria-label="Navigazione rapida della rassegna"><div onScroll={e=>{const s=e.currentTarget;setOverflowing(s.scrollWidth-s.clientWidth-s.scrollLeft>4);}}>{categories.map(category=><a key={category} href={'#articolo-'+articles.find(a=>a.category===category).id} data-edition-jump="true" aria-current={active===category?'location':undefined}><SectionLabel category={category}/></a>)}</div></nav>;
+ return <nav ref={nav} className={'reading-navigation'+(overflowing?' is-overflowing':'')} hidden={!visible} aria-label={tr(lang,'Navigazione rapida della rassegna')}><div onScroll={e=>{const s=e.currentTarget;setOverflowing(s.scrollWidth-s.clientWidth-s.scrollLeft>4);}}>{categories.map(category=><a key={category} href={'#articolo-'+articles.find(a=>a.category===category).id} data-edition-jump="true" aria-current={active===category?'location':undefined}><SectionLabel lang={lang} category={category}/></a>)}</div></nav>;
 }

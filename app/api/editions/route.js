@@ -2,6 +2,7 @@ import {requireEditor} from '../../../lib/server-client';
 import {store,readIndex} from '../../../lib/github-store';
 import {contentConfigured} from '../../../lib/config';
 import {listedLegacyEditionDates as legacyEditionDates} from '../../../lib/archive-dates';
+import {translatedEditions} from '../../../lib/translations';
 export const runtime='nodejs';
 export const dynamic='force-dynamic';
 const headers={'Cache-Control':'private, no-store'};
@@ -10,6 +11,11 @@ export async function GET(request){
  if(!contentConfigured())return Response.json({error:'Archivio non configurato.'},{status:503,headers});
  try{
   const index=await readIndex(store,await store.begin());
+  // English menu: only editions whose translation matches the published Italian version.
+  if(new URL(request.url).searchParams.get('lang')==='en'){
+   const {rows}=await translatedEditions('en');if(!rows)throw Error('Elenco non disponibile.');
+   return Response.json({editions:rows.map(x=>({date:x.edition_date,status:'published',href:'/en/edizioni/'+x.edition_date})).slice(0,40)},{headers});
+  }
   let editor=false;try{const identity=await requireEditor(request);editor=['producer','editor','publisher'].includes(identity.role);}catch{}
   const published=new Map(index.published.map(p=>[p.edition_date,p]));
   const rows=new Map();

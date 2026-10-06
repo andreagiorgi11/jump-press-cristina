@@ -2,6 +2,7 @@ import CombinedAnalysis from './CombinedAnalysis';
 import SectionEditButton from './SectionEditButton';
 import OutletWordmark from './OutletWordmark';
 import {analyseEdition,ratingCopy} from '../../lib/edition-analysis';
+import {tr} from '../../lib/i18n';
 const frontpagePriority=name=>{const label=(name||'').toLocaleLowerCase('it-IT');return label.includes('gazzetta dello sport')?0:label.includes('corriere dello sport')?1:label.includes('tuttosport')?2:3;};
 const value=n=>n??<span className="unverified">Non verificato</span>;
 const percentage=(n,total)=>total>0?`${(n/total*100).toLocaleString('it-IT',{maximumFractionDigits:1})}%`:null;
@@ -11,8 +12,8 @@ export function EditionStats({body}){
  const metrics=body.coverage?null:body.metrics;
  return <div className="stats">{metrics?.length?metrics.map((m,i)=><div key={i}><b>{m.value}</b><span>{m.label}</span></div>):<><div><b>{value(a.examined)}</b><span>voci esaminate</span></div><div><b>{a.selected}</b><span>articoli selezionati</span></div><div><b>{value(a.frontPages)}</b><span>prime pagine verificate</span></div><div><b>{value(a.juventus)}</b><span>prime pagine con Juventus</span></div></>}</div>;
 }
-export default function EditionAnalysis({body,onClip,privateClips=false,onEdit,compact=false}){
- const a=analyseEdition(body);
+export default function EditionAnalysis({body,lang='it',onClip,privateClips=false,onEdit,compact=false}){
+ const a=analyseEdition(body),t=text=>tr(lang,text);
  return <>
   <section className={`ranking ${compact?'frontpages-only':''}`}>{!compact&&<><small>QUADRO GENERALE DELLA RASSEGNA</small><h2>I numeri dell’intera copertura</h2>
    <div id="jump-daily-metrics">
@@ -23,9 +24,9 @@ export default function EditionAnalysis({body,onClip,privateClips=false,onEdit,c
     <Tile number={a.sports===null?'Non verificato':`${a.sportsJuventus} / ${a.sports}`} label="quotidiani sportivi italiani" note="Copertine con Juventus sul totale degli sportivi italiani verificati"/>
     <Tile number={a.frontPages===null?'Non verificato':a.frontPages-a.juventus} label="prime pagine senza Juventus"/>
    </div></>}
-   <div className="jump-frontpages-list frontpages-wordmarks approval-frontpages"><b>Juventus in prima pagina</b><div>{a.outlets===null?<p>Prime pagine da verificare.</p>:a.outlets.length?(body.coverage.frontPages.filter(p=>p.juventus).sort((x,y)=>compact?frontpagePriority(x.outlet)-frontpagePriority(y.outlet):0)).map(p=><div className="frontpage-tile" key={p.page}>{p.clipId?(privateClips?<button type="button" className="frontpage-link" onClick={()=>onClip?.(p.clipId)} aria-label={'Apri prima pagina di '+p.outlet}><OutletWordmark name={p.outlet}/></button>:<a className="frontpage-link" href={'/api/clips/'+p.clipId} target="_blank" rel="noreferrer" aria-label={'Apri prima pagina di '+p.outlet}><OutletWordmark name={p.outlet}/></a>):<OutletWordmark name={p.outlet}/>}</div>):<p>Nessun richiamo Juventus nelle prime pagine verificate.</p>}</div></div>
+   <div className="jump-frontpages-list frontpages-wordmarks approval-frontpages"><b>{t('Juventus in prima pagina')}</b><div>{a.outlets===null?<p>{t('Prime pagine da verificare.')}</p>:a.outlets.length?(body.coverage.frontPages.filter(p=>p.juventus).sort((x,y)=>compact?frontpagePriority(x.outlet)-frontpagePriority(y.outlet):0)).map(p=><div className="frontpage-tile" key={p.page}>{p.clipId?(privateClips?<button type="button" className="frontpage-link" onClick={()=>onClip?.(p.clipId)} aria-label={t('Apri prima pagina di ')+p.outlet}><OutletWordmark name={p.outlet}/></button>:<a className="frontpage-link" href={'/api/clips/'+p.clipId} target="_blank" rel="noreferrer" aria-label={t('Apri prima pagina di ')+p.outlet}><OutletWordmark name={p.outlet}/></a>):<OutletWordmark name={p.outlet}/>}</div>):<p>{t('Nessun richiamo Juventus nelle prime pagine verificate.')}</p>}</div></div>
   </section>
-  {compact?<CombinedAnalysis body={body} analysis={a} onEdit={onEdit}/>:<>
+  {compact?<CombinedAnalysis lang={lang} body={body} analysis={a} onEdit={onEdit}/>:<>
   <section id="jump-coverage-donut"><div className="jcd-head"><small>DISTRIBUZIONE DELLA RASSEGNA</small><h2>Il peso dei temi di oggi</h2><p>Quota degli articoli selezionati per area editoriale. Ogni articolo appartiene a una sola area.</p></div>
    {a.selected>0?<div className="jcd-wrap"><div className="jcd-donut" aria-hidden="true" style={{background:`conic-gradient(${a.themes.map(t=>`${t.color} ${t.start}% ${t.end}%`).join(',')})`}}><div className="jcd-hole"><b>{a.selected}</b><span>articoli</span></div></div><div className="jcd-legend">{a.themes.map(t=><div className="jcd-row" key={t.label}><i style={{background:t.color}}/><span>{t.label}</span><strong>{t.count} · {t.displayPercent}%</strong></div>)}</div></div>:<p>Nessun articolo ancora selezionato.</p>}
   </section>

@@ -2,7 +2,7 @@
 import {useEffect,useRef,useState} from 'react';
 import LoginDialog from '../components/LoginDialog';
 import InterestDialog from '../components/InterestDialog';
-export default function SidebarEditorTools({children,hideInstructions=false,onAuthenticated}){
+export default function SidebarEditorTools({children,hideInstructions=false,onAuthenticated,lang='it'}){
  const [authenticated,setAuthenticated]=useState(false),[data,setData]=useState(null),[error,setError]=useState(''),[loading,setLoading]=useState(false),[exiting,setExiting]=useState(false);
  const dialog=useRef(null),trigger=useRef(null);
  useEffect(()=>{const open=()=>openInstructions();window.addEventListener('jump-open-instructions',open);return()=>window.removeEventListener('jump-open-instructions',open);});
@@ -13,7 +13,7 @@ export default function SidebarEditorTools({children,hideInstructions=false,onAu
  {authenticated&&!hideInstructions&&<button ref={trigger} className="summary-editor-access" type="button" aria-haspopup="dialog" onClick={openInstructions}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M5 3h14v18H5zM8 7h8M8 11h8M8 15h5"/></svg><span>Istruzioni e preferenze</span></button>}
  {children}
  <InterestDialog/>
- {authenticated?<button className="summary-editor-access" type="button" disabled={exiting} onClick={logout}><span aria-hidden="true">↪</span><span>{exiting?'Uscita…':'Esci'}</span></button>:<LoginDialog><span aria-hidden="true">↗</span><span>Accesso editor</span></LoginDialog>}
+ {authenticated?<button className="summary-editor-access" type="button" disabled={exiting} onClick={logout}><span aria-hidden="true">↪</span><span>{exiting?'Uscita…':'Esci'}</span></button>:<LoginDialog><span aria-hidden="true">↗</span><span>{lang==='en'?'Editor login':'Accesso editor'}</span></LoginDialog>}
  {error&&!dialog.current?.open&&<p className="sidebar-access-error" role="alert">{error}</p>}
  <dialog ref={dialog} className="instructions-dialog" aria-labelledby="instructions-title" onClick={e=>{if(e.target!==e.currentTarget)return;const r=e.currentTarget.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.currentTarget.close();}} onClose={()=>trigger.current?.focus()}>
  <header><div><small>REGOLE FISSE E PREFERENZE</small><h2 id="instructions-title">Istruzioni e preferenze</h2>{data&&<p>{data.localPreview?'Anteprima locale · base versione ':'Versione '}{data.version}{data.instructionProfile?' · '+data.instructionProfile:''}</p>}</div><button type="button" aria-label="Chiudi istruzioni" onClick={()=>dialog.current.close()}>×</button></header>

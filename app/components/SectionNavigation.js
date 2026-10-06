@@ -1,7 +1,8 @@
 'use client';
 import {useEffect,useState} from 'react';
+import {tr} from '../../lib/i18n';
 
-export default function SectionNavigation({articles}){
+export default function SectionNavigation({articles,lang='it'}){
  const categories=[...new Set(articles.map(a=>a.category).filter(Boolean))];
  const [active,setActive]=useState(categories[0]);
  useEffect(()=>{
@@ -18,5 +19,5 @@ export default function SectionNavigation({articles}){
   return()=>{cancelAnimationFrame(frame);window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);document.removeEventListener('change',schedule);};
  },[articles]);
  if(categories.length<2)return null;
- return <nav className="edition-jump-nav" aria-label="Vai agli articoli per tema"><span>Sezioni</span><div className="edition-section-links">{categories.map(category=><a key={category} data-edition-jump="true" href={'#articolo-'+articles.find(a=>a.category===category).id} aria-current={active===category?'location':undefined} onClick={()=>setActive(category)}>{category}</a>)}</div></nav>;
+ return <nav className="edition-jump-nav" aria-label={tr(lang,'Vai agli articoli per tema')}><span>{tr(lang,'Sezioni')}</span><div className="edition-section-links">{categories.map(category=><a key={category} data-edition-jump="true" href={'#articolo-'+articles.find(a=>a.category===category).id} aria-current={active===category?'location':undefined} onClick={()=>setActive(category)}>{tr(lang,category)}</a>)}</div></nav>;
 }

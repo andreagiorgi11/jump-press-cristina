@@ -37,7 +37,7 @@ export default function EditorApp({ready}){
  async function confirmDraft(){
   if(!current||busy||role!=='publisher')return;
   setBusy(true);setError('');setNotice('');
-  try{const updated=await publicationWithRecovery('publish',current);setCurrent(updated);setNotice('Rassegna pubblicata.');return true;}catch(e){if(e.draft)setCurrent(e.draft);setError(e.message);return false;}finally{setBusy(false);}
+  try{const {translationMail,...updated}=await publicationWithRecovery('publish',current);setCurrent(updated);setNotice(translationMail==='sent'?'Rassegna pubblicata. Avviso per la versione inglese inviato.':['failed','uncertain'].includes(translationMail)?'Rassegna pubblicata. L’avviso per la versione inglese non è partito: segnalalo ad Andrea.':'Rassegna pubblicata.');return true;}catch(e){if(e.draft)setCurrent(e.draft);setError(e.message);return false;}finally{setBusy(false);}
  }
  const canConfirm=current&&!editing&&role==='publisher'&&(!current.publishedVersions?.length||current.withdrawnAt);
  const confirm=canConfirm?{onConfirm:confirmDraft,disabled:busy,isRevision:!!current.publishedVersions?.length,date:current.body.date,version:current.version,summaryStale:current.body.executiveSummaryStale===true,introStale:current.body.introStale===true}:null;

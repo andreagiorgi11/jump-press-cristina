@@ -4,6 +4,9 @@ import {usePathname} from 'next/navigation';
 import {continuousClipReader} from '../lib/continuous-clip-reader';
 import {createClipAccess,waitForPreparedClip} from '../lib/clip-access';
 import {attachPdfPan} from '../lib/pdf-pan';
+import {tr} from '../lib/i18n';
+// Reader language of the current page (the English pages set <html lang="en">).
+const t=text=>tr(typeof document!=='undefined'&&document.documentElement.lang==='en'?'en':'it',text);
 
 export default function PdfLinkHandler(){
  const path=usePathname();
@@ -62,7 +65,7 @@ export default function PdfLinkHandler(){
    const rows=[...document.querySelectorAll('.articles > article[data-clip-id]')].filter(a=>!a.hidden).map(a=>({clipId:a.dataset.clipId,private:a.dataset.privateClip==='true',title:a.querySelector('h2')?.textContent||'Ritaglio'}));
    const index=rows.findIndex(a=>a.clipId===clipId);return index<0?null:{rows,index};
   };
-  const open=async(url,title='Ritaglio completo',context=null,privateClipId=null)=>{
+  const open=async(url,title=t('Ritaglio completo'),context=null,privateClipId=null)=>{
    close();const dialog=document.createElement('dialog');dialog.className='jump-clip-dialog is-loading';dialog.setAttribute('aria-label',title);
    // Popup sized so the whole first page is visible (then − / + to zoom, scroll for the next pages).
    // A4 estimate before paint, refined with the real page proportions once the PDF is open.
@@ -74,7 +77,7 @@ export default function PdfLinkHandler(){
    // Only what reading needs (24/09/2026): the article title and Chiudi on top, the pages as large as possible
    // (scrolled top to bottom), and a floating − / + for zoom. No clip switching, page buttons or "Adatta".
    const label=document.createElement('strong');label.textContent=title;
-   const button=document.createElement('button');button.type='button';button.textContent='Chiudi ×';button.setAttribute('aria-label','Chiudi ritaglio');button.onclick=close;bar.append(label,button);
+   const button=document.createElement('button');button.type='button';button.textContent=t('Chiudi ×');button.setAttribute('aria-label',t('Chiudi ritaglio'));button.onclick=close;bar.append(label,button);
    const controls=document.createElement('div');controls.className='jump-clip-navigation';
    const makeButton=(text,aria,shown=true)=>{const b=document.createElement('button');b.type='button';b.textContent=text;b.setAttribute('aria-label',aria);b.disabled=true;if(shown)controls.append(b);return b;};
    // The reader still updates page and zoom state on these; they are simply not displayed.
@@ -83,7 +86,7 @@ export default function PdfLinkHandler(){
    const zoomLabel=document.createElement('span');
    const area=document.createElement('div');area.className='jump-clip-pages';
    state.disposePan=attachPdfPan(area);
-   const status=document.createElement('p');status.setAttribute('role','status');status.className='clip-loading-status';status.textContent='Apertura ritaglio…';area.append(status);area.setAttribute('aria-busy','true');
+   const status=document.createElement('p');status.setAttribute('role','status');status.className='clip-loading-status';status.textContent=t('Apertura ritaglio…');area.append(status);area.setAttribute('aria-busy','true');
    dialog.append(bar,area,controls);document.body.append(dialog);
    dialog.addEventListener('cancel',e=>{e.preventDefault();close();});let backdropDown=false;dialog.addEventListener('pointerdown',e=>{backdropDown=e.target===dialog;});dialog.addEventListener('click',e=>{if(backdropDown&&e.target===dialog)close();backdropDown=false;});dialog.showModal();document.body.style.overflow='hidden';button.focus();
    try{
@@ -105,7 +108,7 @@ export default function PdfLinkHandler(){
      cachedPdfs.delete(cacheKey);cachedPdfs.set(cacheKey,{bytes:bytes.slice(),at:Date.now()});
      while(cachedPdfs.size>6)cachedPdfs.delete(cachedPdfs.keys().next().value);
     }).catch(()=>{});
-   }catch(error){if(!state.closed){dialog.classList.remove('is-loading');dialog.classList.add('has-error');area.setAttribute('aria-busy','false');status.textContent=error?.status===404||/Missing/.test(error?.name||'')?'Il ritaglio originale di questo articolo non è più disponibile. La sintesi resta consultabile nella rassegna.':'Ritaglio non disponibile. Chiudi e riprova tra poco.';area.replaceChildren(status);}}
+   }catch(error){if(!state.closed){dialog.classList.remove('is-loading');dialog.classList.add('has-error');area.setAttribute('aria-busy','false');status.textContent=error?.status===404||/Missing/.test(error?.name||'')?t('Il ritaglio originale di questo articolo non è più disponibile. La sintesi resta consultabile nella rassegna.'):t('Ritaglio non disponibile. Chiudi e riprova tra poco.');area.replaceChildren(status);}}
   };
   const onClick=e=>{
    const a=e.target.closest?.('a[href]');if(!a||e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;
@@ -113,9 +116,9 @@ export default function PdfLinkHandler(){
    if(!/^\/(?:ritaglio\/|ritagli\/|api\/clips\/|api\/r\d{8}-(?:article|clip)(?:\/|$))/.test(url.pathname))return;
    if(url.pathname.startsWith('/ritaglio/')){url.pathname=url.pathname.replace('/ritaglio/','/ritagli/')+'.pdf';url.search='?raw=1';}
    if(url.pathname.startsWith('/ritagli/'))url.searchParams.set('raw','1');
-   e.preventDefault();open(url.href,a.closest('article')?.querySelector('h2')?.textContent||'Ritaglio completo',articleContext(a.closest('article')?.dataset.clipId));
+   e.preventDefault();open(url.href,a.closest('article')?.querySelector('h2')?.textContent||t('Ritaglio completo'),articleContext(a.closest('article')?.dataset.clipId));
   };
-  const onPrivate=e=>{if(e.detail?.url||e.detail?.clipId){const context=articleContext(e.detail.clipId);open(e.detail.url,context?.rows[context.index].title||'Prima pagina',context,e.detail.url?null:e.detail.clipId);}};
+  const onPrivate=e=>{if(e.detail?.url||e.detail?.clipId){const context=articleContext(e.detail.clipId);open(e.detail.url,context?.rows[context.index].title||t('Prima pagina'),context,e.detail.url?null:e.detail.clipId);}};
   const warm=e=>{
    const target=e.target.closest?.('.article-title-link,a[href]');if(!target)return;
    clearTimeout(warmTimer);

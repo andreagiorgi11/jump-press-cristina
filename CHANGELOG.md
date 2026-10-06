@@ -1,3 +1,7 @@
+## 2026-10-06 — Versione inglese (in locale, non ancora online)
+
+Switch IT · EN nella sidebar, pagine `/en`, `/en/edizioni/<data>`, `/en/archivio`, PDF inglesi, testi fissi in `lib/i18n.js`, titolo originale sotto quello tradotto. Traduzioni in `translations/en/` del repository contenuti, valide solo per la versione italiana di origine. Strumenti MCP `read_edition_for_translation` e `publish_translation` (pubblicazione diretta con controllo della struttura). Mail «Rassegna pubblicata» a ogni pubblicazione tramite `jump-press-files` (nuova rotta `/notify-published`, ricevuta per data e versione); esito mostrato alla redazione. Dettagli in `docs/traduzione-inglese.md`. Verifica: 245 test superati, build riuscita, prova locale con traduzione di prova del 30/09 fuori dai dati reali.
+
 ## 2026-10-06 — Istruzioni per chi lavora sul progetto
 
 Scheda progetto in cima al README (dove sta cosa, come si lavora con il ramo unico `main` e la pubblicazione automatica Vercel, rollback, fallback manuale, avvio locale, variabili, sicurezza); il resto del README è marcato come storico. AGENTS.md allineato (porta 3019, repository di Cristina solo riferimento). `.env.example` completato con le variabili dell'archivio PDF e della modalità del sito. Solo documentazione: nessuna modifica al codice.
