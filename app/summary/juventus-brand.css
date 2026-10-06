@@ -737,3 +737,8 @@ body dialog h2{font-family:JuventusFans,Arial,Helvetica,sans-serif}
 .summary-edition .translation-notice p{margin:5px 0 0!important;color:#aaa!important;font:normal 400 12px/1.5 JumpRoboto,Arial,sans-serif!important}
 .translation-notice-clock{flex:none;margin-left:auto;color:#dfff2f;opacity:.8}
 @media(max-width:600px){.summary-edition .translation-notice{gap:12px;padding:14px 0;margin-bottom:22px}.summary-edition .translation-notice .translation-notice-icon{width:32px;height:32px;font-size:11px}.translation-notice-clock{display:none}}
+
+.summary-edition .translation-notice+.translation-notice{margin-top:-28px;border-top:0}
+.summary-edition>.today-notice{margin:0 0 28px}
+@media(max-width:600px){.summary-edition .translation-notice+.translation-notice{margin-top:-22px}}
+@media print{.translation-notice{display:none}}

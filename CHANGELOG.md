@@ -233,3 +233,6 @@ Interfaccia editor e archivio, correzioni per sezione, anteprima lettore, catego
 ## 2026-10-06 — English fallback
 - English navigation stays available when a translation is missing. The same Italian edition is shown with an English notice; PDF downloads use Italian until translated.
 - English home follows the latest publication; archive and date picker include reviews awaiting translation. Service failures remain distinct from missing translations.
+
+## 6 ottobre 2026 — Avvisi rassegna e traduzione
+- Avviso della rassegna odierna anche nella home inglese, con la grafica compatta condivisa. Coming soon soltanto per la traduzione della rassegna del giorno; messaggio neutro sulle edizioni passate.

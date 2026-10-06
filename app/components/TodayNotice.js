@@ -1,6 +1,7 @@
 'use client';
 import {useEffect,useState} from 'react';
 import './today-notice.css';
+import EditionNotice from './EditionNotice';
 const POLL_MS=3*60*1000;
 const day=date=>new Date(date+'T12:00:00Z').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',timeZone:'Europe/Rome'});
 const time=ms=>new Date(ms).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Rome'});
@@ -18,7 +19,7 @@ function editorCard(e){
  if(run.status==='failed')return {tone:'alert',title:'Automatismo interrotto',text:(phase?'Fase: '+phase+'. ':'')+(run.phase==='import'&&run.attemptsRemaining>0?'La data resta disponibile per il prossimo controllo programmato.':'Serve un intervento: verifica da GPT.')};
  return {tone:'idle',title:'Automatismo non ancora partito',text:'Parte all’arrivo della mail Ecostampa; controllo programmato alle 7:45.'};
 }
-export default function TodayNotice({initial,demo}){
+export default function TodayNotice({initial,demo,lang='it'}){
  const [data,setData]=useState(demo||{notice:initial?.notice||null,latestDate:initial?.latestDate||null,editor:null});
  useEffect(()=>{
   if(demo)return;
@@ -34,7 +35,7 @@ export default function TodayNotice({initial,demo}){
   load();timer=setInterval(load,POLL_MS);document.addEventListener('visibilitychange',load);
   return()=>{active=false;clearInterval(timer);document.removeEventListener('visibilitychange',load);};
  },[demo,initial?.latestDate]);
- const card=data.editor?editorCard(data.editor):null,notice=data.notice;
+ const card=lang!=='en'&&data.editor?editorCard(data.editor):null,notice=data.notice;
  if(card)return <section className={'today-notice is-editor is-'+card.tone} aria-live="polite">
   <small>Redazione · {day(data.editor.date)}</small>
   <h2><i aria-hidden="true"/>{card.title}</h2>
@@ -43,9 +44,11 @@ export default function TodayNotice({initial,demo}){
  </section>;
  if(!notice||data.editor?.published)return null;
  const scheduled=notice.state==='scheduled';
- return <section className={'today-notice '+(scheduled?'is-scheduled':'is-working')} aria-live="polite">
-  <small>Rassegna di {day(notice.today)}</small>
-  <h2><i aria-hidden="true"/>{scheduled?'Disponibile dalle 8:00':'In preparazione, disponibile a breve'}</h2>
-  <p>{scheduled?'La redazione sta preparando la rassegna stampa di oggi.':'La rassegna di oggi sarà pubblicata appena la redazione completa la revisione.'}{notice.latestDate&&<> Intanto puoi consultare quella di <b>{day(notice.latestDate)}</b>.</>}</p>
- </section>;
+ const en=lang==='en';
+ const title=en?(scheduled?'Today’s press review will be available from 8:00 AM':'Today’s press review is coming soon'):(scheduled?'La rassegna di oggi sarà disponibile dalle 8:00':'La rassegna di oggi sarà pronta a breve');
+ const previous=notice.latestDate&&new Date(notice.latestDate+'T12:00:00Z').toLocaleDateString(en?'en-GB':'it-IT',{day:'numeric',month:'long',timeZone:'Europe/Rome'});
+ return <EditionNotice badge="JP" title={title} lang={lang}>
+  {en?'Our editorial team is preparing today’s press review.':'La redazione sta preparando la rassegna stampa di oggi.'}
+  {previous&&(en?` In the meantime, you can read the ${previous} edition.`:` Intanto puoi consultare quella del ${previous}.`)}
+ </EditionNotice>;
 }
