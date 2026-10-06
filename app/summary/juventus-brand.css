@@ -720,3 +720,12 @@ body dialog h2{font-family:JuventusFans,Arial,Helvetica,sans-serif}
 /* Versione inglese: titolo originale italiano sotto quello tradotto. */
 .summary-content .edition-view .articles>article>.article-original-title{margin:5px 0 0;font:italic 400 13.5px/1.4 JumpRoboto,Arial,Helvetica,sans-serif;color:#7a7a7a}
 .summary-content .article-original-title .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* Più spazio tra switch di lingua e stemma: stemma e menu scendono, lo switch resta in alto (computer). */
+@media(min-width:901px){
+ .summary-sidebar .summary-sidebar-heading{margin-top:24px}
+ .summary-sidebar .lang-switch{top:-16px}
+}
+@media(min-width:901px) and (max-height:800px){
+ .summary-sidebar .summary-sidebar-heading{margin-top:16px}
+ .summary-sidebar .lang-switch{top:-12px}
+}
