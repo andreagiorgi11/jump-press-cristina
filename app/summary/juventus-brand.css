@@ -729,3 +729,11 @@ body dialog h2{font-family:JuventusFans,Arial,Helvetica,sans-serif}
  .summary-sidebar .summary-sidebar-heading{margin-top:16px}
  .summary-sidebar .lang-switch{top:-12px}
 }
+
+/* Translation status follows the black and lime reader masthead. */
+.summary-edition .translation-notice{display:flex;align-items:center;gap:16px;padding:17px 0;margin:0 0 28px;border:0;border-top:1px solid #ffffff26;border-bottom:1px solid #ffffff26;border-radius:0;background:transparent;color:#f3f3ef;font:normal 400 13px/1.5 JumpRoboto,Arial,sans-serif;text-align:left}
+.summary-edition .translation-notice .translation-notice-icon{display:grid;place-items:center;flex:none;width:38px;height:38px;background:#dfff2f;color:#151515;border:0;border-radius:3px;font:700 13px/1 JumpRoboto,Arial,sans-serif;letter-spacing:.5px}
+.summary-edition .translation-notice strong{display:block;color:#f3f3ef;font:500 17px/1.2 JuventusFans,Arial,sans-serif;letter-spacing:.2px}
+.summary-edition .translation-notice p{margin:5px 0 0!important;color:#aaa!important;font:normal 400 12px/1.5 JumpRoboto,Arial,sans-serif!important}
+.translation-notice-clock{flex:none;margin-left:auto;color:#dfff2f;opacity:.8}
+@media(max-width:600px){.summary-edition .translation-notice{gap:12px;padding:14px 0;margin-bottom:22px}.summary-edition .translation-notice .translation-notice-icon{width:32px;height:32px;font-size:11px}.translation-notice-clock{display:none}}

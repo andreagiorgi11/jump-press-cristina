@@ -7,7 +7,7 @@ import {join} from 'node:path';
 import {MemoryStore} from './helpers.mjs';
 import {newEdition} from '../lib/schema.js';
 import {saveDraft,publishDraft,withdrawDraft} from '../lib/editor-service.js';
-import {editionForTranslation,publishTranslation,translatedEdition,translatedEditions,mergeTranslation} from '../lib/translations.js';
+import {editionForTranslation,publishTranslation,englishReaderEdition,translatedEdition,translatedEditions,mergeTranslation} from '../lib/translations.js';
 import {sendPublishedMail} from '../services/jump-press-files/source-mail.mjs';
 
 async function fixture({notifyPublished}={}){
@@ -76,4 +76,18 @@ test('published mail: fixed subject, one message per version, a new version mail
   await sendPublishedMail({root,env,input:{date:'2026-10-07',version:4},sendMail});assert.equal(sent.length,2);
   await assert.rejects(sendPublishedMail({root,env,input:{date:'2026-10-07',version:'x'},sendMail}),e=>e.status===400);
  }finally{await rm(root,{recursive:true,force:true});}
+});
+
+test('English reader keeps the requested Italian edition until translated, then uses English',async()=>{
+ const {ctx,draft,articles}=await fixture();await publishDraft(ctx,draft.id,1,'PUBBLICA');
+ let result=await englishReaderEdition(null,ctx.store);
+ assert.equal(result.translationPending,true);assert.equal(result.unavailable,false);assert.equal(result.row.body.intro,'Cappello italiano');
+ await publishTranslation(ctx,{date:draft.body.date,sourceVersion:1,translation:english(articles)});
+ result=await englishReaderEdition(draft.body.date,ctx.store);
+ assert.equal(result.translationPending,false);assert.equal(result.row.body.intro,'English lead');
+ assert.equal((await englishReaderEdition('2026-01-01',ctx.store)).row,null);
+});
+test('English reader distinguishes unavailable storage from an absent edition',async()=>{
+ const result=await englishReaderEdition(null,{begin:async()=>{throw Error('offline');}});
+ assert.equal(result.unavailable,true);assert.equal(result.row,null);assert.equal(result.translationPending,false);
 });

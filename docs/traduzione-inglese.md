@@ -60,11 +60,14 @@ Attivazione: mail in arrivo da `info@andreagiorgistudio.it` con oggetto che iniz
    - Controllare che la mail arrivi a cristina@jumpmedia.it e che l'attività parta.
    - Verificare che `/en` mostri la traduzione e che il PDF inglese si scarichi.
 
-### Decisione ancora aperta
-- Finché non c'è nessuna traduzione, `/en/archivio` mostra la pagina con «No editions yet». Le altre pagine inglesi invece rimandano all'italiano senza avvisi. Andrea deve dire se rimandare all'italiano anche questa.
+### Decisione risolta — 6 ottobre 2026
+- Andrea ha approvato la rassegna italiana dentro l'interfaccia inglese, con un avviso EN quando manca la traduzione. Anche archivio e selezione data includono tutte le edizioni pubblicate.
 
 ### Pulizia dopo l'unione (nessuna urgenza)
 - Rami locali già uniti in `main`, da cancellare:
   - `feature/inglese`: rimuovere prima la sua worktree `C:\Users\Andrea\.jump-press\work-en` con `git worktree remove`;
   - `grafica/lettura-mobile`.
 - In `.claude/launch.json` della cartella Dropbox c'è la configurazione di prova `jump-press-inglese-prova`, da togliere. Usava la porta 3020 e una traduzione finta del 30/09 tenuta in una cartella temporanea.
+
+## Interfaccia inglese e attesa traduzione — 6 ottobre 2026
+Su richiesta di Andrea, il ramo feature/english-fallback mantiene interfaccia EN e rassegna italiana con avviso quando manca la traduzione. Home, archivio e selezione data includono le edizioni pubblicate; PDF italiano fino alla traduzione. Rilascio autorizzato da Andrea in chat.

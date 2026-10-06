@@ -229,3 +229,7 @@ Interfaccia editor e archivio, correzioni per sezione, anteprima lettore, catego
 - 190 test superati (5 nuovi su riserve/privacy/scambio/concorrenza), build press e news riuscite. Verifica browser online della sezione, comandi e assenza nell’anteprima lettore, senza modificare bozze reali. Verifica mobile a 390 px riuscita: menu, accesso alla seconda scelta e sezione leggibile senza scorrimento orizzontale.
 - Produzione READY: dpl_G7AUJnBE5jHpc3NcCBYuUPSexAMZ, https://jump-press-approvazione.vercel.app. Istruzioni v37 salvate e rilette, v36 nello storico. Aggiornare il catalogo del collegamento ChatGPT per i nuovi campi.
 - Backup mirato dei file precedenti e patch incrementale nella cartella di lavoro Codex della sessione; nessuna migrazione dei dati esistenti. Rollback sicuro descritto nel README: conservare il supporto ai campi privati già salvati.
+
+## 2026-10-06 — English fallback
+- English navigation stays available when a translation is missing. The same Italian edition is shown with an English notice; PDF downloads use Italian until translated.
+- English home follows the latest publication; archive and date picker include reviews awaiting translation. Service failures remain distinct from missing translations.

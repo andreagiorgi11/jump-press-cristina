@@ -1,11 +1,13 @@
 'use client';
 import {useEffect} from 'react';
 import {usePathname} from 'next/navigation';
+import {tr} from '../../lib/i18n';
 
 // Enhance the shared article markup, including the unchanged historical editions.
 export default function ArticleFilter(){
  const path=usePathname();
  useEffect(()=>{
+  const lang=path==='/en'||path.startsWith('/en/')?'en':'it',t=text=>tr(lang,text);
   let records=[];
   const prepare=()=>{
    records=records.filter(r=>{if(r.list.isConnected)return true;r.control.remove();return false;});
@@ -16,8 +18,8 @@ export default function ArticleFilter(){
     let record=records.find(r=>r.list===list);
     if(!record){
      const control=document.createElement('label');control.className='article-filter';
-     const label=document.createElement('span');label.textContent='Filtra';
-     const select=document.createElement('select');select.setAttribute('aria-label','Filtra articoli per tema');
+     const label=document.createElement('span');label.textContent=t('Filtra');
+     const select=document.createElement('select');select.setAttribute('aria-label',lang==='en'?'Filter articles by topic':'Filtra articoli per tema');
      control.append(label,select);heading.append(control);heading.classList.add('has-article-filter');
      record={list,heading,control,select,signature:''};records.push(record);
      select.onchange=()=>apply(record);
@@ -26,7 +28,7 @@ export default function ArticleFilter(){
     const signature=JSON.stringify(categories);
     if(signature!==record.signature){
      record.signature=signature;const selected=record.select.value;
-     record.select.replaceChildren(new Option('Tutti',''),...categories.map(c=>new Option(c,c)));
+     record.select.replaceChildren(new Option(t('Tutti'),''),...categories.map(c=>new Option(t(c),c)));
      record.select.value=categories.includes(selected)?selected:'';
     }
     apply(record);
