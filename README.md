@@ -1,12 +1,61 @@
-# Jump Press — GitHub e Vercel
+# Jump Press — rassegna stampa Juventus
 
-## Codice, rilascio e avvio locale - 6 ottobre 2026
+Scheda progetto aggiornata al 6 ottobre 2026. È la fonte valida per chi lavora sul progetto. Le sezioni sotto «Storico» documentano decisioni e rilasci precedenti: in caso di conflitto vale questa scheda.
 
-Il codice ufficiale è il ramo `main` di `andreagiorgi11/jump-press-cristina`, uguale al sito online; il progetto Vercel `jump-press-approvazione` pubblica da solo ogni push su `main`. Per lavorare: ramo temporaneo, verifica, unione in `main` dopo l'ok di Andrea, cancellazione del ramo. Avvio locale con `avvia-reale.bat` su http://127.0.0.1:3019, layout approvazione e dati reali. Non avviare la porta 3015.
+## Cos'è
 
-La configurazione privata è in `.local/real.env`, letta una sola volta dal launcher; non creare `.env.local` nella radice, perché Next espanderebbe di nuovo i dollari delle impronte password ereditate, invalidando gli accessi. Account e password restano invariati. Salvataggi e pubblicazioni sono reali. 
+Sito che pubblica ogni giorno la rassegna stampa sulla Juventus. Un automatismo ChatGPT legge il PDF di Ecostampa e prepara una bozza; un editor la controlla e la pubblica; i lettori (Juventus) leggono sintesi, ritagli e PDF. Cliente: Cristina Guerri. Sviluppo: AG Studio (Andrea Giorgi).
 
-Il manifest dei sorgenti verificati è in `.local/production-source-manifest.json`. Le dipendenze `node_modules` sono una junction verso quelle della worktree `jump-press-summary`, con identico `package-lock.json`, perché Dropbox bloccava la reinstallazione con EBUSY. Non rimuovere quella directory di dipendenze senza prima sostituire la junction con un'installazione completa. Le cache precedenti sono disattivate nei percorsi ignorati `.next-retired-*` e `.node_modules-retired-*`; le vecchie anteprime statiche sono in `Documents/Codex/2026-09-18/lavori/work/_archivio-jump-20261005`.
+## Dove sta cosa
+
+| Pezzo | Dove | Note |
+|---|---|---|
+| Codice | GitHub `andreagiorgi11/jump-press-cristina`, ramo **`main`** (remote locale `editor-fork`) | Unico ramo. Coincide con il sito online. |
+| Sito | Vercel, progetto `jump-press-approvazione` (team `andrea-giorgi`) — https://jump-press-approvazione.vercel.app | Collegato a GitHub: **ogni push su `main` va in produzione da solo**. Gli altri rami creano solo anteprime. |
+| Dati | GitHub privato `andreagiorgi11/jump-press-contenuti` | JSON scritti dal sito: bozze, revisioni, pubblicazioni, istruzioni, persone, sessioni. Non collegato a deploy. Non modificarlo a mano. |
+| PDF e ritagli | Server Hetzner AG Studio, servizio `jump-press-files` — https://jpfiles.agprojects.dev | Installazione in `services/jump-press-files/INSTALLAZIONE.md`. I file del 17–24/09 sono rimasti sul vecchio Vercel Blob e non vengono recuperati. |
+| Automatismo | ChatGPT, account di Cristina (attività Work: trigger Gmail Ecostampa e 07:45) | Parla col sito tramite il connettore MCP su `/mcp` (OAuth). Crea solo bozze. |
+| Repository di Cristina | `guerricristina-creator/jump-press-rassegna-stampa` (remote `upstream`) | Fermo al 23/09; push disabilitato. Solo riferimento. |
+| Sito News/Social | Progetto Vercel di Cristina `jump-press-news-cristina` | Separato; stesso codice in modalità `JUMP_SITE=news` (`npm run dev:news`, `npm run build:news`). |
+
+Stack: Next.js 15 (React 19), Node 24, pdf-lib/pdf.js per PDF e ritagli, login con nome utente e password (`JUMP_EDITOR_USERS`). Niente Supabase né database SQL.
+
+## Come si lavora
+
+1. Partire da `main` aggiornato e creare un ramo temporaneo.
+2. Modificare, poi verificare: `npm test` (test isolati, non toccano dati reali), `npm run build` e `npm run build:news`, prova in locale.
+3. Annotare la modifica in `CHANGELOG.md`.
+4. Unire in `main` **solo dopo l'ok di Andrea**: il push su `main` pubblica subito il sito.
+5. Controllare il deploy su Vercel e il sito online; poi cancellare il ramo temporaneo.
+
+Rollback: su Vercel ripristinare il deployment precedente (Instant Rollback), poi correggere `main`.
+
+Fallback manuale, solo in emergenza e se Vercel non pubblica da GitHub: da una copia pulita e aggiornata di `main`, `npx vercel deploy --prod --scope andrea-giorgi`. Mai pubblicare da cartelle diverse da `main`: il 5 ottobre un deploy da una copia locale stava per cancellare il lavoro di un'altra sessione.
+
+Un deploy del codice non pubblica bozze e non cambia le istruzioni editoriali: queste si gestiscono dall'editor e restano nel repository dati.
+
+## Avvio locale
+
+- Cartella di lavoro di Andrea: `C:\Users\Andrea\Dropbox\Andrea\AG Studio\Clienti e collaborazioni\Cristina Guerri\Progetti\CG creator\jump-press-rassegna-stampa`, sul ramo `main`.
+- Avvio: `avvia-reale.bat` (oppure `npm run dev`) → http://127.0.0.1:3019. Usa i **dati reali** della produzione: salvataggi, conferme e pubblicazioni sono reali. Avvisare Andrea prima di scrivere.
+- Configurazione: `.local/real.env` (mai su Git), letta da `scripts/dev-real.mjs`. Non creare `.env.local` nella radice.
+- Dipendenze: sul PC di Andrea `node_modules` è un collegamento (junction) a `C:\Users\Andrea\.jump-press\node_modules`, fuori da Dropbox per non sincronizzarlo. Su un altro computer: `npm ci`, preferibilmente fuori da Dropbox.
+- Non usare l'ambiente isolato `avvia-summary.bat` né `JUMP_LOCAL_INSTRUCTIONS_PREVIEW`.
+
+## Variabili d'ambiente
+
+Elenco in `.env.example` (solo nomi). I valori di produzione stanno solo su Vercel; quelli locali in `.local/real.env`. Principali: `JUMP_CONTENT_REPO`, `JUMP_CONTENT_BRANCH`, `JUMP_GITHUB_TOKEN` (dati), `JUMP_FILES_URL`, `JUMP_FILES_SECRET` (PDF), `JUMP_EDITOR_USERS`, `JUMP_SESSION_SECRET` (accessi), `JUMP_SITE`, `JUMP_APPROVAL_LIVE`, `NEXT_PUBLIC_JUMP_APPROVAL_LIVE`, `JUMP_EDITORIAL_MODEL=summary-v1` (modalità del sito).
+
+## Sicurezza
+
+- Nessuna credenziale in repository, chat o log. Il repository del codice è pubblico.
+- Bozze e PDF originali sono privati; ai lettori arrivano solo rassegne pubblicate e ritagli associati.
+- Permessi verificati dal server a ogni operazione; il connettore MCP dell'automatismo può solo creare bozze.
+- La rassegna pubblicata oggi è leggibile da chiunque abbia il link (decisione aperta con Cristina).
+
+---
+
+# Storico
 
 ## Registro attività — implementazione del 29 settembre 2026
 

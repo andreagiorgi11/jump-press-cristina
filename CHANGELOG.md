@@ -1,3 +1,7 @@
+## 2026-10-06 — Istruzioni per chi lavora sul progetto
+
+Scheda progetto in cima al README (dove sta cosa, come si lavora con il ramo unico `main` e la pubblicazione automatica Vercel, rollback, fallback manuale, avvio locale, variabili, sicurezza); il resto del README è marcato come storico. AGENTS.md allineato (porta 3019, repository di Cristina solo riferimento). `.env.example` completato con le variabili dell'archivio PDF e della modalità del sito. Solo documentazione: nessuna modifica al codice.
+
 ## 2026-10-06 — correzione crash promozione dalla seconda scelta
 
 Il pop-up conservava la scelta aperta mentre lo stato locale eliminava il candidato dalla panchina: il render leggeva il titolo di un articolo non più presente. Lo stato modificabile resta ora stabile durante il salvataggio; il recupero chiude la scelta e il pop-up verifica la presenza dell’articolo. Nessuna modifica a dati, API o PDF.
