@@ -39,7 +39,7 @@ Un deploy del codice non pubblica bozze e non cambia le istruzioni editoriali: q
 - Cartella di lavoro di Andrea: `C:\Users\Andrea\Dropbox\Andrea\AG Studio\Clienti e collaborazioni\Cristina Guerri\Progetti\CG creator\jump-press-rassegna-stampa`, sul ramo `main`.
 - Avvio: `avvia-reale.bat` (oppure `npm run dev`) → http://127.0.0.1:3019. Usa i **dati reali** della produzione: salvataggi, conferme e pubblicazioni sono reali. Avvisare Andrea prima di scrivere.
 - Configurazione: `.local/real.env` (mai su Git), letta da `scripts/dev-real.mjs`. Non creare `.env.local` nella radice.
-- Dipendenze: sul PC di Andrea `node_modules` è un collegamento (junction) a `C:\Users\Andrea\.jump-press\node_modules`, fuori da Dropbox per non sincronizzarlo. Su un altro computer: `npm ci`, preferibilmente fuori da Dropbox.
+- Dipendenze: sul PC di Andrea `node_modules` è una cartella normale locale, esclusa da Dropbox con `com.dropbox.ignored=1` e una regola dedicata in `rules.dropboxignore`. Non ricreare junction dentro Dropbox: il 06/10/2026 il collegamento precedente causava accessi ripetuti durante la sincronizzazione. La vecchia copia `.node_modules-retired-20261005` è esclusa; le dipendenze originali in `C:\Users\Andrea\.jump-press\node_modules` sono conservate. Su un altro computer: `npm ci`, preferibilmente fuori da Dropbox.
 - Non usare l'ambiente isolato `avvia-summary.bat` né `JUMP_LOCAL_INSTRUCTIONS_PREVIEW`.
 
 ## Versione inglese
