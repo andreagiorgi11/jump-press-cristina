@@ -695,14 +695,14 @@ body dialog h2{font-family:JuventusFans,Arial,Helvetica,sans-serif}
 .summary-content .edition-view .articles>article{padding:22px 32px 24px 74px}
 .summary-content .edition-view .articles>article>.article-number-rail{width:46px;padding-top:24px;font-size:16px;line-height:16px}
 .summary-content .edition-view .articles>article>.article-meta-line{margin:0}
-.summary-content .edition-view .articles>article>h2{margin:12px 0 0;font-size:25px;line-height:1.18}
+.summary-content .edition-view .articles>article>h2{margin:17px 0 0;font-size:25px;line-height:1.18}
 .summary-content .edition-view .articles>article>.editorial-kicker{margin:6px 0 0}
-.summary-content .edition-view .articles>article>p{margin:14px 0 0;font-size:16px;line-height:1.6}
+.summary-content .edition-view .articles>article>p{margin:18px 0 0;font-size:16px;line-height:1.6}
 .summary-content .edition-view .articles>.article-group-heading{padding:18px 28px;font-size:22px}
 @media(max-width:700px){
  .summary-content .edition-view .articles>article{padding:18px 16px 20px 42px}
  .summary-content .edition-view .articles>article>.article-number-rail{width:26px;padding-top:20px;font-size:11px;line-height:11px}
- .summary-content .edition-view .articles>article>h2{margin:10px 0 0;font-size:21px;line-height:1.2}
- .summary-content .edition-view .articles>article>p{margin-top:12px;font-size:15.5px;line-height:1.55}
+ .summary-content .edition-view .articles>article>h2{margin:14px 0 0;font-size:21px;line-height:1.2}
+ .summary-content .edition-view .articles>article>p{margin-top:16px;font-size:15.5px;line-height:1.55}
  .summary-content .edition-view .articles>.article-group-heading{padding:14px 18px;font-size:20px}
 }
