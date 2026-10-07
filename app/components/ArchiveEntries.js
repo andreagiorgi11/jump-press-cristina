@@ -25,8 +25,9 @@ export default function ArchiveEntries({entries,lang='it',editor=false,unavailab
     <span className="archive-card-body">
      <span className="archive-card-meta">{fullDate(entry.date)}{entry.draft?<strong className="archive-badge is-draft">Bozza</strong>:editor&&<strong className="archive-badge">Pubblicata</strong>}</span>
      <span className="archive-card-title">{lang==='en'?<>Juventus <em>press review</em></>:<>Rassegna stampa <em>Juventus</em></>}</span>
-     {p?.intro&&<span className="archive-card-intro">{p.intro}</span>}
-     {p&&<span className="archive-card-tags"><span className="archive-card-count">{p.articles} {t('articoli')}</span>{p.sections.map(s=><span key={s}>{t(s)}</span>)}</span>}
+     {entry.previewContent}
+     {!entry.previewContent&&p?.intro&&<span className="archive-card-intro">{p.intro}</span>}
+     {!entry.previewContent&&p&&<span className="archive-card-tags"><span className="archive-card-count">{p.articles} {t('articoli')}</span>{p.sections.map(s=><span key={s}>{t(s)}</span>)}</span>}
      <span className="archive-card-action">{entry.draft?'Apri la bozza':t('Leggi la rassegna')} <span aria-hidden="true">→</span></span>
     </span>
    </Link>

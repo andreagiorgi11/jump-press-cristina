@@ -775,3 +775,34 @@ body dialog h2{font-family:JuventusFans,Arial,Helvetica,sans-serif}
 .summary-review-confirm{margin-top:10px;padding:10px 16px;border:1px solid #cbea00;background:#dfff2f;color:#151515;border-radius:4px;font:600 13px JumpRoboto,Arial,sans-serif;cursor:pointer}
 .summary-review-confirm:disabled{opacity:.5;cursor:default}
 .summary-review-success{flex-shrink:0;padding:12px 20px;background:#f3f8dc;color:#345019;font:600 14px JumpRoboto,Arial,sans-serif}
+
+/* The instructions dialog is light even when nested inside the dark sidebar. */
+body .instructions-dialog h2,body .instructions-dialog h3{color:#171919}
+.instructions-search{position:sticky;top:-24px;z-index:1;background:#fff;padding:14px 0;border-bottom:1px solid #dce0d7;color:#171919}
+.instructions-search label{display:block;font:600 13px JumpRoboto,Arial;margin:0 0 8px;color:#171919}
+.instructions-search-controls{display:flex;gap:8px;align-items:center}
+.instructions-search input{min-width:0;flex:1;width:100%;box-sizing:border-box;padding:10px;border:1px solid #858b81;border-radius:6px;background:#fff;color:#171919;font:14px JumpRoboto,Arial}
+.instructions-search button{min-height:40px;padding:8px 12px;border:1px solid #858b81;border-radius:6px;background:#f1f4eb;color:#171919;cursor:pointer;font:600 13px JumpRoboto,Arial}
+.instructions-search button:disabled{opacity:.45;cursor:default}
+.instructions-search :focus-visible{outline:2px solid #526400;outline-offset:2px}
+.instructions-search [role=status]{display:block;margin-top:7px;font:12px JumpRoboto,Arial;color:#51574d}
+.instructions-readonly mark{background:#edf4a7;color:#171919}
+.instructions-readonly mark[data-current=true]{background:#d7ff00;outline:2px solid #526400;scroll-margin:150px 0}
+@media(max-width:480px){.instructions-search-controls{gap:4px}.instructions-search button{padding:8px}.instructions-dialog{padding:16px}.instructions-search{top:-16px}}
+
+.instructions-views{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0 4px}
+.instructions-views button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:5px;padding:16px;border:1px solid #cfd4c9;border-radius:10px;background:#f7f8f5;color:#171919;cursor:pointer;font:14px JumpRoboto,Arial}
+.instructions-views button[aria-pressed=true]{background:#f2f7da;border:2px solid #637517;padding:15px;box-shadow:inset 0 3px #d7ff00}
+.instructions-views strong{font-size:17px}.instructions-views span{font-size:12px;color:#51574d}
+.instructions-views button:focus-visible{outline:2px solid #526400;outline-offset:3px}
+.instructions-document{font:14px/1.75 JumpRoboto,Arial,sans-serif;color:#292e26;overflow-wrap:anywhere}
+.instructions-document section{padding:8px 0 18px}
+.instructions-document section+section{border-top:1px solid #dce0d7}
+body .instructions-dialog .instructions-document :is(h3,h4,h5,h6){font-family:JumpRoboto,Arial,sans-serif;color:#171919;line-height:1.4;margin:28px 0 12px;font-weight:700;letter-spacing:0}
+.instructions-document h3{font-size:21px}.instructions-document h4{font-size:18px}.instructions-document :is(h5,h6){font-size:15px}
+.instructions-document p{margin:12px 0}.instructions-document :is(ul,ol){padding-left:25px;margin:14px 0}.instructions-document li{padding-left:4px;margin:8px 0}
+.instructions-document code{font:12px/1.5 monospace;background:#f0f2ec;padding:2px 4px;border-radius:4px;color:#30382a}
+.instructions-document strong{font-weight:700;color:#171919}.instructions-document hr{border:0;border-top:1px solid #dce0d7;margin:24px 0}
+.instructions-document mark{background:#edf4a7;color:#171919}
+.instructions-document mark[data-current=true]{background:#d7ff00;outline:2px solid #526400;scroll-margin:150px 0}
+@media(max-width:480px){.instructions-views{gap:8px}.instructions-views button{padding:12px}.instructions-views button[aria-pressed=true]{padding:11px}.instructions-views span{font-size:11px}}

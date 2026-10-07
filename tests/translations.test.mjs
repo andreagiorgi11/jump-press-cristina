@@ -136,3 +136,28 @@ test('English reader loads both published bodies concurrently and retains Italia
  assert.equal(unavailable.unavailable,true);assert.equal(unavailable.translationPending,true);
  assert.equal(unavailable.row.body.intro,'Cappello italiano');
 });
+
+import {correctEnglishSection} from '../lib/translations.js';
+test('English introduction and key point corrections persist without changing Italian content or articles',async()=>{
+ const {ctx,draft,articles,mails}=await fixture();await publishDraft(ctx,draft.id,1,'PUBBLICA');await publishTranslation(ctx,{date:draft.body.date,sourceVersion:1,translation:english(articles)});
+ const before=structuredClone(ctx.store.files),view=await englishReaderEdition(draft.body.date,ctx.store);
+ const input={date:draft.body.date,sourceVersion:1,revision:view.row.translationRevision,section:'intro',value:'Corrected introduction'};
+ const intro=await correctEnglishSection({...ctx,role:'editor'},input);
+ assert.equal(intro.value,input.value);
+ await assert.rejects(correctEnglishSection(ctx,input),e=>e.status===409);
+ const points={...input,revision:intro.revision,section:'keyPoints',value:['Positivo: Improved: new detail','Negativo: Concern: new detail']};
+ for(const role of ['producer','reader',undefined])await assert.rejects(correctEnglishSection({...ctx,role},points),e=>e.status===403);
+ for(const value of [[],['Negativo: Wrong kind','Negativo: Detail'],['Positivo: ','Negativo: Detail']])await assert.rejects(correctEnglishSection(ctx,{...points,value}));
+ await assert.rejects(correctEnglishSection(ctx,{...input,revision:intro.revision,value:''}));
+ await assert.rejects(correctEnglishSection(ctx,{...points,dateOverride:'2026-10-08'}));
+ const result=await correctEnglishSection(ctx,points);
+ assert.notEqual(result.revision,intro.revision);
+ const read=(await translatedEdition(input.date,'en',ctx.store)).row.body;
+ assert.equal(read.intro,input.value);assert.deepEqual(read.keyPoints,points.value);
+ for(const [path,value] of Object.entries(before))if(path!=='translations/en/'+input.date+'.json')assert.deepEqual(ctx.store.files[path],value,path);
+ assert.deepEqual(ctx.store.files['translations/en/'+input.date+'.json'].content.articles,before['translations/en/'+input.date+'.json'].content.articles);
+ assert.equal(mails.length,1);
+ const commit=ctx.store.commit;ctx.store.commit=async()=>{const error=new Error('Concurrent update');error.status=409;throw error;};
+ await assert.rejects(correctEnglishSection(ctx,{...input,revision:result.revision,value:'Must not overwrite'}),e=>e.status===409);ctx.store.commit=commit;
+ await withdrawDraft(ctx,draft.id,1,'RITIRA_E_MODIFICA');await assert.rejects(correctEnglishSection(ctx,{...input,revision:result.revision}),e=>e.status===409);
+});

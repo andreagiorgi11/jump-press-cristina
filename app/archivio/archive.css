@@ -55,3 +55,77 @@
 /* Cestino: a quieter pill after the filters, same height, not a filter (never "selected"). */
 .archive-page .archive-filters .archive-trash-button{background:transparent;border-color:#ffffff40;color:#e3e3e3}
 .archive-page .archive-filters .archive-trash-button:hover{background:#ffffff14;border-color:#fff;color:#fff}
+
+.archive-title-row{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.archive-title-row h1{margin-bottom:0}
+.archive-search-open{display:inline-flex;align-items:center;justify-content:center;gap:9px;flex:none;padding:12px 18px;border:1px solid #dfff2f;border-radius:99px;background:#dfff2f;color:#151515;font:700 14px/1.3 Arial,sans-serif;cursor:pointer}
+.archive-search-open:hover{background:#efffa3}
+.archive-search-dialog{box-sizing:border-box;width:min(1120px,calc(100vw - 40px));max-height:88dvh;margin:auto;padding:26px;border:1px solid #ddd;border-radius:20px;background:#fff;color:#151515;overflow:auto;font:15px/1.5 Arial,sans-serif}
+.archive-search-dialog::backdrop{background:#0009}
+.archive-search-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.archive-search-heading h2{margin:0;color:#151515;font:700 30px/1.2 JuventusFans,Arial,sans-serif}
+.archive-search-close{width:40px;height:40px;border:1px solid #ddd;border-radius:50%;background:#f5f5f5;color:#151515;font:28px/1 Arial,sans-serif;cursor:pointer}
+.archive-search-help{color:#555;margin:14px 0 20px}
+.archive-search-form label{display:block;color:#151515;font-weight:700;margin-bottom:8px}
+.archive-search-form .archive-search-fields{display:grid;grid-template-columns:minmax(240px,1fr) minmax(240px,.8fr) auto;gap:18px;align-items:start}
+.archive-search-query{min-width:0}
+.archive-search-query>div{display:flex;gap:8px}
+.archive-search-form input{box-sizing:border-box;min-width:0;flex:1;padding:12px;border:1px solid #aaa;border-radius:10px;background:white;color:#151515;font:16px/1.4 Arial,sans-serif}
+.archive-search-form button{border:0;border-radius:10px;padding:12px 18px;background:#151515;color:#fff;font-weight:700;cursor:pointer}
+.archive-search-form button:disabled{opacity:.45;cursor:default}
+.archive-search-dialog :focus-visible,.archive-search-open:focus-visible{outline:3px solid #869a10;outline-offset:3px}
+.archive-search-status{min-height:24px;margin-top:18px;color:#555}
+.archive-search-error{padding:12px;background:#fff4e0;color:#764900;border:1px solid #e9ce9b;border-radius:10px}
+.archive-search-group{margin-top:22px;border:1px solid #ddd;border-radius:12px;overflow:hidden}
+.archive-search-group h3{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:0;padding:14px 18px;background:#f1f1f1;color:#151515;font:700 16px/1.4 Arial,sans-serif}
+.archive-search-group ul{list-style:none;padding:0;margin:0}
+.archive-search-group li{padding:16px 18px;border-top:1px solid #eee}
+.archive-search-group a{color:#151515;font-size:17px;font-weight:700;text-underline-offset:3px}
+.archive-search-group small{display:block;margin:5px 0;color:#666}
+.archive-search-group p{margin:6px 0 0;color:#444}
+@media(max-width:700px){.archive-title-row{align-items:flex-start;flex-wrap:wrap;gap:18px}.archive-search-dialog{padding:18px}.archive-search-open{margin-left:auto}.archive-search-heading h2{font-size:26px}}
+
+.archive-search-period{margin-top:0;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px!important}
+.archive-search-period label{min-width:0;margin-bottom:0}
+.archive-search-period input{display:block;width:100%;margin-top:6px}
+.archive-search-group p{white-space:pre-wrap;overflow-wrap:anywhere}
+
+.archive-search-form .archive-search-title-only{display:flex;align-items:center;gap:10px;margin:12px 0 0;font-size:14px;cursor:pointer}
+.archive-search-form .archive-search-title-only input{flex:none;width:18px;height:18px;margin:0;padding:0;accent-color:#151515}
+
+@media(max-width:700px){.archive-search-form .archive-search-fields{grid-template-columns:minmax(0,1fr);gap:14px}.archive-search-dialog{width:calc(100vw - 28px)}}
+
+.archive-search-period-choice>label{margin:0}
+.archive-search-period-choice select{display:block;box-sizing:border-box;width:100%;padding:12px;margin-top:8px;border:1px solid #aaa;border-radius:10px;background:#fff;color:#151515;font:16px/1.4 Arial,sans-serif}
+.archive-search-fields.is-custom .archive-search-period-choice,.archive-search-fields.is-custom .archive-search-period{display:contents!important}
+.archive-search-form .archive-search-fields.is-custom{grid-template-columns:minmax(200px,1fr) 180px minmax(150px,.45fr) minmax(150px,.45fr) auto;align-items:start}
+.archive-search-fields.is-custom .archive-search-period input{margin-top:8px}
+@media(max-width:900px){
+ .archive-search-form .archive-search-fields.is-custom{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+ .archive-search-fields.is-custom .archive-search-query,.archive-search-fields.is-custom .archive-search-period-choice>label{grid-column:1/-1}
+}
+
+/* One shared control rhythm for quick and custom periods. */
+.archive-search-form .archive-search-fields label{display:block;margin:0;color:#151515;font:700 13px/20px Arial,sans-serif}
+.archive-search-form .archive-search-query>label{margin-bottom:8px}
+.archive-search-form .archive-search-fields input,
+.archive-search-form .archive-search-fields select,
+.archive-search-form .archive-search-fields button{box-sizing:border-box;height:48px;min-height:48px;border-radius:10px;vertical-align:middle}
+.archive-search-form .archive-search-fields input,
+.archive-search-form .archive-search-fields select{padding:0 12px;font:400 16px/normal Arial,sans-serif}
+.archive-search-form .archive-search-query input{margin:0}
+.archive-search-form .archive-search-fields select,
+.archive-search-form .archive-search-period input{margin-top:8px}
+.archive-search-form .archive-search-fields button{margin:0;padding:0 18px;font:700 13px/20px Arial,sans-serif}
+
+.archive-selection-bar{position:sticky;top:-26px;z-index:2;display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:14px 0;background:#fff;border-bottom:1px solid #ddd}
+.archive-selection-bar span{margin-right:auto;font-weight:700}
+.archive-selection-bar button{padding:10px 14px;border:1px solid #151515;border-radius:9px;background:#151515;color:#fff;font-weight:700;cursor:pointer}
+.archive-selection-bar button:disabled{opacity:.45;cursor:default}
+.archive-search-group .archive-selectable-result{display:grid;grid-template-columns:20px minmax(0,1fr);gap:12px}
+.archive-selectable-result>input{width:18px;height:18px;margin:4px 0 0;accent-color:#151515;cursor:pointer}
+@media(max-width:700px){.archive-selection-bar{top:-18px}}
+
+.archive-search-form .archive-search-fields>button{align-self:start;margin-top:28px}
+@media(max-width:900px){.archive-search-form .archive-search-fields.is-custom>button{grid-column:1/-1;justify-self:end;margin-top:0}}
+@media(max-width:700px){.archive-search-form .archive-search-fields>button{justify-self:end;margin-top:0}}

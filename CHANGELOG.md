@@ -1,3 +1,69 @@
+## 2026-10-07 — Rilascio approvato
+
+Rilascio delle modifiche locali: istruzioni più rapide, ricercabili e formattate; modifica del cappello e dei punti positivi/negativi inglesi; archivio più rapido con anteprime delle bozze; ricerca articoli con periodi, solo titolo e avvio automatico; selezione e anteprima PDF. Pulsante Cerca a destra dopo il periodo.
+
+Verifica: 286 test superati, build Press e News completate, controlli browser e PDF completati. Rilascio tramite push GitHub su main del progetto jump-press-approvazione. Commit precedente per eventuale rollback: 79fb26fc511060489d0272ebfc55e0cd33409977.
+
+## 2026-10-07 — Posizione pulsante Cerca (locale)
+
+Pulsante Cerca all’estrema destra, dopo Periodo e le eventuali date personalizzate; ricerca automatica invariata.
+
+## 2026-10-07 — Ricerca automatica dopo la digitazione (locale)
+
+Ricerca dopo un secondo di pausa, anche cambiando periodo o Solo nel titolo. Cerca/Invio avviano subito e cancellano il timer; nuove modifiche annullano richieste precedenti. Sotto due caratteri si azzerano risultati e selezione. Date non valide non avviano richieste automatiche.
+
+## 2026-10-07 — Anteprima PDF selezionati (locale)
+
+Visualizza selezionati in PDF apre il documento in una nuova scheda, senza download automatico. Salvataggio e stampa restano disponibili nel visualizzatore PDF del browser. Finestra aperta sul clic per evitare blocchi durante la generazione; errori conservano la selezione.
+
+## 2026-10-07 — PDF degli articoli selezionati (locale)
+
+Caselle a sinistra dei risultati e barra con conteggio, esportazione PDF e deselezione. PDF con sintesi complete, date e stato Bozza/Pubblicata. Server rilegge gli articoli selezionati e controlla permessi, pubblicazione e revisione prima di esportare; nessun testo client considerato fonte. Nuova ricerca azzera la selezione alla prima risposta valida.
+
+## 2026-10-07 — Campi ricerca coerenti (locale)
+
+Etichette con identica altezza di riga e distanza dai controlli. Ricerca, Cerca, Periodo e date tutti alti 48 px; allineamento verificato nei periodi rapidi e personalizzati.
+
+## 2026-10-07 — Allineamento periodo personalizzato (locale)
+
+Ricerca, menu Periodo e date personalizzate sulla stessa riga desktop, senza colonna vuota. Su schermi stretti disposizione compatta in righe successive.
+
+## 2026-10-07 — Periodi rapidi nella ricerca (locale)
+
+Menu Periodo con Ultimo giorno (predefinito), Ultimi due giorni, Ultima settimana, Ultimo mese (30 giorni) e Personalizzato. Intervalli inclusivi rispetto alla giornata corrente italiana; Dal/Al compaiono solo per il periodo personalizzato.
+
+## 2026-10-07 — Layout ricerca archivio (locale)
+
+Pop-up ampliato fino a 1120 px; ricerca e date affiancate sul computer, disposte su due righe sui telefoni.
+
+## 2026-10-07 — Ricerca solo nel titolo (locale)
+
+Spunta facoltativa Solo nel titolo, compatibile con il periodo selezionato. Esclude sintesi e autore dalla ricerca, mantenendo la sintesi integrale nei risultati.
+
+## 2026-10-07 — Periodo e sintesi integrali nella ricerca (locale)
+
+Filtri Dal/Al facoltativi e inclusivi, applicati prima di leggere le rassegne. Date verificate anche sul server. I risultati mostrano tutta la sintesi, senza estratti o troncamenti.
+
+## 2026-10-07 — Anteprime bozze e ricerca articoli in archivio (locale)
+
+Le bozze mostrano cappello su tre righe, conteggio e categorie come le pubblicate, mantenendo fascia grigia e stato Bozza. Dettagli caricati dopo l’elenco. Cerca articoli apre un dialogo con ricerca per titolo, sintesi e autore, risultati per data e stato e link diretto all’articolo. Ricerca progressiva sull’intero archivio corrente, letture limitate a quattro in parallelo, nessun risultato privato senza accesso editor; cestino escluso e pubblicazioni non duplicate come bozze. Errori segnalati conservando i risultati disponibili. Ricerca anche nella versione inglese.
+
+## 2026-10-07 — Correzione cappello e punti chiave inglesi (locale)
+
+Matite per introduzione e riepilogo della giornata nella rassegna inglese pubblicata. Modulo con punti positivi e negativi separati, senza prefissi tecnici visibili. Salvataggio limitato al testo della traduzione, con permessi editor/publisher e controllo della revisione; conflitti ed errori conservano il testo nel modulo. Italiano, data, articoli e struttura della traduzione invariati.
+
+## 2026-10-07 — Apertura archivio (locale)
+
+Indice e versioni delle bozze letti da un unico commit aggiornato, senza importare il servizio di modifica/PDF per elencare le rassegne. Elenco e collegamenti disponibili prima delle anteprime, caricate in streaming; navigazione interna e stato di caricamento. Anche le anteprime inglesi vengono caricate dopo l’elenco. Errori delle anteprime segnalati senza nascondere le rassegne. Autorizzazioni e controlli server sulle modifiche invariati.
+
+## 2026-10-07 — Schede istruzioni e preferenze (locale)
+
+Due carte selezionabili separano Istruzioni e Preferenze. Visualizzazione con titoli, paragrafi, elenchi e grassetti; i commenti tecnici sono nascosti, mantenendo visibili persone e indicazioni. La ricerca opera sul testo visibile della scheda selezionata. Il contenuto salvato e il contratto MCP restano invariati; nessun HTML dei documenti viene eseguito.
+
+## 2026-10-07 — Ricerca e apertura delle istruzioni (locale)
+
+Pulsante Cerca nel pannello istruzioni, evidenziazione delle corrispondenze, conteggio e navigazione precedente/successivo. Titoli scuri sul fondo bianco. Intestazione semplificata: resta la versione, senza etichetta del profilo né sottotitolo; nessuna indicazione sotto la ricerca vuota. Letture di istruzioni e preferenze in parallelo sullo stesso commit aggiornato; il profilo precedente viene letto solo se manca quello Summary. Precaricamento su avvicinamento al pulsante, richieste sovrapposte accorpate e ultima versione leggibile durante l’aggiornamento, con errori espliciti. Autorizzazioni e dati editoriali invariati. Verifica: 269 test isolati superati; ricerca, navigazione tra 7 corrispondenze, nessun risultato, contrasto e riapertura verificati nel browser sui dati reali senza salvataggi.
+
 ## 2026-10-06 — Rilascio approvato: revisione, mobile e inglese
 
 Inclusi i miglioramenti locali descritti sotto: pubblicazione e conferme piu rapide, conferme separate di cappello e Summary, avvisi coerenti con lo stato pubblicato, navigazione mobile, correzione dei soli testi inglesi pubblicati e passaggio IT/EN. Regole di traduzione aggiornate sui nomi dei Paesi. Verifiche prima del rilascio: 267 test superati, build Press e News, navigazione nel browser e generazione dei PDF IT/EN e Summary EN. Rilascio attraverso GitHub main e integrazione Vercel; rollback precedente aea5526. Le notifiche delle attivita ChatGPT restano da gestire con Cristina.
