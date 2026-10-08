@@ -1,9 +1,9 @@
-import {visibleSynthesisLabels} from '../../lib/check-labels';
+import {articleEditorialNote} from '../../lib/check-labels';
 export default function DraftChecks({body}){
  if(!body.sourceImportId)return null;
  const pending=body.articles.filter(a=>a.pdfCheck?.status==='pending').length;
  const pdf=body.articles.filter(a=>a.pdfCheck?.status!=='matched'&&a.pdfCheck?.status!=='pending').length;
- const labels=body.articles.flatMap(a=>visibleSynthesisLabels(a.synthesisCheck));
+ const labels=body.articles.flatMap(a=>articleEditorialNote(a)?['Nota editoriale']:[]);
  const synth=labels.length;
  const covers=(body.coverage?.frontPages||[]).filter(p=>p.juventus&&!p.clipId).length;
  if(!pending&&!pdf&&!synth&&!covers)return null;

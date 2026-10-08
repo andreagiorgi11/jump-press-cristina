@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createRequire} from 'node:module';
+import {createElement} from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import swc from 'next/dist/build/swc/index.js';
+await swc.loadBindings();
+function component(name){const url=new URL('../app/components/'+name+'.js',import.meta.url);const input=readFileSync(url,'utf8').replace(/^import ['"].*\.css['"];?$/gm,'');const {code}=swc.transformSync(input,{jsc:{parser:{syntax:'ecmascript',jsx:true},target:'es2022',transform:{react:{runtime:'automatic'}}},module:{type:'commonjs'}});const mod={exports:{}};new Function('module','exports','require',code)(mod,mod.exports,createRequire(url));return mod.exports.default;}
+test('editor status renders all stages, retained state on failure and human changes without certifying facts',()=>{const Banner=component('EditorialReviewBanner');for(const status of ['waiting','running','completed','interrupted']){const html=renderToStaticMarkup(createElement(Banner,{review:{status,report:'Resoconto',modifiedAfterReview:true},error:'offline'}));assert.match(html,/CONTROLLO EDITORIALE/);assert.match(html,/offline/);assert.match(html,/dopo il controllo/);assert.match(html,/Resoconto/);assert.doesNotMatch(html,/fatti verificati/i);}assert.equal(renderToStaticMarkup(createElement(Banner,{review:null,error:''})), '');});
+test('main and reserve warnings show concrete editorial notes instead of legacy literal-match alerts',()=>{const a={id:'a',title:'Titolo',summary:'Sintesi',outlet:'Testata',pages:[1],clipId:'clip',pdfCheck:{status:'matched'},factCheck:{status:'attention',note:'Firma da verificare'},synthesisCheck:{status:'attention',sourceStatus:'incomplete',note:'Estratto non trovato'}};for(const [name,props] of [['ArticleChecks',{article:a}],['DraftChecks',{body:{sourceImportId:'source',articles:[a]}}],['ReserveArticles',{body:{reserveArticles:[a]}}]]){const html=renderToStaticMarkup(createElement(component(name),props));assert.match(html,/Nota editoriale|nota editoriale/);assert.doesNotMatch(html,/Estratto non trovato|Riscontro fonte incompleto/);}const clean=renderToStaticMarkup(createElement(component('ArticleChecks'),{article:{...a,editorialNote:''}}));assert.equal(clean,'');});

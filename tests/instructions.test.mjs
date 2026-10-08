@@ -36,7 +36,7 @@ for(const role of ['producer','editor','publisher'])test('MCP '+role+' exposes i
  try{await server.connect(a);await client.connect(b);const {tools}=await client.listTools();
  assert(!tools.some(t=>t.name==='save_editorial_instructions'));
  assert.equal(tools.some(t=>t.name==='save_editorial_preferences'),role!=='producer');
- const before=JSON.parse((await client.callTool({name:'read_editorial_instructions',arguments:{}})).content[0].text);assert.match(before.saveDraftRequirements,/id in formato UUID/);assert.match(before.saveDraftRequirements,/da 15 a 1000 caratteri/);assert(tools.find(t=>t.name==='save_draft').description.includes(before.saveDraftRequirements));assert.equal(before.connectionPermissions.canEditInstructions,false);assert.match(before.preferencePolicy,/conferma esplicita/);
+ const before=JSON.parse((await client.callTool({name:'read_editorial_instructions',arguments:{}})).content[0].text);assert.match(before.saveDraftRequirements,/id in formato UUID/);assert.match(before.saveDraftRequirements,/Non compilare factCheck/);assert(tools.find(t=>t.name==='save_draft').description.includes(before.saveDraftRequirements));assert.equal(before.connectionPermissions.canEditInstructions,false);assert.match(before.preferencePolicy,/conferma esplicita/);
  if(role!=='producer'){
  const args={version:0,text:'Preferenza confermata'};
  assert((await client.callTool({name:'save_editorial_preferences',arguments:args})).isError);
@@ -58,7 +58,7 @@ test('Summary reads only its active profile and preferences, concurrently at the
   throw Error('Unexpected legacy read');
  }};
  const result=await readInstructions({...context(store),editorialModel:'summary-v1'});
- assert.equal(result.baseText,saved.text.trim());assert.equal(result.preferences.version,2);
+ assert(result.baseText.startsWith(saved.text.trim()));assert.equal(result.workflowRevision,"editorial-review-v1");assert.equal(result.preferences.version,2);
  assert.deepEqual(heads,['current','current']);assert.equal(paths.length,2);
 });
 test('Summary falls back only for an absent profile; failures never become default instructions',async()=>{

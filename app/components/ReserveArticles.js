@@ -1,5 +1,5 @@
 'use client';
-import {visibleSynthesisLabels} from '../../lib/check-labels';
+import {articleEditorialNote} from '../../lib/check-labels';
 import './reserve-articles.css';
 export default function ReserveArticles({body,onEdit,onClip}){
  const articles=body.reserveArticles||[];
@@ -14,7 +14,7 @@ export default function ReserveArticles({body,onEdit,onClip}){
     <h3 id={'riserva-'+a.id}>{a.clipId?<button className="reserve-title-link" type="button" onClick={()=>onClip(a.clipId)} title="Apri il ritaglio originale">{a.title}</button>:a.title}</h3><p className="reserve-summary">{a.summary}</p>
     <div className="reserve-review-row">{a.reserveReason&&<div className="reserve-reason"><span>Perché considerarlo</span><p>{a.reserveReason}</p></div>}<div className="reserve-actions">{onEdit&&<button className="reserve-select-button" type="button" onClick={()=>onEdit({section:'article',articleId:a.id,reserved:true})}>Rivedi e seleziona <span aria-hidden="true">↗</span></button>}</div></div>
     {(!a.clipId||a.pdfCheck?.status==='attention'||a.pdfCheck?.status==='pending')&&<p className="reserve-warning">PDF da verificare</p>}
-    {visibleSynthesisLabels(a.synthesisCheck).map(label=><p key={label} className="reserve-warning">{label}</p>)}
+    {articleEditorialNote(a)&&<p className="reserve-warning">Nota editoriale: {articleEditorialNote(a)}</p>}
    </article>)}</div>
   </details>
  </section>;

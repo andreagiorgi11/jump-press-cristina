@@ -32,7 +32,7 @@ Rollback: su Vercel ripristinare il deployment precedente (Instant Rollback), po
 
 Fallback manuale, solo in emergenza e se Vercel non pubblica da GitHub: da una copia pulita e aggiornata di `main`, `npx vercel deploy --prod --scope andrea-giorgi`. Mai pubblicare da cartelle diverse da `main`: il 5 ottobre un deploy da una copia locale stava per cancellare il lavoro di un'altra sessione.
 
-Un deploy del codice non pubblica bozze e non cambia le istruzioni editoriali: queste si gestiscono dall'editor e restano nel repository dati.
+Un deploy del codice non pubblica bozze. Le istruzioni editoriali versionate restano nel repository dati; dal 8 ottobre la procedura operativa viene adattata dal codice al flusso in due fasi, identificato da `workflowRevision`, senza riscrivere lo storico.
 
 ## Avvio locale
 
@@ -41,6 +41,10 @@ Un deploy del codice non pubblica bozze e non cambia le istruzioni editoriali: q
 - Configurazione: `.local/real.env` (mai su Git), letta da `scripts/dev-real.mjs`. Non creare `.env.local` nella radice.
 - Dipendenze: sul PC di Andrea `node_modules` è una cartella normale locale, esclusa da Dropbox con `com.dropbox.ignored=1` e una regola dedicata in `rules.dropboxignore`. Non ricreare junction dentro Dropbox: il 06/10/2026 il collegamento precedente causava accessi ripetuti durante la sincronizzazione. La vecchia copia `.node_modules-retired-20261005` è esclusa; le dipendenze originali in `C:\Users\Andrea\.jump-press\node_modules` sono conservate. Su un altro computer: `npm ci`, preferibilmente fuori da Dropbox.
 - Non usare l'ambiente isolato `avvia-summary.bat` né `JUMP_LOCAL_INSTRUCTIONS_PREVIEW`.
+
+## Seconda revisione editoriale
+
+La chiusura della preparazione crea uno stato di revisione e invia una sola email “Bozza pronta” alla destinazione SMTP già configurata. L’attività Work di Cristina parte dalla nuova email e usa i tool dedicati per correggere testi e aggiungere al massimo due riserve. Non pubblica, non elimina articoli e conserva i campi modificati dalla redazione. Il banner distingue attesa, revisione in corso, completamento e interruzione. Dettagli e recupero: [docs/seconda-revisione.md](docs/seconda-revisione.md).
 
 ## Versione inglese
 

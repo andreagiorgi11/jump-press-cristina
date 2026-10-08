@@ -24,18 +24,18 @@ test('title comparison tolerates line breaks and accents without matching unrela
 });
 test('one source read creates exact ordered pages and server-owned checks; repeats reuse clips',async()=>{
  const x=await setup();let d=await saveDraft(x.ctx,x.id,0,x.body);assert.equal(x.reads(),1);assert.equal(x.uploads.size,1);
- const a=d.body.articles[0];assert.equal(a.pdfCheck.status,'matched');assert.equal(a.synthesisCheck.status,'verified');
+ const a=d.body.articles[0];assert.equal(a.pdfCheck.status,'matched');assert.equal(a.synthesisCheck,undefined);
  const clip=d.assets.find(c=>c.id===a.clipId),output=await PDFDocument.load(x.uploads.get(clip.storage_path));assert.deepEqual(output.getPages().map(p=>p.getWidth()),[200,210]);
  d=await saveDraft(x.ctx,x.id,d.version,d.body);assert.equal(x.uploads.size,1);assert.equal(d.body.articles[0].clipId,a.clipId);
  const pub=publicBody(d.body);assert(!('factCheck' in pub.articles[0]));assert(!('pdfCheck' in pub.articles[0]));assert(!('sourceImportId' in pub));
 });
 test('wrong title and invalid pages save warnings; invented evidence never passes',async()=>{
  const x=await setup();x.body.articles[0].title='Notizia completamente diversa';x.body.articles[0].pages=[99];x.body.articles[0].pdfCheck={status:'matched',note:'forged'};
- const d=await saveDraft(x.ctx,x.id,0,x.body);assert.equal(d.body.articles[0].pdfCheck.status,'attention');assert.equal(d.body.articles[0].synthesisCheck.status,'attention');assert.equal(d.body.articles[0].clipId,null);assert.equal(x.ctx.store.files['index.json'].drafts.length,1);
+ const d=await saveDraft(x.ctx,x.id,0,x.body);assert.equal(d.body.articles[0].pdfCheck.status,'attention');assert.equal(d.body.articles[0].synthesisCheck,undefined);assert.equal(d.body.articles[0].clipId,null);assert.equal(x.ctx.store.files['index.json'].drafts.length,1);
 });
 test('changed summary invalidates unchanged verification and preserves the draft',async()=>{
  const x=await setup();let d=await saveDraft(x.ctx,x.id,0,x.body);d.body.articles[0].summary='David è ancora alla Juventus.';d=await saveDraft(x.ctx,x.id,d.version,d.body);
- assert.equal(d.body.articles[0].factCheck,null);assert.equal(d.body.articles[0].synthesisCheck.status,'attention');
+ assert.equal(d.body.articles[0].factCheck,undefined);assert.equal(d.body.articles[0].synthesisCheck,undefined);
 });
 test('source outage is explicit, draft survives and retry can prepare missing PDF',async()=>{
  const x=await setup(),read=x.ctx.blobs.readOriginal;x.ctx.blobs.readOriginal=async()=>{throw Error('outage');};let d=await saveDraft(x.ctx,x.id,0,x.body);
@@ -53,11 +53,11 @@ test('automation completes with attention without visual clip checkpoints',async
  const done=await updateRun(x.ctx,{run:result.run,phase:'review',status:'completed',draftVersion:d.version});assert.equal(done.status,'completed');assert(done.reviewWarnings.includes('PDF da verificare.'));assert(!done.reviewWarnings.includes('Riscontro fonte incompleto.'),'hidden since 24/09/2026');
 });
 
-test('Single text edit reads extracted text only; unchanged clips and checks are reused',async()=>{
+test('Single text edit needs no source reads; unchanged clips and checks are reused',async()=>{
  const x=await setup();let d=await saveDraft(x.ctx,x.id,0,x.body);const id=d.body.articles[0].clipId;let textReads=0,exists=0;const read=x.ctx.blobs.readText;
  x.ctx.blobs.readText=async(...args)=>{textReads++;return read(...args);};x.ctx.blobs.readOriginal=async()=>{throw Error('PDF must not be downloaded for text edit');};x.ctx.blobs.exists=async()=>{exists++;throw Error('Must reuse trusted asset');};
  d.body.articles[0].summary='La sintesi è stata corretta dall’editor.';d=await saveDraft(x.ctx,x.id,d.version,d.body);
- assert.equal(textReads,1);assert.equal(exists,0);assert.equal(d.body.articles[0].clipId,id);assert.equal(d.body.articles[0].factCheck,null);assert.equal(d.body.articles[0].synthesisCheck.status,'attention');
+ assert.equal(textReads,0);assert.equal(exists,0);assert.equal(d.body.articles[0].clipId,id);assert.equal(d.body.articles[0].factCheck,undefined);assert.equal(d.body.articles[0].synthesisCheck,undefined);
 });
 test('Layout-only save needs no source reads and ignores forged client checks',async()=>{
  const x=await setup();let d=await saveDraft(x.ctx,x.id,0,x.body);const version=d.version,checks=structuredClone(d.body.articles[0].synthesisCheck);
@@ -88,11 +88,11 @@ test('Text source outage preserves unchanged checks and clips without inventing 
  assert.deepEqual(d.body.articles[0],before[0]);
  assert.equal(d.body.articles[1].pdfCheck.status,'matched');
  assert.equal(d.body.articles[1].clipId,before[1].clipId);
- assert.equal(d.body.articles[1].synthesisCheck.status,'pending');
- assert.equal(d.automaticClips.sourceUnavailable,true);
+ assert.equal(d.body.articles[1].synthesisCheck,undefined);
+ assert.equal(d.automaticClips.sourceUnavailable,false);
  x.ctx.blobs.readText=read;d=await saveDraft(x.ctx,x.id,d.version,d.body);
  assert.equal(d.automaticClips.sourceUnavailable,false);
- assert.notEqual(d.body.articles[1].synthesisCheck.status,'pending');
+ assert.equal(d.body.articles[1].synthesisCheck,undefined);
 });
 
 test('New title remains pending when source cannot be read; old success cannot apply',async()=>{
@@ -105,7 +105,7 @@ test('New title remains pending when source cannot be read; old success cannot a
 test('a transient source read error is retried instead of leaving "source unavailable" warnings',async()=>{
  const x=await setup(),read=x.ctx.blobs.readText;let calls=0;x.ctx.blobs.readText=async p=>{if(++calls===1)throw Object.assign(Error('Testo estratto non leggibile.'),{status:503});return read(p);};
  const d=await saveDraft(x.ctx,x.id,0,x.body);
- assert.equal(calls,2);assert.equal(d.automaticClips.sourceUnavailable,false);assert.equal(d.body.articles[0].synthesisCheck.status,'verified');
+ assert.equal(calls,2);assert.equal(d.automaticClips.sourceUnavailable,false);assert.equal(d.body.articles[0].synthesisCheck,undefined);
 });
 
 
@@ -116,8 +116,8 @@ test('targeted corrections preserve order and untouched warnings and never rerea
  const result=await updateArticles(x.ctx,x.id,d.version,[{id:d.body.articles[0].id,changes:{summary:'Sintesi corretta.'}}]);
  const after=await getDraft(x.ctx,x.id);
  assert.deepEqual(after.body.articles.map(a=>a.id),d.body.articles.map(a=>a.id));assert.deepEqual(after.body.articles[1],untouched);
- assert.equal(result.articles.length,1);assert.equal(result.articles[0].clipId,clip);assert.equal(result.articles[0].factCheck,null);
- assert.equal(result.articles[0].synthesisCheck.status,'attention');
+ assert.equal(result.articles.length,1);assert.equal(result.articles[0].clipId,clip);assert.equal(result.articles[0].factCheck,undefined);
+ assert.equal(result.articles[0].synthesisCheck,undefined);
  await assert.rejects(updateArticles(x.ctx,x.id,d.version,[{id:d.body.articles[0].id,changes:{title:'Obsoleto'}}]),e=>e.status===409);
  await assert.rejects(updateArticles(x.ctx,x.id,after.version,[{id:randomUUID(),changes:{title:'Assente'}}]),e=>e.status===404);
  await assert.rejects(updateArticles({...x.ctx,role:'reader'},x.id,after.version,[{id:d.body.articles[0].id,changes:{title:'Vietato'}}]),e=>e.status===403);

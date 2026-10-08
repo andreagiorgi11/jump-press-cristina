@@ -9,7 +9,7 @@ import {dirname,join,relative,sep} from 'node:path';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {pipeline} from 'node:stream/promises';
-import {sendSourceMail,sendPublishedMail} from './source-mail.mjs';
+import {sendSourceMail,sendPublishedMail,sendReadyMail} from './source-mail.mjs';
 
 const run=promisify(execFile);
 const ROOT=process.env.FILES_ROOT||'/opt/jump-press-files/data';
@@ -114,6 +114,7 @@ async function handle(req,res){
  }
  if(!sameSecret((req.headers.authorization||'').replace(/^Bearer\s+/i,'')))throw new HttpError(401,'Non autorizzato.');
  if(req.method==='POST'&&url.pathname==='/notify-source')return reply(res,200,await sendSourceMail({root:ROOT,input:await json(req)}));
+ if(req.method==='POST'&&url.pathname==='/notify-ready')return reply(res,200,await sendReadyMail({root:ROOT,input:await json(req)}));
  if(req.method==='POST'&&url.pathname==='/notify-published')return reply(res,200,await sendPublishedMail({root:ROOT,input:await json(req)}));
  if(area==='o'){
   const full=resolvePath(path);

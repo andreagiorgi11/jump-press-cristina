@@ -47,6 +47,6 @@ test('Summary profile preserves operational rules and versions independently fro
  assert(next.text.includes('CAMPO executiveSummary'));
  await store.commit({'settings/summary-editorial-instructions.json':{version:2,text:next.baseText+'\nReviewed profile.',updatedAt:'2026-09-27',updatedBy:'administrator'}},await store.begin());
  assert.equal((await readInstructions(ctx)).baseText,base.text);
- assert((await readInstructions({...ctx,editorialModel:'summary-v1'})).baseText.endsWith('Reviewed profile.'));
+ assert((await readInstructions({...ctx,editorialModel:'summary-v1'})).baseText.includes('Reviewed profile.'));
  await assert.rejects(saveInstructions({...ctx,editorialModel:'summary-v1',role:'producer'},next.version,'x'.repeat(120)),e=>e.status===403);
 });

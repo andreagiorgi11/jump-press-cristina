@@ -50,7 +50,7 @@ test('recovery is bounded and respects non-transient failures and foreign owners
  const other=fixture(),job=await claim(other);await updateRun(other,{run:job.run,phase:'reading',status:'failed',retryable:false});assert(!(await claim(other,{resume:true})).acquired);
 });
 test('finish rejects incomplete work; completed draft is not rerun or published',async()=>{
- const ctx=fixture(),job=await claim(ctx),worker={...ctx,automation:job.run};let d=await saveDraft(worker,job.draftId,0,newEdition(date));
+ const ctx=fixture();let notifications=0;ctx.notifyReady=async()=>{notifications++;return {status:'sent'};};const job=await claim(ctx),worker={...ctx,automation:job.run};let d=await saveDraft(worker,job.draftId,0,newEdition(date));
  await assert.rejects(updateRun(ctx,{run:job.run,phase:'review',status:'completed',draftVersion:1}),e=>e.status===422);
  const sourceId=randomUUID(),clipId=randomUUID();const body={...d.body,intro:'Verified summary',coverage:{examinedItems:1,sourceNote:'Verified source',frontPages:[],frontPageSummary:''},articles:[{id:randomUUID(),category:'Test',title:'Article',outlet:'Test',summary:'Summary',rating:3,sourceId,clipId,pages:[1]}]};
  d=await saveDraft(worker,d.id,1,body);await ctx.store.commit({['drafts/'+d.id+'.json']:{...d,assets:[{id:sourceId,kind:'source'},{id:clipId,kind:'clip',source_id:sourceId,storage_path:'test.pdf',pages:[1]}]}},await ctx.store.begin());

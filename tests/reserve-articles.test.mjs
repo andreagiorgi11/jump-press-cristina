@@ -49,7 +49,7 @@ test('reserves get verified clips; publication and PDF downloads exclude reserve
  for(const [i,a] of [...x.body.articles,...x.body.reserveArticles].entries())a.factCheck={status:'verified',note:'Verificato',evidence:[{page:i+1,quote:'La squadra prepara la prossima gara.'}]};
  await x.ctx.store.commit({['imports/'+importId+'.json']:{id:importId,status:'ready',date:x.body.date,pageCount:2,name:'Fonte',sha256:'a'.repeat(64),originalPath:'original',textPath:'text'}},await x.ctx.store.begin());
  x.ctx.blobs={readText:async()=>({pages:titles.map((title,i)=>({page:i+1,text:title+'\nLa squadra prepara la prossima gara.'}))}),readOriginal:async()=>bytes,write:async(p,b)=>uploads.set(p,b),read:async p=>uploads.get(p),exists:async p=>{assert(uploads.has(p));},link:async p=>'signed:'+p};
- let d=await saveDraft(x.ctx,x.id,0,x.body);assert.equal(uploads.size,2);assert.equal(d.body.reserveArticles[0].pdfCheck.status,'matched');assert.equal(d.body.reserveArticles[0].synthesisCheck.status,'verified');
+ let d=await saveDraft(x.ctx,x.id,0,x.body);assert.equal(uploads.size,2);assert.equal(d.body.reserveArticles[0].pdfCheck.status,'matched');assert.equal(d.body.reserveArticles[0].synthesisCheck,undefined);
  const reserveClip=d.body.reserveArticles[0].clipId,mainClip=d.body.articles[0].clipId;
  await publishDraft(x.ctx,x.id,d.version,'PUBBLICA');assert.equal(await publicClip(reserveClip,x.ctx.store,x.ctx.blobs),null);assert(await publicClip(mainClip,x.ctx.store,x.ctx.blobs));
  const snapshot=x.ctx.store.files['published/'+x.body.date+'.json'];assert(!JSON.stringify(snapshot).includes('Alternativa privata'));assert(!snapshot.body.reserveArticles);

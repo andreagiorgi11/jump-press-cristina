@@ -1,3 +1,11 @@
+## 2026-10-08 — Seconda revisione editoriale
+
+Separata la preparazione dalla revisione: la chiusura della prima bozza genera una notifica email deduplicata per il monitoraggio Work e mostra lo stato alla redazione. Nuovi strumenti per prenotare, correggere e concludere la revisione, con limite di due nuove riserve, ordine e selezione conservati, protezione delle modifiche umane e arresto sulle bozze pubblicate. Le interviste e gli editoriali vengono ricontrollati sulla fonte insieme a firme, fatti, omissioni, cappello e Summary.
+
+Rimosso il lavoro di compilazione e riscontro letterale factCheck/evidence; conservati gli archivi storici e le note concrete. I cambi al solo testo riutilizzano i PDF esistenti. Adattamento delle istruzioni Summary identificato da workflowRevision, senza riscrivere lo storico. Documentazione e recupero in docs/seconda-revisione.md.
+
+Verifica: test isolati di concorrenza, permessi, deduplicazione SMTP e limiti editoriali; build Press e News; controllo della redazione su dati reali senza scritture di prova. Commit precedente per rollback: c73b325.
+
 ## 2026-10-07 — Rilascio approvato
 
 Rilascio delle modifiche locali: istruzioni più rapide, ricercabili e formattate; modifica del cappello e dei punti positivi/negativi inglesi; archivio più rapido con anteprime delle bozze; ricerca articoli con periodi, solo titolo e avvio automatico; selezione e anteprima PDF. Pulsante Cerca a destra dopo il periodo.
