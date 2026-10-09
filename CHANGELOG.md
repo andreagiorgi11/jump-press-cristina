@@ -1,3 +1,7 @@
+## 2026-10-09 — Logo Quotidiano Nazionale
+
+Aggiunto il logo QN ricreato e approvato da Andrea, senza i margini bianchi esterni. Riconosciuti i nomi QN, QN Sport e Quotidiano Nazionale nel resolver condiviso sito/PDF; larghezza nel sito 164 px, scelta nel confronto con le altre testate. Rilascio autorizzato in chat. Rollback tramite revert del commit.
+
 ## 2026-10-08 — Seconda revisione editoriale
 
 Separata la preparazione dalla revisione: la chiusura della prima bozza genera una notifica email deduplicata per il monitoraggio Work e mostra lo stato alla redazione. Nuovi strumenti per prenotare, correggere e concludere la revisione, con limite di due nuove riserve, ordine e selezione conservati, protezione delle modifiche umane e arresto sulle bozze pubblicate. Le interviste e gli editoriali vengono ricontrollati sulla fonte insieme a firme, fatti, omissioni, cappello e Summary.
