@@ -44,6 +44,8 @@ Un deploy del codice non pubblica bozze. Le istruzioni editoriali versionate res
 
 ## Seconda revisione editoriale
 
+Dal 10 ottobre la preparazione confronta ogni sintesi con la fonte già consultata prima del primo salvataggio; restano le lunghezze originali flessibili. Il server rimuove l’override della firma dai nuovi articoli non editoriali salvati dall’automatismo, comprese le riserve, senza alterare le scelte sugli articoli esistenti o i salvataggi manuali. La seconda revisione resta invariata.
+
 La chiusura della preparazione crea uno stato di revisione e invia una sola email “Bozza pronta” alla destinazione SMTP già configurata. L’attività Work di Cristina parte dalla nuova email e usa i tool dedicati per correggere testi e aggiungere al massimo due riserve. Non pubblica, non elimina articoli e conserva i campi modificati dalla redazione. Il banner distingue attesa, revisione in corso, completamento e interruzione. Dettagli e recupero: [docs/seconda-revisione.md](docs/seconda-revisione.md).
 
 ## Versione inglese

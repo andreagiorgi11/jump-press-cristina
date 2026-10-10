@@ -1,3 +1,11 @@
+## 2026-10-10 — Controllo iniziale e firme delle notizie
+
+Ripristinato nelle istruzioni il confronto di ogni sintesi con la fonte già consultata prima del primo salvataggio. Rimossa la frase aggiuntiva sulle lunghezze: restano i criteri originali flessibili e il divieto di riempitivi. Seconda revisione e notifiche invariate.
+
+Durante la preparazione automatica, il salvataggio elimina showAuthor=true dai nuovi articoli non editoriali, riserve comprese. Gli articoli esistenti e le scelte manuali restano invariati. Nessuna nuova chiamata o fase obbligatoria. Rilascio online autorizzato da Andrea; rollback mediante revert del commit, versione precedente 2ce03b9.
+
+Verifica prima del rilascio: 297 test superati e build Press/News riuscite. Pagina locale su dati reali verificata via HTTP (200, articoli presenti) dalla copia pulita esterna a Dropbox; cache dev della cartella originale danneggiata. Il browser di controllo blocca localhost; verifica browser sul sito online.
+
 ## 2026-10-09 — Logo Quotidiano Nazionale
 
 Aggiunto il logo QN ricreato e approvato da Andrea, senza i margini bianchi esterni. Riconosciuti i nomi QN, QN Sport e Quotidiano Nazionale nel resolver condiviso sito/PDF; larghezza nel sito 164 px, scelta nel confronto con le altre testate. Rilascio autorizzato in chat. Rollback tramite revert del commit.
